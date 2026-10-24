@@ -23,28 +23,6 @@ variable {X : Type*} [TopologicalSpace X]
 def NowhereMeagre (A : Set X) : Prop :=
   ∀ V : Set X, IsOpen V → (V ∩ A).Nonempty → ¬ IsMeagre (V ∩ A)
 
-/-- `A` is **fat** in `X`: dense and nowhere meager. Every superset of a fat set is fat. -/
-def IsFat (A : Set X) : Prop := Dense A ∧ NowhereMeagre A
-
-theorem IsFat.mono {A B : Set X} (hA : IsFat A) (hAB : A ⊆ B) : IsFat B := by
-  refine ⟨hA.1.mono hAB, fun V hV hne hm => ?_⟩
-  obtain ⟨y, hyV, -⟩ := hne
-  have h1 : (V ∩ A).Nonempty := hA.1.inter_open_nonempty V hV ⟨y, hyV⟩
-  exact hA.2 V hV h1 (hm.mono (inter_subset_inter_right _ hAB))
-
-/-- A nowhere meager set minus a meager set is nowhere meager. -/
-theorem NowhereMeagre.diff_meagre {S A : Set X} (hS : NowhereMeagre S) (hA : IsMeagre A) :
-    NowhereMeagre (S \ A) := by
-  intro V hV hne hm
-  have hne' : (V ∩ S).Nonempty := hne.mono (inter_subset_inter_right _ diff_subset)
-  refine hS V hV hne' ?_
-  have : V ∩ S ⊆ (V ∩ (S \ A)) ∪ A := by
-    rintro z ⟨hzV, hzS⟩
-    by_cases hzA : z ∈ A
-    · exact Or.inr hzA
-    · exact Or.inl ⟨hzV, hzS, hzA⟩
-  exact (hm.union hA).mono this
-
 /-- If `S` is nowhere meager, `A` meager and `V` open with `(V ∩ S).Nonempty`, then
 `V ∩ (S \ A)` is nonempty. -/
 theorem NowhereMeagre.inter_diff_nonempty {S A V : Set X} (hS : NowhereMeagre S)
@@ -55,13 +33,6 @@ theorem NowhereMeagre.inter_diff_nonempty {S A V : Set X} (hS : NowhereMeagre S)
   rintro z ⟨hzV, hzS⟩
   by_contra hzA
   exact (h ▸ (⟨hzV, hzS, hzA⟩ : z ∈ V ∩ (S \ A)) : z ∈ (∅ : Set X))
-
-/-- **van Mill, Lemma 2.1.** A fat set minus a meager set is fat. -/
-theorem IsFat.diff_meagre {S A : Set X} (hS : IsFat S) (hA : IsMeagre A) : IsFat (S \ A) := by
-  refine ⟨?_, hS.2.diff_meagre hA⟩
-  rw [dense_iff_inter_open]
-  intro V hV hVne
-  exact hS.2.inter_diff_nonempty hA hV (hS.1.inter_open_nonempty V hV hVne)
 
 /-- A subset that is not meager is not nowhere dense: its closure has nonempty interior. -/
 theorem nonempty_interior_closure_of_not_meagre {A : Set X} (hA : ¬ IsMeagre A) :
@@ -314,20 +285,6 @@ theorem inter_nonempty_of_nowhereMeagre {Y : Type*} [MetricSpace Y] {S T : Set Y
       obtain ⟨w, hw, rfl⟩ := this
       exact ⟨⟨w, hw⟩, rfl⟩)
   exact ⟨f p, ⟨p.1, rfl⟩, ⟨q.1, hpq.symm⟩⟩
-
-/-- **van Mill, Proposition 2.2.** Two analytic fat subsets of a nonempty metric space meet. -/
-theorem inter_nonempty_of_isFat {Y : Type*} [MetricSpace Y] [Nonempty Y] {S T : Set Y}
-    (hSa : AnalyticSet S) (hTa : AnalyticSet T) (hS : IsFat S) (hT : IsFat T) :
-    (S ∩ T).Nonempty :=
-  inter_nonempty_of_nowhereMeagre hSa hTa hS.2 hT.2 hS.1.nonempty
-    (by rw [hT.1.closure_eq]; exact subset_univ _)
-
-/-- **`Nonempty Y` cannot be dropped from Proposition 2.2** (refutation candidate of the
-commission). In an empty space, `∅` is analytic and fat, and `∅ ∩ ∅` is empty. Van Mill's
-statement tacitly assumes `X ≠ ∅`. -/
-theorem isFat_empty_of_isEmpty {Y : Type*} [TopologicalSpace Y] [IsEmpty Y] :
-    AnalyticSet (∅ : Set Y) ∧ IsFat (∅ : Set Y) ∧ ¬ ((∅ : Set Y) ∩ ∅).Nonempty :=
-  ⟨analyticSet_empty, ⟨fun y => isEmptyElim y, fun _ _ h => by simp at h⟩, by simp⟩
 
 end Prop22
 

@@ -220,15 +220,6 @@ theorem m25_region_infinite {R : Set (Quotient r)} (hR : mooreRegion R) (hne : R
   have huniv := hcl.eq_univ ⟨X, hq⟩
   exact not_isBounded_of_forall_nat (T := ptsOf r R) (fun n => huniv ▸ mem_univ _) hc.isBounded
 
-/-- **The unnumbered claim of p. 420.** Axioms 1, 2, 4, 5 and F.A. Theorem 4 (for nonempty regions)
-hold for the space of elements with Moore's regions. -/
-theorem m25_axioms1245 :
-    (spaceOfElts r).Axiom1 ∧ (spaceOfElts r).Axiom2 ∧ (spaceOfElts r).Axiom4 ∧
-      (spaceOfElts r).Axiom5 ∧
-      ∀ R ∈ (spaceOfElts r).region, R.Nonempty → R.Infinite :=
-  ⟨m25_axiom1 hG, m25_axiom2 hG, m25_axiom4 hG, m25_axiom5 hG,
-    fun _ hR hne => m25_region_infinite hG hR hne⟩
-
 end hG
 
 end HPC.Moore

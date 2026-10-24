@@ -1,4 +1,5 @@
-import HPC.Plane.Fugate66B
+import HPC.Plane.Fugate66BThm1
+import HPC.Plane.Fugate66BMiller
 
 /-!
 # Batch 102, part 0: definitions (Nadler 11.23, 11.24, 11.29) and general topology
@@ -31,19 +32,9 @@ def IsEssentialSum₃ (X X₁ X₂ X₃ : Set S) : Prop :=
     Fold.Q78.IsContinuum X₃ ∧ X = X₁ ∪ X₂ ∪ X₃ ∧
     ¬ X₁ ⊆ X₂ ∪ X₃ ∧ ¬ X₂ ⊆ X₁ ∪ X₃ ∧ ¬ X₃ ⊆ X₁ ∪ X₂
 
-/-- Two summands: `X = Y ⊕ Z`, i.e. a decomposition into proper subcontinua. -/
-def IsEssentialSum₂ (X Y Z : Set S) : Prop :=
-  Fold.Q78.IsContinuum X ∧ Fold.Q78.IsContinuum Y ∧ Fold.Q78.IsContinuum Z ∧ X = Y ∪ Z ∧
-    Y ≠ X ∧ Z ≠ X
-
 /-- **Nadler 11.24.** A *weak triod*: an essential sum of three continua with a common point. -/
 def IsWeakTriod (X : Set S) : Prop :=
   ∃ X₁ X₂ X₃ : Set S, IsEssentialSum₃ X X₁ X₂ X₃ ∧ (X₁ ∩ X₂ ∩ X₃).Nonempty
-
-/-- **11.29.** `C = irr(A, B)`: `C` meets `A` and `B`, and no proper subcontinuum of `C` does. -/
-def IrrFromTo (C A B : Set S) : Prop :=
-  Fold.Q78.IsContinuum C ∧ (C ∩ A).Nonempty ∧ (C ∩ B).Nonempty ∧
-    ∀ K : Set S, Fold.Q78.IsContinuum K → K ⊆ C → (K ∩ A).Nonempty → (K ∩ B).Nonempty → K = C
 
 /-! ## General topology -/
 
@@ -174,13 +165,6 @@ theorem exists_continuum_bump_open {L O : Set S} (hL : Fold.Q78.IsContinuum L) (
   have hcl : IsClosed (L \ O) := hL.1.isClosed.sdiff hO
   exact (closure_minimal hsub hcl hx).2
 
-/-- The closure of a preconnected subset of a compact set `K` is a subcontinuum of `K` (when the
-subset is nonempty). -/
-theorem isContinuum_closure_of_subset {K Z : Set S} (hK : IsClosed K) (hZK : Z ⊆ K)
-    (hZ : IsPreconnected Z) (hne : Z.Nonempty) :
-    Fold.Q78.IsContinuum (closure Z) ∧ closure Z ⊆ K :=
-  ⟨⟨isClosed_closure.isCompact, hne.closure, hZ.closure⟩, closure_minimal hZK hK⟩
-
 end Compact
 
 /-- **Constructor for weak triods.** -/
@@ -206,81 +190,6 @@ namespace IsEssentialSum₂
 
 variable {X Y Z : Set S}
 
-theorem left_subset (h : IsEssentialSum₂ X Y Z) : Y ⊆ X := h.2.2.2.1 ▸ subset_union_left
-
-theorem right_subset (h : IsEssentialSum₂ X Y Z) : Z ⊆ X := h.2.2.2.1 ▸ subset_union_right
-
-theorem symm (h : IsEssentialSum₂ X Y Z) : IsEssentialSum₂ X Z Y :=
-  ⟨h.1, h.2.2.1, h.2.1, by rw [union_comm]; exact h.2.2.2.1, h.2.2.2.2.2, h.2.2.2.2.1⟩
-
-/-- `U = X ∖ Z` is nonempty. -/
-theorem diff_nonempty (h : IsEssentialSum₂ X Y Z) : (X \ Z).Nonempty := by
-  by_contra hc
-  rw [not_nonempty_iff_eq_empty, diff_eq_empty] at hc
-  exact h.2.2.2.2.2 (Subset.antisymm h.right_subset hc)
-
-/-- `X ∖ Z ⊆ Y`. -/
-theorem diff_subset_left (h : IsEssentialSum₂ X Y Z) : X \ Z ⊆ Y := fun x hx => by
-  have := h.2.2.2.1 ▸ hx.1
-  rcases this with h' | h'
-  · exact h'
-  · exact absurd h' hx.2
-
-/-- `Z ∖ Y` is nonempty. -/
-theorem right_diff_nonempty (h : IsEssentialSum₂ X Y Z) : (Z \ Y).Nonempty := by
-  obtain ⟨x, hx⟩ := h.symm.diff_nonempty
-  exact ⟨x, h.symm.diff_subset_left hx, hx.2⟩
-
-/-- `Ū ⊆ Y`. -/
-theorem closure_diff_subset_left (h : IsEssentialSum₂ X Y Z) : closure (X \ Z) ⊆ Y :=
-  closure_minimal h.diff_subset_left h.2.1.1.isClosed
-
-/-- `Ū ⊆ X`. -/
-theorem closure_diff_subset (h : IsEssentialSum₂ X Y Z) : closure (X \ Z) ⊆ X :=
-  h.closure_diff_subset_left.trans h.left_subset
-
-/-- `Ū` misses `Z ∖ Y`. -/
-theorem closure_diff_disjoint (h : IsEssentialSum₂ X Y Z) {x : S} (hx : x ∈ closure (X \ Z)) :
-    x ∉ Z \ Y := fun hx' => hx'.2 (h.closure_diff_subset_left hx)
-
-/-- `X = Ū ∪ Z`. -/
-theorem eq_closure_union (h : IsEssentialSum₂ X Y Z) : X = closure (X \ Z) ∪ Z := by
-  refine Subset.antisymm (fun x hx => ?_) (union_subset h.closure_diff_subset h.right_subset)
-  by_cases hxZ : x ∈ Z
-  · exact Or.inr hxZ
-  · exact Or.inl (subset_closure ⟨hx, hxZ⟩)
-
-/-- `Ū ∩ Z ≠ ∅` (connectedness of `X`). -/
-theorem closure_inter_nonempty (h : IsEssentialSum₂ X Y Z) : (closure (X \ Z) ∩ Z).Nonempty := by
-  have hX := h.1.2.isPreconnected
-  obtain ⟨u, hu⟩ := h.diff_nonempty
-  obtain ⟨z, hz⟩ := h.2.2.1.2.nonempty
-  obtain ⟨x, hxX, hx1, hx2⟩ := isPreconnected_closed_iff.mp hX _ _ isClosed_closure
-    h.2.2.1.1.isClosed h.eq_closure_union.subset ⟨u, hu.1, subset_closure hu⟩
-    ⟨z, h.right_subset hz, hz⟩
-  exact ⟨x, hx1, hx2⟩
-
-/-- `Ū ⊆ U ∪ (Ū ∩ Z)`. -/
-theorem closure_diff_subset_union (h : IsEssentialSum₂ X Y Z) :
-    closure (X \ Z) ⊆ (X \ Z) ∪ (closure (X \ Z) ∩ Z) := fun x hx => by
-  by_cases hxZ : x ∈ Z
-  · exact Or.inr ⟨hx, hxZ⟩
-  · exact Or.inl ⟨h.closure_diff_subset hx, hxZ⟩
-
-/-- `Ū ≠ X`. -/
-theorem closure_diff_ne (h : IsEssentialSum₂ X Y Z) : closure (X \ Z) ≠ X := by
-  intro he
-  obtain ⟨x, hxZ, hxY⟩ := h.right_diff_nonempty
-  have hx : x ∈ closure (X \ Z) := by rw [he]; exact h.right_subset hxZ
-  exact h.closure_diff_disjoint hx ⟨hxZ, hxY⟩
-
 end IsEssentialSum₂
-
-/-- A point outside the closed set `Z` lying in the closure of `A` lies in the closure of
-`A ∖ Z`. -/
-theorem mem_closure_diff_of_mem_closure {Z A : Set S} (hZ : IsClosed Z) {x : S}
-    (hx : x ∈ closure A) (hxZ : x ∉ Z) : x ∈ closure (A \ Z) := by
-  have := hZ.isOpen_compl.inter_closure ⟨hxZ, hx⟩
-  rwa [inter_comm, ← diff_eq] at this
 
 end HPC.Plane

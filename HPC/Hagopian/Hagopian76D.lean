@@ -1,6 +1,7 @@
 import HPC.Hagopian.Hagopian76C
 import HPC.Hagopian.H76Collar
-import HPC.Hagopian.H76Lemma8Caps
+import HPC.Hagopian.H76Lemma3
+import HPC.Plane.SorgenfreyDefs
 
 /-!
 # Batch 159 skeleton: Hagopian 1976, Lemma 6 and the unnumbered claims, Lemma 7; the plane
@@ -53,19 +54,6 @@ end Section2
 
 /-! ## C. Plane topology: Schoenflies, and a two-sided collar of an arc -/
 
-/-- **The Schoenflies theorem in the plane, with prescribed boundary.** A simple closed curve `J`
-of the plane, with its bounded complementary domain `D`, is the image of the boundary of the square
-under an embedding of the closed square onto `J ∪ D` that restricts to a given parametrization of
-an arc of `J` on the bottom side. From `m19_schoenflies_boundary_proof`, transported to `Pt` through
-the plane model of Moore's axioms (`mooreDecomp_ptSetoid`, `spaceRestricted_topology`). Shape: the
-skeleton's, unchanged. (`plane_schoenflies_aux`, `H76Schoen.lean`.) -/
-theorem plane_schoenflies {J D : Set Pt} (hJ : TSCC J) (hD : IsOpen D) (hDc : IsConnected D)
-    (hDb : Bornology.IsBounded D) (hDJ : frontier D = J)
-    {φ : unitInterval → Pt} (hφ : IsEmbedding φ) (hφJ : range φ ⊆ J) :
-    ∃ f : unitInterval × unitInterval → Pt, IsEmbedding f ∧ range f = J ∪ D ∧
-      (∀ t, f (t, 0) = φ t) ∧ f '' {p | 0 < p.1 ∧ p.1 < 1 ∧ 0 < p.2 ∧ p.2 < 1} = D :=
-  plane_schoenflies_aux hJ hD hDc hDb hDJ hφ hφJ
-
 /- `IsCollar` (the skeleton's definition, unchanged) is in `H76Collar.lean`. -/
 
 /-- **Every arc in the plane has a two-sided collar.** Shape: the skeleton's, unchanged. Route
@@ -80,47 +68,11 @@ covered by the two closed sides, since only `R₂` is missing and `γ` misses it
 theorem exists_collar {γ : unitInterval → Pt} (hγ : IsEmbedding γ) : ∃ F, IsCollar γ F :=
   exists_collar_aux hγ
 
-/-- **Decomposably accessible from a side** (p. 344), in collar form. Two layers `k⁻¹(u)`, `k⁻¹(y)`
-(not end sets, `u ≠ y`) are decomposably accessible from a side if, for some collar `F` of `γ` and
-some side `σ = ±1`, the vertical segments over `γ u` and `γ y` on that side, minus their feet, miss
-`π[M]`. This replaces `DecompAccessible` (batch 158), whose `AbutSameSide` asks for a homeomorphism
-of the whole plane; the two agree given Schoenflies (Bing's definition, p. 215, straightens the arc
-and the two abutting arcs simultaneously). The comparison is in the report (batch 159, §1.E). -/
-def DecompAccessibleC (πM : Set Pt) (γ : unitInterval → Pt) (u y : unitInterval) : Prop :=
-  0 < u ∧ u < 1 ∧ 0 < y ∧ y < 1 ∧ u ≠ y ∧
-    ∃ (F : ℝ × ℝ → Pt) (σ h₁ h₂ : ℝ), IsCollar γ F ∧ (σ = 1 ∨ σ = -1) ∧ 0 < h₁ ∧ h₁ ≤ 1 ∧
-      0 < h₂ ∧ h₂ ≤ 1 ∧
-      Disjoint (F '' ((fun r => ((u : ℝ), σ * r)) '' Ioc 0 h₁)) πM ∧
-      Disjoint (F '' ((fun r => ((y : ℝ), σ * r)) '' Ioc 0 h₂)) πM
-
 /-! ## D. Lemma 8 with prescribed caps; E. Lemma 9 -/
 
 section Lemma9
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
-
-/-- **Lemma 8 with prescribed caps** (p. 346: "Using the method described in the proof of Lemma 8
-… (Here the open sets `A` and `B` in the proof of Lemma 8 are in `G₁ − G₂` and `G₁₁ − G₁₀`
-respectively.)"). **Shape chosen** (the skeleton left it open, as `True`): for open `U ⊆ G₀`,
-`V ⊆ Gₙ` about the end sets `X = k⁻¹(0)`, `Z = k⁻¹(1)`, the caps are `A = U − E`, `B = V − E`; `E`
-is a component of `M − (A ∪ B)` (every continuum of `M` containing `E` and missing `A ∪ B` is `E`),
-and there are an open `C ⊇ E` and an ordered refinement `L` of `G` that follows `E` and is free
-relative to `M`, with `L₀ = G₀`, `Lₙ = Gₙ` and `Lᵢ = C ∩ Gᵢ` otherwise. For Property 1 take
-`U ⊆ G₀ − Cl G₁`, `V ⊆ Gₙ − Cl Gₙ₋₁` (when the end sets lie there); for Lemma 9 `U = G₀`, `V = Gₙ`.
-(`lemma8_caps_aux`, `H76Lemma8Caps.lean`.) -/
-theorem hagopian76_lemma8_caps (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
-    {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {n : ℕ} (G : Fin (n + 1) → Set Pt)
-    (hG : IsPlaneChain G) (hGE : Follows G k) {U V : Set Pt} (hU : IsOpen U) (hV : IsOpen V)
-    (hXU : toPt (layer k 0) ⊆ U) (hZV : toPt (layer k 1) ⊆ V) (hUG : U ⊆ G 0)
-    (hVG : V ⊆ G (Fin.last n)) :
-    ∃ (L : Fin (n + 1) → Set Pt) (C : Set Pt), IsOpen C ∧ toPt E ⊆ C ∧
-      L 0 = G 0 ∧ L (Fin.last n) = G (Fin.last n) ∧
-      (∀ i, i ≠ 0 → i ≠ Fin.last n → L i = C ∩ G i) ∧
-      (∀ K : Set M, Fold.Q78.IsContinuum K → E ⊆ K →
-        Disjoint (toPt K) ((U \ toPt E) ∪ (V \ toPt E)) → K ⊆ E) ∧
-      IsOrderedRefinement L G ∧ Follows L k ∧ IsFree M L :=
-  lemma8_caps_aux (hagopian75_lemma1_hu hX hi) (hagopian75_lemma1 hX hi).1 hE G hG hGE hU hV hXU
-    hZV hUG hVG
 
 -- `hagopian76_lemma9` (Lemma 9, collar form): proved in batch 163, `Hagopian76H.lean`.
 

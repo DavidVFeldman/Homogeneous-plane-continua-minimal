@@ -132,11 +132,6 @@ theorem subset_interior_gridUnion {M : Set Pt} (hM : Bornology.IsBounded M) {δ 
   mem_interior_sqUnion hδ fun _ _ hz =>
     (mem_sqIdx_iff hM hδ _).2 ⟨x, hz, self_subset_cthickening M hx⟩
 
-open Classical in
-/-- The four edges of a grid square, as lexicographically oriented segments. -/
-noncomputable def sqEdges (δ : ℝ) (a b : ℤ) : Finset Seg :=
-  {hseg δ a b, hseg δ a (b + 1), vseg δ a b, vseg δ (a + 1) b}
-
 /-- **The boundary graph**: the edges of the squares of `sqIdx` that belong to exactly one
 square of `sqIdx` (`mem_bdryGraph_iff_card`). -/
 noncomputable def bdryGraph (M : Set Pt) (δ : ℝ) : Finset Seg := bdryOf δ (sqIdx M δ)
@@ -156,111 +151,6 @@ theorem graphSet_bdryGraph_subset (M : Set Pt) {δ : ℝ} (hδ : 0 < δ) :
     graphSet (bdryGraph M δ) ⊆ gridUnion M δ := by
   rw [← frontier_gridUnion M hδ]
   exact frontier_subset_closure.trans (isCompact_gridUnion M δ).isClosed.closure_eq.subset
-
-theorem mem_sqEdges {δ : ℝ} {a b : ℤ} {s : Seg} : s ∈ sqEdges δ a b ↔
-    s = hseg δ a b ∨ s = hseg δ a (b + 1) ∨ s = vseg δ a b ∨ s = vseg δ (a + 1) b := by
-  classical
-  simp [sqEdges]
-
-theorem hseg_inj {δ : ℝ} (hδ : δ ≠ 0) {a b a' b' : ℤ} :
-    hseg δ a b = hseg δ a' b' ↔ a = a' ∧ b = b' := by
-  constructor
-  · intro h
-    simp only [hseg, Prod.mk.injEq] at h
-    obtain ⟨⟨h1, h2⟩, -⟩ := h
-    exact ⟨by exact_mod_cast mul_left_cancel₀ hδ h1, by exact_mod_cast mul_left_cancel₀ hδ h2⟩
-  · rintro ⟨rfl, rfl⟩
-    rfl
-
-theorem vseg_inj {δ : ℝ} (hδ : δ ≠ 0) {a b a' b' : ℤ} :
-    vseg δ a b = vseg δ a' b' ↔ a = a' ∧ b = b' := by
-  constructor
-  · intro h
-    simp only [vseg, Prod.mk.injEq] at h
-    obtain ⟨⟨h1, h2⟩, -⟩ := h
-    exact ⟨by exact_mod_cast mul_left_cancel₀ hδ h1, by exact_mod_cast mul_left_cancel₀ hδ h2⟩
-  · rintro ⟨rfl, rfl⟩
-    rfl
-
-theorem hseg_ne_vseg {δ : ℝ} (hδ : δ ≠ 0) (a b a' b' : ℤ) : hseg δ a b ≠ vseg δ a' b' := by
-  intro h
-  simp only [hseg, vseg, Prod.mk.injEq] at h
-  obtain ⟨⟨h1, -⟩, h3, -⟩ := h
-  have := mul_left_cancel₀ hδ (h3.trans h1.symm)
-  linarith
-
-theorem card_filter_eq_one_iff_xor {S : Finset (ℤ × ℤ)} {p q : ℤ × ℤ} (hpq : p ≠ q)
-    {P : ℤ × ℤ → Prop} [DecidablePred P] (hP : ∀ x, P x ↔ x = p ∨ x = q) :
-    (S.filter P).card = 1 ↔ Xor' (p ∈ S) (q ∈ S) := by
-  classical
-  have hS : S.filter P = (S.filter (· = p)) ∪ (S.filter (· = q)) := by
-    ext x
-    simp only [Finset.mem_filter, Finset.mem_union, hP]
-    tauto
-  have hd : Disjoint (S.filter (· = p)) (S.filter (· = q)) :=
-    Finset.disjoint_filter.2 fun x _ h1 h2 => hpq (h1.symm.trans h2)
-  have hc : ∀ r, (S.filter (· = r)).card = if r ∈ S then 1 else 0 := by
-    intro r
-    split_ifs with hr
-    · rw [Finset.card_eq_one]
-      exact ⟨r, by ext x; simp only [Finset.mem_filter, Finset.mem_singleton]; constructor <;>
-        [exact fun h => h.2; exact fun h => ⟨h ▸ hr, h⟩]⟩
-    · rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-      exact fun x hx h => hr (h ▸ hx)
-  rw [hS, Finset.card_union_of_disjoint hd, hc, hc]
-  by_cases hp : p ∈ S <;> by_cases hq : q ∈ S <;> simp [hp, hq]
-
-/-- **The boundary graph is the set of edges of squares of `sqIdx` belonging to exactly one square
-of `sqIdx`** (the skeleton's description of `bdryGraph`). -/
-theorem mem_bdryGraph_iff_card (M : Set Pt) {δ : ℝ} (hδ : 0 < δ) (s : Seg) :
-    s ∈ bdryGraph M δ ↔
-      ((sqIdx M δ).filter fun ab => s ∈ sqEdges δ ab.1 ab.2).card = 1 := by
-  classical
-  have hδ0 : δ ≠ 0 := hδ.ne'
-  unfold bdryGraph
-  rw [mem_bdryOf]
-  by_cases hs : ∃ a b, s = hseg δ a b
-  · obtain ⟨a, b, rfl⟩ := hs
-    rw [card_filter_eq_one_iff_xor (p := (a, b)) (q := (a, b - 1))
-      (fun h => by simp only [Prod.mk.injEq] at h; omega) fun x => ?_]
-    · constructor
-      · rintro (⟨a', b', hx, h⟩ | ⟨a', b', hx, h⟩)
-        · obtain ⟨rfl, rfl⟩ := (hseg_inj hδ0).1 h
-          exact hx
-        · exact absurd h (hseg_ne_vseg hδ0 _ _ _ _)
-      · exact fun hx => Or.inl ⟨a, b, hx, rfl⟩
-    · obtain ⟨a', b'⟩ := x
-      have h1 := hseg_ne_vseg hδ0 a b a' b'
-      have h2 := hseg_ne_vseg hδ0 a b (a' + 1) b'
-      simp only [mem_sqEdges, hseg_inj hδ0, h1, h2, or_false, Prod.mk.injEq]
-      omega
-  by_cases hv : ∃ a b, s = vseg δ a b
-  · obtain ⟨a, b, rfl⟩ := hv
-    rw [card_filter_eq_one_iff_xor (p := (a, b)) (q := (a - 1, b))
-      (fun h => by simp only [Prod.mk.injEq] at h; omega) fun x => ?_]
-    · constructor
-      · rintro (⟨a', b', hx, h⟩ | ⟨a', b', hx, h⟩)
-        · exact absurd h.symm (hseg_ne_vseg hδ0 _ _ _ _)
-        · obtain ⟨rfl, rfl⟩ := (vseg_inj hδ0).1 h
-          exact hx
-      · exact fun hx => Or.inr ⟨a, b, hx, rfl⟩
-    · obtain ⟨a', b'⟩ := x
-      have h1 := hseg_ne_vseg hδ0 a' b' a b
-      have h2 := hseg_ne_vseg hδ0 a' (b' + 1) a b
-      simp only [mem_sqEdges, vseg_inj hδ0, Ne.symm h1, Ne.symm h2, false_or, Prod.mk.injEq]
-      omega
-  · push_neg at hs hv
-    have : (sqIdx M δ).filter (fun ab => s ∈ sqEdges δ ab.1 ab.2) = ∅ := by
-      rw [Finset.filter_eq_empty_iff]
-      intro ab _ h
-      rcases mem_sqEdges.1 h with h | h | h | h
-      · exact hs _ _ h
-      · exact hs _ _ h
-      · exact hv _ _ h
-      · exact hv _ _ h
-    rw [this, Finset.card_empty]
-    simp only [zero_ne_one, iff_false, not_or, not_exists, not_and]
-    exact ⟨fun a b _ h => hs a b h, fun a b _ h => hv a b h⟩
 
 /-! ### The outer cycle and the enclosing polygon -/
 

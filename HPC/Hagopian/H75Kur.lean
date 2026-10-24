@@ -60,11 +60,6 @@ theorem irr_compl_continuum [ConnectedSpace Y] (hirr : IrrBetween a b) {K : Set 
     Subset.antisymm (closure_minimal hsub hK'.1.isClosed) hK'cl
   rw [this]; exact hK'
 
-omit [CompactSpace Y] in
-/-- `b ∈ cl (Y − K)` -/
-theorem mem_closure_compl_of_not_mem {K : Set Y} (hbK : b ∉ K) : b ∈ closure Kᶜ :=
-  subset_closure hbK
-
 /-- **No hole.** Let `K ∋ a` be a subcontinuum not containing `b`, and `U ⊆ K` a nonempty open set
 not containing `a` that is closed in `int K` (`cl U ∩ int K ⊆ U`). This is impossible: the
 component of `K − U` containing `a` reaches `cl U − U ⊆ cl (Y − K)`, and with `cl (Y − K)` it

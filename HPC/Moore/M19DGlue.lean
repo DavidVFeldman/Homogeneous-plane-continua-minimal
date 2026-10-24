@@ -26,17 +26,6 @@ theorem Space.Rulable.of_rot (h1 : σ.Axiom1) (H : σ.Rulable Good I sBC sCD sDA
   refine ⟨𝒴, 𝒳, ((R.rot h1).rot h1).rot h1, ?_⟩
   rw [union_comm]; exact hG
 
-theorem Space.Rulable.of_refl (h1 : σ.Axiom1) (H : σ.Rulable Good I sAB sDA sCD sBC B A D C) :
-    σ.Rulable Good I sAB sBC sCD sDA A B C D := by
-  obtain ⟨𝒳, 𝒴, R, hG⟩ := H
-  exact ⟨𝒳, 𝒴, R.rule_refl h1, hG⟩
-
-theorem Space.Rulable.to_rot (h1 : σ.Axiom1) (H : σ.Rulable Good I sAB sBC sCD sDA A B C D) :
-    σ.Rulable Good I sBC sCD sDA sAB B C D A := by
-  obtain ⟨𝒳, 𝒴, R, hG⟩ := H
-  refine ⟨𝒴, 𝒳, R.rot h1, ?_⟩
-  rw [union_comm]; exact hG
-
 end Sym
 
 section Ax

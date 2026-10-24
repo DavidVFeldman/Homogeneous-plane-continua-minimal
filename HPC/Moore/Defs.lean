@@ -83,10 +83,6 @@ def IsSCC (J : Set S) : Prop :=
   ∃ A B : S, ∃ C₁ C₂ : Set S, σ.IsArc A B C₁ ∧ σ.IsArc A B C₂ ∧ C₁ ∩ C₂ = {A, B} ∧
     J = C₁ ∪ C₂
 
-/-- *Sequential limit point* (p. 134). -/
-def IsSeqLimit (P : S) (u : ℕ → S) : Prop :=
-  ∀ R ∈ σ.region, P ∈ R → ∃ δ : ℕ, ∀ n > δ, u n ∈ R
-
 /-- *Simple chain from `A` to `B`* (p. 134): regions `R₀ … R_{n-1}` (0-indexed here) with `A` only
 in the first, `B` only in the last, and `Rᵢ ∩ Rⱼ ≠ ∅` (`i < j`) iff `j = i + 1`. -/
 def IsSimpleChain (A B : S) (R : List (Set S)) : Prop :=

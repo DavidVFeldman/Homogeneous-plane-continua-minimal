@@ -83,20 +83,6 @@ theorem IsAtomicCircPAMap.isSnakeHalvesMap {X : Type*} [MetricSpace X] [CompactS
     {f : X → Circle} (hf : IsAtomicCircPAMap f) : IsSnakeHalvesMap f :=
   ⟨hf.cont, hf.isOpenMap, hf.surj, hf.fib, fun hs => isSnakeLike_halfSet_of_atomic hf hs⟩
 
-/-- Rotating an atomic map keeps it atomic (the fibres are the same sets). -/
-theorem IsAtomicCircPAMap.mul_left {X : Type*} [MetricSpace X] {f : X → Circle}
-    (hf : IsAtomicCircPAMap f) (c : Circle) : IsAtomicCircPAMap (fun x => c * f x) := by
-  have hpre : ∀ z, (fun x => c * f x) ⁻¹' {z} = f ⁻¹' {c⁻¹ * z} := fun z => by
-    ext x; simp only [mem_preimage, mem_singleton_iff]
-    constructor
-    · intro h; rw [← h]; simp
-    · intro h; rw [h]; simp
-  refine ⟨continuous_const.mul hf.cont, (Homeomorph.mulLeft c).isOpenMap.comp hf.isOpenMap,
-    fun z => ?_, fun z => ?_, fun z L hL hm => ?_⟩
-  · obtain ⟨x, hx⟩ := hf.surj (c⁻¹ * z); exact ⟨x, by simp [hx]⟩
-  · rw [hpre]; exact hf.fib _
-  · rw [hpre] at hm ⊢; exact hf.atomic _ L hL hm
-
 section Glue
 
 variable {X Y : Type} [MetricSpace X] [CompactSpace X] [MetricSpace Y] [CompactSpace Y]
@@ -221,35 +207,6 @@ theorem dp22_theorem61 (h10 : BJThm10) {X Y : Type} [MetricSpace X] [CompactSpac
   obtain ⟨g, hg⟩ := isCircleOfPA_iff.1 hY
   haveI := hg.compactSpace
   exact homeomorph_of_isSnakeHalvesMap h10 hf.isSnakeHalvesMap hg.isSnakeHalvesMap
-
-/-- Two compact spaces with open atomic maps onto the circle with pseudo-arc fibres are
-homeomorphic (given Theorem 10). -/
-theorem homeomorph_of_atomic (h10 : BJThm10) {X Y : Type} [MetricSpace X] [CompactSpace X]
-    [MetricSpace Y] [CompactSpace Y] {f : X → Circle} {g : Y → Circle}
-    (hf : IsAtomicCircPAMap f) (hg : IsAtomicCircPAMap g) : Nonempty (X ≃ₜ Y) :=
-  homeomorph_of_isSnakeHalvesMap h10 hf.isSnakeHalvesMap hg.isSnakeHalvesMap
-
-/-- **Homogeneity** (given Theorem 10), by rotating the map, as in
-`isHomogeneous_of_isCircPAMap`. -/
-theorem isHomogeneous_of_atomic (h10 : BJThm10) {X : Type} [MetricSpace X] [CompactSpace X]
-    {f : X → Circle} (hf : IsAtomicCircPAMap f) : IsHomogeneous X := by
-  intro x y
-  set f₁ : X → Circle := fun p => (f x)⁻¹ * f p
-  set f₂ : X → Circle := fun p => (f y)⁻¹ * f p
-  have hf₁ : IsAtomicCircPAMap f₁ := hf.mul_left _
-  have hf₂ : IsAtomicCircPAMap f₂ := hf.mul_left _
-  have hx : x ∈ f₁ ⁻¹' {1} := by simp [f₁]
-  have hy : y ∈ f₂ ⁻¹' {1} := by simp [f₂]
-  obtain ⟨T⟩ := theorem1_HIC' (hf₁.fib 1) (hf₂.fib 1)
-  obtain ⟨S, hS⟩ := homogeneous_of_isPseudoArc (hf₂.fib 1) _ y (T ⟨x, hx⟩).2 hy
-  obtain ⟨kM⟩ := theorem1_HIC' (hf₁.fib (Circle.exp Real.pi)) (hf₂.fib (Circle.exp Real.pi))
-  obtain ⟨Φ, -, hΦ⟩ := exists_homeomorph_glue' h10 hf₁.isSnakeHalvesMap hf₂.isSnakeHalvesMap
-    (T.trans S) kM
-  refine ⟨Φ, ?_⟩
-  rw [hΦ x hx]
-  have : (T.trans S) ⟨x, hx⟩ = ⟨y, hy⟩ := by
-    rw [Homeomorph.trans_apply]; exact hS
-  rw [this]
 
 /-- A compact space with an open atomic map onto the circle with pseudo-arc fibres is a circle of
 pseudo-arcs in Bing–Jones's sense, if there is one (given Theorem 10). -/

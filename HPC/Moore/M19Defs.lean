@@ -27,10 +27,6 @@ open Set Topology
 
 variable {S : Type*} {σ : Space S}
 
-/-- A *segment* of the closed curve `J` (1919, p. 170): an interval of `J` minus its endpoints. -/
-def Space.IsSegmentOf (σ : Space S) (J T : Set S) : Prop :=
-  ∃ X Y : S, ∃ K : Set S, σ.IsArc X Y K ∧ K ⊆ J ∧ T = openArc X Y K
-
 /-- Two arcs *have a segment in common*: some nondegenerate sub-arc's open part lies in both. -/
 def Space.ShareSegment (σ : Space S) (K K' : Set S) : Prop :=
   ∃ X Y : S, ∃ T : Set S, σ.IsArc X Y T ∧ openArc X Y T ⊆ K ∩ K'

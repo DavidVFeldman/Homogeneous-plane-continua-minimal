@@ -40,17 +40,6 @@ theorem notMem_cl_of_region {M : Set S} {X : S} (hXM : X ∉ M) {V : Set S} (hV 
   · obtain ⟨⟨y, hyV, hyM⟩, -⟩ := h V hV hXV
     exact disjoint_left.mp hVM hyV hyM
 
-/-- A point outside `M'` lies in a region that misses `M`. -/
-theorem exists_region_disjoint_of_notMem_cl {M : Set S} {X : S} (hX : X ∉ σ.cl M) :
-    ∃ V ∈ σ.region, X ∈ V ∧ Disjoint V M := by
-  have hXM : X ∉ M := fun h => hX (Or.inl h)
-  have hXb : X ∉ σ.bdry M := fun h => hX (Or.inr h)
-  simp only [bdry, mem_setOf_eq, not_forall] at hXb
-  obtain ⟨V, hV, hXV, hn⟩ := hXb
-  refine ⟨V, hV, hXV, ?_⟩
-  rw [disjoint_iff_inter_eq_empty, ← not_nonempty_iff_eq_empty]
-  exact fun h => hn ⟨h, ⟨X, hXV, hXM⟩⟩
-
 /-- A boundary point of `M` not in `M` is a limit point of `M`. -/
 theorem isLimitPt_of_mem_bdry {M : Set S} {X : S} (hX : X ∈ σ.bdry M) (hXM : X ∉ M) :
     σ.IsLimitPt X M := by
@@ -84,8 +73,6 @@ def IsFund (K : ℕ → Set S) : Prop :=
     ∀ R ∈ σ.region, ∀ P ∈ R, ∀ P' ∈ R, P ≠ P' →
       ∃ δ : ℕ, ∀ n > δ, P ∈ K n → σ.cl (K n) ⊆ R \ {P'}
 
-theorem axiom1_iff : σ.Axiom1 ↔ ∃ K, σ.IsFund K := Iff.rfl
-
 /-- Axiom 1, condition (2), in the form used throughout: arbitrarily late fundamental regions
 about `P` lie, with their boundaries, in `R − P'`. -/
 theorem IsFund.exists_late {K : ℕ → Set S} (hK : σ.IsFund K) {R : Set S} (hR : R ∈ σ.region)
@@ -116,14 +103,6 @@ theorem exists_region_cl_subset_diff {R : Set S} (hR : R ∈ σ.region) {P P' : 
 end Space
 
 open Space
-
-/-- **Theorem 1.** No point of a region is a boundary point of that region. (No proof printed.)
-*Axioms used: none* — `R` itself is a region containing `P` with `R − R = ∅`. -/
-theorem fa_theorem1 {R : Set S} (hR : R ∈ σ.region) {P : S} (hP : P ∈ R) :
-    P ∉ σ.bdry R := by
-  intro h
-  obtain ⟨-, x, hx1, hx2⟩ := h R hR hP
-  exact hx2 hx1
 
 /-- **Theorem 3.** If `M` is finite and `P ∉ M`, some region contains `P` and no point of `M`.
 (No proof printed.) *Axioms used: 1.* Induction on `M`: a region `R ∋ P` missing `M` either misses
@@ -239,113 +218,5 @@ theorem exists_ne_of_region (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h51 : Space.Axiom
     (hR : R ∈ σ.region) {P : S} (hP : P ∈ R) : ∃ P' ∈ R, P' ≠ P :=
   let ⟨P', hP', hne⟩ := ((fa_theorem4 h1 h3 h51 hR ⟨P, hP⟩).diff (finite_singleton P)).nonempty
   ⟨P', hP', hne⟩
-
-/-- **Theorem 5.** For each point `P`, a strictly decreasing sequence of regions with
-intersection `{P}` that closes down on `P`: every region about `P` contains some `Rₙ'`.
-*Axioms used: 1, 3, 5₁* (Theorem 4 makes each step possible). As in Moore's proof, `Rₙ₊₁` is a
-fundamental region later than `Rₙ`, containing `P`, properly inside `Rₙ`. Condition (1) of the
-printed theorem is a consequence of (3) and Theorem 3. -/
-theorem fa_theorem5 (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h51 : Space.Axiom5₁ (S := S)) (P : S) :
-    ∃ R : ℕ → Set S, (∀ n, R n ∈ σ.region) ∧ (⋂ n, R n) = {P} ∧ (∀ n, R (n + 1) ⊂ R n) ∧
-      ∀ U ∈ σ.region, P ∈ U → ∃ n, σ.cl (R n) ⊆ U := by
-  have hK' : ∃ K, σ.IsFund K := h1
-  obtain ⟨K, hK⟩ := hK'
-  have step : ∀ m : ℕ, P ∈ K m → ∃ n > m, P ∈ K n ∧ K n ⊂ K m := by
-    intro m hm
-    obtain ⟨P', hP', hne⟩ := exists_ne_of_region h1 h3 h51 (hK.1 m) hm
-    obtain ⟨n, hn, hPn, hcl⟩ := hK.exists_late (hK.1 m) hm hP' hne.symm m
-    refine ⟨n, hn, hPn, ⟨fun x hx => (hcl (subset_cl _ hx)).1, fun h => ?_⟩⟩
-    exact (hcl (subset_cl _ (h hP'))).2 rfl
-  choose g hg hPg hsub using step
-  obtain ⟨k₀, -, hk₀⟩ := hK.2.1 0 P
-  let f : ℕ → {m // P ∈ K m} := fun n =>
-    Nat.rec ⟨k₀, hk₀⟩ (fun _ x => ⟨g x.1 x.2, hPg x.1 x.2⟩) n
-  have hf : ∀ n, (f (n + 1)).1 = g (f n).1 (f n).2 := fun n => rfl
-  have hmono : StrictMono fun n => (f n).1 :=
-    strictMono_nat_of_lt_succ fun n => by rw [hf]; exact hg _ _
-  have hclose : ∀ U ∈ σ.region, P ∈ U → ∃ n, σ.cl (K (f n).1) ⊆ U := by
-    intro U hU hPU
-    obtain ⟨P', hP', hne⟩ := exists_ne_of_region h1 h3 h51 hU hPU
-    obtain ⟨δ, hδ⟩ := hK.2.2 U hU P hPU P' hP' hne.symm
-    refine ⟨δ + 1, (hδ _ ?_ (f (δ + 1)).2).trans diff_subset⟩
-    have := hmono.id_le (δ + 1)
-    simp only [id] at this
-    omega
-  refine ⟨fun n => K (f n).1, fun n => hK.1 _, ?_, fun n => by
-    simp only [hf]; exact hsub _ _, hclose⟩
-  ext X
-  simp only [mem_iInter, mem_singleton_iff]
-  refine ⟨fun h => ?_, fun h n => h ▸ (f n).2⟩
-  by_contra hXP
-  obtain ⟨U, hU, hPU, hdis⟩ := fa_theorem3 h1 (finite_singleton X) (fun h' => hXP h'.symm)
-  obtain ⟨n, hn⟩ := hclose U hU hPU
-  exact disjoint_left.mp hdis (hn (subset_cl _ (h n))) rfl
-
-/-- **Theorem 7.** A limit point of `M + N` is a limit point of `M` or of `N`. (No proof
-printed.) *Axioms used: 1* (Theorem 6). -/
-theorem fa_theorem7 (h1 : σ.Axiom1) {P : S} {M N : Set S} (h : σ.IsLimitPt P (M ∪ N)) :
-    σ.IsLimitPt P M ∨ σ.IsLimitPt P N := by
-  by_contra hc
-  push_neg at hc
-  obtain ⟨hM, hN⟩ := hc
-  simp only [IsLimitPt, not_forall, not_exists, not_and, not_not] at hM hN
-  obtain ⟨R₁, hR₁, hP₁, h₁⟩ := hM
-  obtain ⟨R₂, hR₂, hP₂, h₂⟩ := hN
-  obtain ⟨R₃, hR₃, hP₃, hsub⟩ := fa_theorem6 h1 hR₁ hR₂ hP₁ hP₂
-  obtain ⟨x, hx, hxR, hxP⟩ := h R₃ hR₃ hP₃
-  rcases hx with hx | hx
-  · exact hxP (h₁ x hx (hsub hxR).1)
-  · exact hxP (h₂ x hx (hsub hxR).2)
-
-/-- **Theorem 8.** If `P` is the sequential limit point of `P₁, P₂, …`, no other point is a limit
-point of `{P₁, P₂, …}`. *Axioms used: 1.* Moore uses Theorem 5 for a region `K ∋ P` with `K'`
-inside a region missing `X`; the regularity lemma `exists_region_cl_subset` (Axiom 1 only) does
-the same. -/
-theorem fa_theorem8 (h1 : σ.Axiom1) {P : S} {u : ℕ → S} (hu : σ.IsSeqLimit P u) {X : S}
-    (hX : X ≠ P) : ¬ σ.IsLimitPt X (range u) := by
-  intro hlim
-  obtain ⟨R, hR, hPR, hdis⟩ := fa_theorem3 h1 (finite_singleton X) (fun h => hX h.symm)
-  obtain ⟨K, hK, hPK, hcl⟩ := exists_region_cl_subset h1 hR hPR
-  have hXK : X ∉ σ.cl K := fun h => disjoint_left.mp hdis (hcl h) rfl
-  obtain ⟨V, hV, hXV, hVK⟩ := exists_region_disjoint_of_notMem_cl hXK
-  obtain ⟨δ, hδ⟩ := hu K hK hPK
-  obtain ⟨W, hW, hXW, hWF⟩ := fa_theorem3 h1 (((finite_Iic δ).image u).diff (t := {X}))
-    (fun h => h.2 rfl)
-  obtain ⟨V', hV', hXV', hsub⟩ := fa_theorem6 h1 hV hW hXV hXW
-  obtain ⟨y, ⟨n, rfl⟩, hyV', hyX⟩ := hlim V' hV' hXV'
-  by_cases hn : n ≤ δ
-  · exact disjoint_left.mp hWF (hsub hyV').2 ⟨⟨n, hn, rfl⟩, hyX⟩
-  · exact disjoint_left.mp hVK (hsub hyV').1 (hδ n (by omega))
-
-/-- **Theorem 9.** A limit point of `M` is the sequential limit point of a sequence of points of
-`M` distinct from it. *Axioms used: 1.* The `n`-th term is taken in a fundamental region `K_m`
-about `P` with `m > n` (Moore takes it in the `n`-th region of Theorem 5; "Zermelo's postulate" is
-the `choose` below). Every region about a limit point has a second point, so Axiom 1 (2) applies to
-it. -/
-theorem fa_theorem9 (h1 : σ.Axiom1) {P : S} {M : Set S} (hP : σ.IsLimitPt P M) :
-    ∃ u : ℕ → S, (∀ n, u n ∈ M ∧ u n ≠ P) ∧ σ.IsSeqLimit P u := by
-  obtain ⟨K, hK0, hK1, hK2⟩ := h1
-  choose m hm hPm using fun n => hK1 n P
-  choose u huM huK huP using fun n => hP (K (m n)) (hK0 _) (hPm n)
-  refine ⟨u, fun n => ⟨huM n, huP n⟩, fun U hU hPU => ?_⟩
-  obtain ⟨x, -, hxU, hxP⟩ := hP U hU hPU
-  obtain ⟨δ, hδ⟩ := hK2 U hU P hPU x hxU hxP.symm
-  refine ⟨δ, fun n hn => ((hδ (m n) ?_ (hPm n)) (subset_cl _ (huK n))).1⟩
-  have := hm n
-  omega
-
-/-- Unnumbered (p. 135): "It is clear that if `M` is a set of points then `M'` is closed."
-*Axioms used: none.* A limit point `P ∉ M` of `M'` has, in each region `R` about it, a point
-`x ∈ M'` with `x ≠ P`; if `x` is a boundary point of `M`, the region `R` (which contains `x`)
-meets `M`. -/
-theorem fa_cl_isClosed (M : Set S) : σ.IsClosedM (σ.cl M) := by
-  intro P hP
-  by_cases hPM : P ∈ M
-  · exact Or.inl hPM
-  refine Or.inr fun R hR hPR => ⟨?_, ⟨P, hPR, hPM⟩⟩
-  obtain ⟨x, hx, hxR, -⟩ := hP R hR hPR
-  rcases hx with hx | hx
-  · exact ⟨x, hxR, hx⟩
-  · exact (hx R hR hxR).1
 
 end HPC.Moore

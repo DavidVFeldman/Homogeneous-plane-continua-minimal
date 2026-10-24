@@ -51,8 +51,6 @@ theorem P_disj_t (h : σ.Pocket J I t a b C C' P Q) : Disjoint P t :=
 
 theorem C_sub (h : σ.Pocket J I t a b C C' P Q) : C ⊆ J := h.hCu ▸ subset_union_left
 
-theorem C'_sub (h : σ.Pocket J I t a b C C' P Q) : C' ⊆ J := h.hCu ▸ subset_union_right
-
 end Space.Pocket
 
 section Ax
@@ -62,19 +60,6 @@ variable (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h5
 include h1 h2 h3 h4 h5 h6 h7 h8
 
 variable {J I t : Set S} {a b : S}
-
-omit h6 in
-/-- Every chord divides the interior into two pockets. -/
-theorem exists_pocket (hJI : σ.IsInteriorOf J I) (ha : a ∈ J) (hb : b ∈ J)
-    (ht : @TArc S σ.topology a b t) (htI : t \ {a, b} ⊆ I) :
-    ∃ C C' P Q, σ.Pocket J I t a b C C' P Q := by
-  letI := σ.topology
-  have h51 := axiom5₁_of_axiom5 h5
-  obtain ⟨C, C', hC, hC', hCi, hCu⟩ := exists_two_arcs_of_isSCC h1 h3 h4 h51 hJI.1 ha hb ht.ne
-  rw [isArc_iff_tarc h1 h3 h4 h51] at hC hC'
-  obtain ⟨P, Q, hP, hQ, hsplit, hdis⟩ :=
-    split_interior_of h1 h2 h3 h4 h5 h7 h8 hJI hC hC' hCi hCu ht htI
-  exact ⟨C, C', P, Q, hC, hC', hCi, hCu, hP, hQ, hsplit, hdis⟩
 
 omit h6 h8 in
 theorem chord_inter_J (hJI : σ.IsInteriorOf J I) (htI : t \ {a, b} ⊆ I) {z : S} (hzt : z ∈ t)

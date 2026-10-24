@@ -106,20 +106,4 @@ theorem unfoldMain_adj {m : ℕ} (r s : ℕ) (i j : Fin m) (h : ((i : ℤ) - j).
     ((unfoldMain r s i : ℤ) - (unfoldMain (m := m) r s j)).natAbs ≤ 1 := by
   simp only [unfoldMain]; push_cast; omega
 
-/-- **The unfolded pattern**: `H` along the walk is a pattern from the first link to the last. -/
-theorem isPattern_unfold {m n : ℕ} (H : Fin m → Fin n) (hH : IsChainMap H) {r s : Fin m}
-    (hrs : r ≤ s) (hr : (H r).val = 0) (hs : (H s).val = n - 1) :
-    Description.IsPattern (H ∘ unfoldFin r s r.2) := by
-  have hm : 0 < m := r.pos
-  have hn : 0 < n := (H r).pos
-  have hN : 0 < unfoldLen m r s := by unfold unfoldLen; omega
-  refine ⟨hN, hn, ?_, ?_, fun t t' htt' => hH _ _ (unfoldFin_adj r s r.2 t' t (by omega))⟩
-  · have : unfoldFin r s r.2 ⟨0, hN⟩ = r := Fin.ext (unfoldIdx_zero m r hm)
-    simp only [Function.comp, this]
-    exact Fin.ext hr
-  · have : unfoldFin r s r.2 ⟨unfoldLen m r s - 1, by omega⟩ = s :=
-      Fin.ext (unfoldIdx_last (m := m) hrs s.2)
-    simp only [Function.comp, this]
-    exact Fin.ext hs
-
 end HPC.BJ59

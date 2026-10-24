@@ -6,7 +6,6 @@ import HPC.BJ59.Thm8Cor
 import HPC.BJ59.Thm8Lib
 import HPC.Plane.EndPointsT15
 import HPC.BJ59.BJ59B
-import HPC.BJ59.DP61
 import HPC.BJ59.Thm10Defs
 import HPC.BJ59.Thm10Lib
 import HPC.BJ59.Thm10Pattern
@@ -47,24 +46,6 @@ open Set Topology Metric Filter HPC.Plane HPC.Jones HPC.HO16
 
 /-- **Bing–Jones, Theorem 10** (pp. 181–189), fibre-preserving form. -/
 theorem bjThm10 : BJThm10 := bjThm10_of_step bj_step
-
-/-- **The classification of homogeneous plane continua with Domokos–Prajs's third class**, with
-no named hypothesis. -/
-theorem ho16_classification_atomic' (M : Set Pt) [CompactSpace M] [ConnectedSpace M]
-    (hnt : (univ : Set M).Nontrivial) :
-    IsHomogeneous M ↔ Nonempty (M ≃ₜ Circle) ∨ IsPseudoArc (univ : Set M) ∨
-      ∃ f : M → Circle, IsAtomicCircPAMap f :=
-  ho16_classification_atomic bjThm10 M hnt
-
-/-- **Each circle of pseudo-arcs is homogeneous** (Bing–Jones pp. 173, 189). -/
-theorem isHomogeneous_of_isCircleOfPA' {X : Type} [MetricSpace X] (hX : IsCircleOfPA X) :
-    IsHomogeneous X :=
-  isHomogeneous_of_isCircleOfPA bjThm10 hX
-
-/-- **Any two circles of pseudo-arcs are homeomorphic** (Bing–Jones pp. 173, 189). -/
-theorem homeomorph_of_isCircleOfPA' {X Y : Type} [MetricSpace X] [MetricSpace Y]
-    (hX : IsCircleOfPA X) (hY : IsCircleOfPA Y) : Nonempty (X ≃ₜ Y) :=
-  homeomorph_of_isCircleOfPA bjThm10 hX hY
 
 /-- **The classification with Bing–Jones's third class**, given only the plane example. -/
 theorem ho16_classification₃ (hEx : BJPlaneExample) (M : Set Pt) [CompactSpace M]

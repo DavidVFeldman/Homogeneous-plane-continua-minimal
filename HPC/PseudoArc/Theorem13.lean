@@ -51,57 +51,6 @@ namespace Description
 
 variable {P Q : X}
 
-/-- **Reaching both ends** (Bing p. 740, first paragraph of the proof). If `R`, `S ∈ M` lie in
-different composants, then for every `j` there is `k > j` such that the subchain of `D_k` from `R`
-to `S` has a link meeting the first link of `D_j` and a link meeting the last. -/
-theorem exists_subchain_meets_ends [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ Q)
-    {R S : X} (hR : R ∈ Δ.M) (hS : S ∈ Δ.M) (hcomp : S ∉ composant Δ.M R) (j : ℕ) :
-    ∃ k, j < k ∧ ∃ a b : Fin (Δ.n k), (Δ.D k).IsSubchainFrom a b R S ∧
-      (∃ t : Fin (Δ.n k), min a b ≤ t ∧ t ≤ max a b ∧
-        ((Δ.D k).link t ∩ (Δ.D j).link ⟨0, by have := Δ.isFrom j; exact this.1⟩).Nonempty) ∧
-      (∃ t : Fin (Δ.n k), min a b ≤ t ∧ t ≤ max a b ∧
-        ((Δ.D k).link t ∩ (Δ.D j).link ⟨Δ.n j - 1, by have := (Δ.isFrom j).1; omega⟩).Nonempty) := by
-  obtain ⟨k, hjk, a, b, hsub, ⟨t₁, h₁a, h₁b, h₁⟩, ⟨t₂, h₂a, h₂b, h₂⟩⟩ :=
-    Δ.exists_subchain_meets_ends' hPQ hR hS hcomp j
-  have hab : a ≤ b := hsub.1
-  refine ⟨k, hjk, a, b, hsub, ⟨t₁, ?_, ?_, h₁⟩, ⟨t₂, ?_, ?_, h₂⟩⟩ <;>
-    simp only [min_eq_left hab, max_eq_right hab] <;> assumption
-
-/-- **A description of `M` from `R` to `S`** (Bing p. 740, "we get a sequence `E_1, E_2, …`"):
-for `R`, `S ∈ M` in different composants there is a description `Δ'` of the same continuum with
-end points `R`, `S`. -/
-theorem exists_description_from [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ Q)
-    {R S : X} (hR : R ∈ Δ.M) (hS : S ∈ Δ.M) (hcomp : S ∉ composant Δ.M R) :
-    ∃ Δ' : Description X R S, Δ'.M = Δ.M :=
-  Δ.exists_description_from' hPQ hR hS hcomp
-
-/-- **Bing 1948, Theorem 13.** -/
-theorem theorem13 [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ Q) :
-    Theorem13Statement Δ := by
-  intro P₁ P₂ h₁ h₂
-  have hind : Fold.Q78.IsIndecomposable Δ.M := theorem10 Δ Δ.M subset_rfl Δ.isContinuum_M
-  have hnd : Δ.M.Nontrivial := ⟨P, Δ.P_mem_M, Q, Δ.Q_mem_M, hPQ⟩
-  have hQ : ∀ p ∈ Δ.M, ∃ q ∈ Δ.M, q ∉ composant Δ.M p := by
-    intro p hp
-    have hne := composant_ne_of_indecomposable hind hnd hp
-    by_contra h
-    push_neg at h
-    refine hne (Subset.antisymm ?_ h)
-    intro z hz
-    obtain ⟨K, ⟨-, hKM, -⟩, hzK⟩ := mem_sUnion.mp hz
-    exact hKM hzK
-  obtain ⟨Q₁, hQ₁, hc₁⟩ := hQ P₁ h₁
-  obtain ⟨Q₂, hQ₂, hc₂⟩ := hQ P₂ h₂
-  obtain ⟨Δ₁, hΔ₁⟩ := exists_description_from Δ hPQ h₁ hQ₁ hc₁
-  obtain ⟨Δ₂, hΔ₂⟩ := exists_description_from Δ hPQ h₂ hQ₂ hc₂
-  obtain ⟨T, hT, -⟩ := theorem12 Δ₁ Δ₂ (Δ.ne_of_not_mem_composant h₁ hPQ hc₁)
-    (Δ.ne_of_not_mem_composant h₂ hPQ hc₂)
-  refine ⟨((Homeomorph.setCongr hΔ₁).symm.trans T).trans (Homeomorph.setCongr hΔ₂), ?_⟩
-  have e1 : (Homeomorph.setCongr hΔ₁).symm ⟨P₁, h₁⟩ = ⟨P₁, Δ₁.P_mem_M⟩ := Subtype.ext rfl
-  show (Homeomorph.setCongr hΔ₂) (T ((Homeomorph.setCongr hΔ₁).symm ⟨P₁, h₁⟩)) = _
-  rw [e1, hT]
-  exact Subtype.ext rfl
-
 end Description
 
 end HPC

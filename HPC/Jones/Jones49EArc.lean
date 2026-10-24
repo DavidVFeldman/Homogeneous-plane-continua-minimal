@@ -131,12 +131,4 @@ theorem exists_tarc_in_open {X : Type*} [MetricSpace X] [CompactSpace X] [Locall
     ⟨hCc, ⟨⟨a, haC⟩, hCp⟩, haC, hbC, fun H hHC hne hAH hBH hH => hne ?_⟩⟩
   exact hirr H hHC hH.isPreconnected hAH hBH
 
-/-- **Item B (the arc theorem for Peano continua).** -/
-theorem exists_tarc_of_locallyConnected' {X : Type*} [MetricSpace X] [CompactSpace X]
-    [ConnectedSpace X] [LocallyConnectedSpace X] {a b : X} (hab : a ≠ b) :
-    ∃ C : Set X, TArc a b C := by
-  obtain ⟨C, -, hC⟩ := exists_tarc_in_open isOpen_univ isPreconnected_univ (mem_univ a)
-    (mem_univ b) hab
-  exact ⟨C, hC⟩
-
 end HPC.Jones

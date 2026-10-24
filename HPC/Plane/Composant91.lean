@@ -122,45 +122,4 @@ theorem exists_proper_subcontinuum_meeting {M : Set X} (hM : Fold.Q78.IsContinuu
     have : s ≤ r / 2 := min_le_left _ _
     linarith
 
-/-- **The step of Bing's proof of Theorem 10, under condition B**: a proper subcontinuum through `p`
-meets every link of `D`. -/
-theorem exists_proper_meeting_all_links_of_condB {M : Set X} (hM : Fold.Q78.IsContinuum M)
-    (hnd : M.Nontrivial) {p : X} (hp : CondB M p) {m : ℕ} (D : Chain X m)
-    (hmeet : ∀ i, (D.link i ∩ M).Nonempty) :
-    ∃ K : Set X, K ⊆ M ∧ K ≠ M ∧ Fold.Q78.IsContinuum K ∧ p ∈ K ∧
-      ∀ i, (D.link i ∩ K).Nonempty := by
-  classical
-  have hK : ∀ i, ∃ K : Set X, K ⊆ M ∧ K ≠ M ∧ Fold.Q78.IsContinuum K ∧ p ∈ K ∧
-      (K ∩ D.link i).Nonempty := fun i =>
-    exists_proper_subcontinuum_meeting hM hnd hp.1 (D.isOpen i)
-      (by obtain ⟨z, h1, h2⟩ := hmeet i; exact ⟨z, h1, h2⟩)
-  choose K hKM hKne hKc hpK hKi using hK
-  have hsing : {p} ≠ M := fun h => by
-    obtain ⟨a, ha, b, hb, hab⟩ := hnd
-    rw [← h] at ha hb
-    exact hab (ha.trans hb.symm)
-  -- the largest of the `K i`, `i ∈ s`
-  have hmax : ∀ s : Finset (Fin m), ∃ L : Set X, L ⊆ M ∧ L ≠ M ∧ Fold.Q78.IsContinuum L ∧
-      p ∈ L ∧ ∀ i ∈ s, K i ⊆ L := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty =>
-      exact ⟨{p}, singleton_subset_iff.mpr hp.1, hsing,
-        ⟨isCompact_singleton, isConnected_singleton⟩, rfl, fun i hi => absurd hi (by simp)⟩
-    | insert j s hj ih =>
-      obtain ⟨L, hLM, hLne, hLc, hpL, hL⟩ := ih
-      rcases hp.2 (K j) L (hKM j) hLM (hKc j) hLc (hpK j) hpL with h | h
-      · refine ⟨L, hLM, hLne, hLc, hpL, fun i hi => ?_⟩
-        rcases Finset.mem_insert.mp hi with rfl | hi
-        · exact h
-        · exact hL i hi
-      · refine ⟨K j, hKM j, hKne j, hKc j, hpK j, fun i hi => ?_⟩
-        rcases Finset.mem_insert.mp hi with rfl | hi
-        · exact le_rfl
-        · exact (hL i hi).trans h
-  obtain ⟨L, hLM, hLne, hLc, hpL, hL⟩ := hmax Finset.univ
-  refine ⟨L, hLM, hLne, hLc, hpL, fun i => ?_⟩
-  obtain ⟨z, hzK, hzD⟩ := hKi i
-  exact ⟨z, hzD, hL i (Finset.mem_univ i) hzK⟩
-
 end HPC.Plane

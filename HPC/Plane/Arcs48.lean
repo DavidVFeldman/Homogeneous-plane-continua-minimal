@@ -44,50 +44,7 @@ def Cuts (M R A B : Set S) : Prop :=
     ∀ K : Set S, Fold.Q78.IsContinuum K → K ⊆ M → (K ∩ A).Nonempty → (K ∩ B).Nonempty →
       (K ∩ R).Nonempty
 
-/-- A continuum *irreducible about* `R`: contains `R`, and no proper subcontinuum does. -/
-def IrreducibleAbout (N R : Set S) : Prop :=
-  Fold.Q78.IsContinuum N ∧ R ⊆ N ∧ ∀ K : Set S, Fold.Q78.IsContinuum K → K ⊆ N → R ⊆ K → K = N
-
-/-- Existence of a subcontinuum irreducible about a nonempty `R ⊆ M` (Zorn / Brouwer
-reduction). The skeleton's hypothesis `IsClosed R` is not needed and has been removed. -/
-theorem exists_irreducibleAbout {M R : Set S} (hM : Fold.Q78.IsContinuum M)
-    (hRM : R ⊆ M) (hne : R.Nonempty) : ∃ N ⊆ M, IrreducibleAbout N R := by
-  set 𝒮 : Set (Set S) := {W | W ⊆ M ∧ Fold.Q78.IsContinuum W ∧ R ⊆ W}
-  obtain ⟨m, -, hm⟩ := zorn_superset_nonempty 𝒮 (fun c hcS hch hne' => by
-    refine ⟨⋂₀ c, ⟨?_, ⟨?_, hne.mono ?_, ?_⟩, ?_⟩, fun W hW => sInter_subset_of_mem hW⟩
-    · obtain ⟨W, hW⟩ := hne'
-      exact (sInter_subset_of_mem hW).trans (hcS hW).1
-    · exact (isClosed_sInter fun W hW => (hcS hW).2.1.1.isClosed).isCompact
-    · exact subset_sInter fun W hW => (hcS hW).2.2
-    · exact T14.isPreconnected_sInter_chain hne' hch (fun W hW => (hcS hW).2.1.1)
-        (fun W hW => (hcS hW).2.1.2.isPreconnected)
-    · exact subset_sInter fun W hW => (hcS hW).2.2) M ⟨subset_rfl, hM, hRM⟩
-  obtain ⟨⟨hmM, hmc, hRm⟩, hmin⟩ := hm
-  exact ⟨m, hmM, hmc, hRm, fun K hK hKm hRK =>
-    Subset.antisymm hKm (hmin ⟨hKm.trans hmM, hK, hRK⟩ hKm)⟩
-
 namespace Arcs48
-
-omit [CompactSpace S] in
-/-- A preconnected `M` which is not contained in the open set `O ∋ p` has a point of `O` other
-than `p`. -/
-theorem exists_other_point {M O : Set S} (hM : IsPreconnected M) (hO : IsOpen O) {p : S}
-    (hpM : p ∈ M) (hpO : p ∈ O) (h : ¬ M ⊆ O) : ∃ x ∈ M, x ∈ O ∧ x ≠ p := by
-  by_contra hcon
-  push_neg at hcon
-  have hcov : M ⊆ O ∪ {p}ᶜ := fun x _ => by
-    by_cases hxp : x = p
-    · exact Or.inl (hxp ▸ hpO)
-    · exact Or.inr hxp
-  have hdis : M ∩ (O ∩ {p}ᶜ) = ∅ := by
-    ext x
-    simp only [mem_inter_iff, mem_compl_iff, mem_singleton_iff, mem_empty_iff_false, iff_false,
-      not_and, not_not]
-    exact fun hxM hxO => hcon x hxM hxO
-  rcases isPreconnected_iff_subset_of_disjoint.mp hM O {p}ᶜ hO isClosed_singleton.isOpen_compl
-    hcov hdis with h' | h'
-  · exact h h'
-  · exact h' hpM rfl
 
 /-- `N` is *tight* in `M`: it lies in the relative interior of no proper subcontinuum of `M`. -/
 def Tight (M N : Set S) : Prop :=
@@ -433,103 +390,6 @@ theorem exists_point_dense {M N : Set S} (hM : Fold.Q78.IsContinuum M)
 
 end Arcs48
 
-/-- **Arcs paper, Theorem 5.** For each proper subset `R` of the compact continuum `M`
-(nonempty, so that the continua in question exist) there is `p ∈ M ∖ R` such that the union of all
-continua lying in `M ∖ {p}` and meeting `R` is dense in `M`. The skeleton's hypothesis
-`IsClosed R` is not needed and has been removed. -/
-theorem arcs_theorem5 {M R : Set S} (hM : Fold.Q78.IsContinuum M) (hRM : R ⊆ M)
-    (hne : R.Nonempty) (hRne : R ≠ M) :
-    ∃ p ∈ M \ R, Dense
-      ((↑) ⁻¹' (⋃ K ∈ {K : Set S | Fold.Q78.IsContinuum K ∧ K ⊆ M \ {p} ∧ (K ∩ R).Nonempty}, K) :
-        Set M) := by
-  suffices h : ∃ p ∈ M \ R, M ⊆ closure (⋃ K ∈ {K : Set S | Fold.Q78.IsContinuum K ∧
-      K ⊆ M \ {p} ∧ (K ∩ R).Nonempty}, K) by
-    obtain ⟨p, hp, hd⟩ := h
-    refine ⟨p, hp, ?_⟩
-    rw [Topology.IsInducing.subtypeVal.dense_iff]
-    intro x
-    rw [Subtype.image_preimage_coe, inter_eq_right.mpr
-      (iUnion₂_subset fun K hK => hK.2.1.trans diff_subset)]
-    exact hd x.2
-  obtain ⟨N, hNM, hN, hRN, hirr⟩ := exists_irreducibleAbout hM hRM hne
-  by_cases hNeq : N = M
-  · -- Bing's first case, `M = N`: any `p ∈ M ∖ R` works.
-    obtain ⟨p, hpM, hpR⟩ := not_subset.mp (fun h : M ⊆ R => hRne (Subset.antisymm hRM h))
-    refine ⟨p, ⟨hpM, hpR⟩, ?_⟩
-    set V := ⋃ K ∈ {K : Set S | Fold.Q78.IsContinuum K ∧ K ⊆ M \ {p} ∧ (K ∩ R).Nonempty}, K
-      with hV_def
-    have hRV : R ⊆ V := fun r hr => mem_iUnion₂.mpr ⟨{r},
-      ⟨isContinuum_singleton' r, singleton_subset_iff.mpr ⟨hRM hr, fun h => hpR (by
-        rw [mem_singleton_iff] at h; exact h ▸ hr)⟩, ⟨r, rfl, hr⟩⟩, rfl⟩
-    intro x hxM
-    by_contra hx
-    set O := (closure V)ᶜ with hO_def
-    have hO : IsOpen O := isClosed_closure.isOpen_compl
-    have hRO : ∀ r ∈ R, r ∉ O := fun r hr h => h (subset_closure (hRV hr))
-    have hkey : ∀ K : Set S, Fold.Q78.IsContinuum K → K ⊆ M → (K ∩ R).Nonempty →
-        (K ∩ O).Nonempty → p ∈ K := by
-      rintro K hK hKM hKR ⟨y, hyK, hyO⟩
-      by_contra hpK
-      exact hyO (subset_closure (mem_biUnion (x := K) ⟨hK, fun z hz => ⟨hKM hz, fun h => hpK (by
-        rw [mem_singleton_iff] at h; exact h ▸ hz)⟩, hKR⟩ hyK))
-    have hMO : ¬ M ⊆ O := fun h => by
-      obtain ⟨r, hr⟩ := hne
-      exact hRO r hr (h (hRM hr))
-    obtain ⟨x', hx'M, hx'O, hx'p⟩ : ∃ x' ∈ M, x' ∈ O ∧ x' ≠ p := by
-      by_cases hxp : x = p
-      · exact Arcs48.exists_other_point hM.2.isPreconnected hO (hxp ▸ hxM) (hxp ▸ hx) hMO
-      · exact ⟨x, hxM, hx, hxp⟩
-    obtain ⟨ε, hε, hεO⟩ := Metric.isOpen_iff.mp hO x' hx'O
-    set δ := min (ε / 2) (dist x' p / 2) with hδ_def
-    have hδ : 0 < δ := lt_min (half_pos hε) (half_pos (dist_pos.mpr hx'p))
-    have hδε : δ ≤ ε / 2 := min_le_left _ _
-    have hδp : δ ≤ dist x' p / 2 := min_le_right _ _
-    set F := M \ Metric.ball x' δ with hF_def
-    have hFcl : IsClosed F := hM.1.isClosed.sdiff Metric.isOpen_ball
-    have hFne : F ≠ M := fun h => by
-      have hx' : x' ∈ F := h ▸ hx'M
-      exact hx'.2 (Metric.mem_ball_self hδ)
-    have hpF : p ∈ F := ⟨hpM, fun h => by
-      rw [Metric.mem_ball, dist_comm] at h
-      have := dist_pos.mpr hx'p
-      linarith⟩
-    have hcl : closure (M \ F) ⊆ O := by
-      have hsub : M \ F ⊆ Metric.closedBall x' δ := fun z hz => by
-        have hz' : z ∈ Metric.ball x' δ := by
-          by_contra h
-          exact hz.2 ⟨hz.1, h⟩
-        exact Metric.ball_subset_closedBall hz'
-      refine (closure_minimal hsub Metric.isClosed_closedBall).trans fun z hz => hεO ?_
-      rw [Metric.mem_closedBall] at hz
-      rw [Metric.mem_ball]
-      linarith
-    have hRF : R ⊆ F := fun r hr => ⟨hRM hr, fun h => hRO r hr
-      (hεO (Metric.ball_subset_ball (hδε.trans (half_le_self hε.le)) h))⟩
-    have hK : ∀ r ∈ R, ∃ K : Set S, Fold.Q78.IsContinuum K ∧ K ⊆ F ∧ r ∈ K ∧ p ∈ K := by
-      intro r hr
-      obtain ⟨K, hK, hKF, hrK, y, hyK, hycl⟩ :=
-        exists_continuum_bump_closed hM hFcl diff_subset hFne (hRF hr)
-      exact ⟨K, hK, hKF, hrK, hkey K hK (hKF.trans diff_subset) ⟨r, hrK, hr⟩ ⟨y, hyK, hcl hycl⟩⟩
-    choose! K hKc hKF hrK hpK using hK
-    set C := closure (⋃ r : ↥R, K r.1) with hC_def
-    obtain ⟨r0, hr0⟩ := hne
-    have hCc : Fold.Q78.IsContinuum C :=
-      ⟨isClosed_closure.isCompact, ⟨r0, subset_closure (mem_iUnion.mpr ⟨⟨r0, hr0⟩, hrK r0 hr0⟩)⟩,
-        (isPreconnected_iUnion (s := fun r : ↥R => K r.1) ⟨p, mem_iInter.mpr fun r => hpK r r.2⟩
-          fun r => (hKc r r.2).2.2).closure⟩
-    have hCF : C ⊆ F := closure_minimal (iUnion_subset fun r => hKF r r.2) hFcl
-    have hRC : R ⊆ C := fun r hr => subset_closure (mem_iUnion.mpr ⟨⟨r, hr⟩, hrK r hr⟩)
-    have hCN : C = N := hirr C hCc (hNeq ▸ hCF.trans diff_subset) hRC
-    exact hFne (Subset.antisymm diff_subset (hNeq ▸ hCN ▸ hCF))
-  · -- Bing's second case, `M ≠ N`.
-    obtain ⟨p, hpM, hpN, hd⟩ := Arcs48.exists_point_dense hM hN hNM hNeq
-    refine ⟨p, ⟨hpM, fun h => hpN (hRN h)⟩, hd.trans (closure_mono (biUnion_mono ?_
-      fun _ _ => subset_rfl))⟩
-    rintro K ⟨hK, hKM, hpK, hNK⟩
-    obtain ⟨r, hr⟩ := hne
-    exact ⟨hK, fun z hz => ⟨hKM hz, fun h => hpK (by
-      rw [mem_singleton_iff] at h; exact h ▸ hz)⟩, ⟨r, hNK (hRN hr), hr⟩⟩
-
 /-- The point case used by Duke Theorem 12: `R = {r}`, in the form "`M ⊆ closure (⋃ …)`". -/
 theorem arcs_theorem5_point {M : Set S} (hM : Fold.Q78.IsContinuum M) (hnd : M.Nontrivial)
     {r : S} (hr : r ∈ M) :
@@ -574,25 +434,5 @@ theorem arcs_corollary2 {M : Set S} (hM : Fold.Q78.IsContinuum M) (hnd : M.Nontr
   obtain ⟨p, hpM, -, hp⟩ := key r hr
   obtain ⟨q, hqM, hqp, hq⟩ := key p hpM
   exact ⟨p, q, hpM, hqM, fun h => hqp h.symm, hp, hq⟩
-
-/-- **Duke 1951, Theorem 12, B ⇒ A, in Bing's generality**, by his own proof: for a
-nondegenerate subcontinuum `W ∋ p` of `M`, Theorem 5 gives `q ≠ p` with the continua in `W ∖ {q}`
-through `p` dense in `W`; under condition B each of them lies in any subcontinuum `H ⊆ W`
-through `p` and `q` (the alternative `H ⊆ K` is excluded by `q`), so `W ⊆ closure ⋃ ⊆ H`. The
-skeleton's hypothesis that `M` is a continuum is not needed and has been removed. -/
-theorem condA_of_condB_general {M : Set S} {p : S} (hp : CondB M p) : CondA M p := by
-  refine ⟨hp.1, fun W hWM hW hnt hpW => ?_⟩
-  obtain ⟨q, hqW, hqp, hd⟩ := arcs_theorem5_point hW hnt hpW
-  refine ⟨q, hqp, hW, hpW, hqW, fun H hH hHW hpH hqH => Subset.antisymm hHW ?_⟩
-  refine hd.trans (closure_minimal (iUnion₂_subset fun K hK => ?_) hH.1.isClosed)
-  obtain ⟨hK, hKW, hqK, hpK⟩ := hK
-  rcases hp.2 K H (hKW.trans hWM) (hHW.trans hWM) hK hH hpK hpH with h | h
-  · exact h
-  · exact absurd (h hqH) hqK
-
-/-- **Duke 1951, Theorem 12** (both directions) for any `M` in a compact metric space; A ⇒ B is
-batch 85's `condB_of_condA`. -/
-theorem theorem12_1951_general {M : Set S} (p : S) : CondA M p ↔ CondB M p :=
-  ⟨condB_of_condA, condA_of_condB_general⟩
 
 end HPC.Plane

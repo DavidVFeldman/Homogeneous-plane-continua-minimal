@@ -171,14 +171,6 @@ theorem IsPLGraph.union {A B : Set E} (hA : IsPLGraph A) (hB : IsPLGraph B) :
     · exact hSB t h)
   rwa [Finset.set_biUnion_union] at this
 
-/-- **§3.3** -/
-theorem IsPLGraph.closure_diff {G A : Set E} (hG : IsPLGraph G) (hA : IsPLGraph A)
-    (hAG : A ⊆ G) : IsPLGraph (closure (G \ A)) := by
-  classical
-  obtain ⟨S, hne, hGS, hdis, -, hout⟩ := hG.exists_refinement_one hA hAG
-  rw [closure_diff_eq_of_refined hne hGS hout]
-  exact isPLGraph_biUnion_filter hne hdis _
-
 /-- The frontier of a refined subgraph consists of vertices. -/
 theorem relFrontier_subset_vertices {G A : Set E} {S : Finset (E × E)} (hAc : IsClosed A)
     (hne : ∀ s ∈ S, s.1 ≠ s.2) (hG : G = ⋃ s ∈ S, segment ℝ s.1 s.2)

@@ -1,7 +1,10 @@
 import HPC.Hagopian.Hagopian76A
 import HPC.Hagopian.H76D1
 import HPC.Hagopian.H76Lemma5
-import HPC.Hagopian.H76Setup
+import HPC.Hagopian.H76NoSep
+import HPC.Hagopian.H76Defs
+import HPC.Moore.Sec6Arc
+import HPC.Moore.M25C
 
 /-!
 # Batch 157 skeleton: Hagopian 1976, §2 continued (the first paragraph of Lemma 4; Lemmas 5–7)
@@ -37,64 +40,7 @@ variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
 
 -- `hagopian76_no_swallowed_layer`: proved in batch 158, `Hagopian76C.lean`.
 
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **D1 ⇐ no swallowed layer** (batch 157, item A: "they are equivalent up to bookkeeping;
-confirm this"). If no layer `k⁻¹(t)`, `t < 1`, lies in a layer of `F` meeting `k⁻¹(1)`, the first
-paragraph of Lemma 4 holds as printed (re-rendered form). Homogeneity is not used; the step
-supplied is that `k⁻¹(1)` lies in `d⁻¹(s)` (otherwise `d⁻¹[[0, u]]`, `u < s`, would be a proper
-subcontinuum of `E` meeting both end sets). -/
-theorem hagopian76_lemma4_layers_of_no_swallowed {E F : Set M} {k : E → unitInterval}
-    {d : F → unitInterval} (hE : IsMinimalAdmissible E k) (hF : IsMinimalAdmissible F d)
-    (hEF : E ⊆ F) (hX0 : layer d 0 = layer k 0)
-    (hns : ∀ t u : unitInterval, t < 1 → layer k t ⊆ layer d u →
-      (layer k 1 ∩ layer d u).Nonempty → False) :
-    ∃ s : unitInterval, 0 < s ∧ (∀ r, r < s → layer d r ⊆ E) ∧ E ⊆ layerSet d (Icc 0 s) ∧
-      (layer d s ∩ E).Nonempty ∧
-      ∀ t : unitInterval, t ≠ 1 → ∃ u : unitInterval, layer k t = layer d u :=
-  lemma4_layers_of_no_swallowed hE hF hEF hX0 hns
-
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **D1 ⇒ no swallowed layer**: the last clause of the first paragraph of Lemma 4 excludes the
-configuration of `hagopian76_no_swallowed_layer`. -/
-theorem hagopian76_no_swallowed_of_lemma4_layers {E F : Set M} {k : E → unitInterval}
-    {d : F → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hlay : ∀ t : unitInterval, t ≠ 1 → ∃ u : unitInterval, layer k t = layer d u)
-    {t u : unitInterval} (ht : t < 1) (hsub : layer k t ⊆ layer d u)
-    (hZ : (layer k 1 ∩ layer d u).Nonempty) : False :=
-  no_swallowed_of_lemma4_layers hE hlay ht hsub hZ
-
 /-! ## E. Lemma 5 -/
-
-/-- **Lemma 5 at the layers other than the end sets.** Proposed route, without the continuum `F` of
-Hagopian's proof: Lemma 3 with `F := E`. For `y ∈ Y = k⁻¹(c)`, `0 < c < 1`, `yᵢ ∈ Yᵢ → y` and
-`p ∈ Y ∖ limsup Yᵢ`, take `η > 0` with `ρ(p, Yᵢ) ≥ η` for large `i` and `ε < η` below
-`ρ(k⁻¹[[c − γ, c + γ]], X ∪ Z)`; Lemma 2 gives `ε`-homeomorphisms `h` with `h(y) = yᵢ` for large `i`;
-Lemma 3 (`T = X`, `V = Z`, `U = Yᵢ`) gives `h[Y] = Yᵢ`, so `h(p) ∈ Yᵢ`, against `ρ(p, Yᵢ) ≥ η`.
-
-*Proof* (`lemma5_interior_aux`, `H76Lemma5.lean`): the route checks, in neighbourhood form. The
-neighbourhood `W` of `Y` is the set of points `z` with `k z ∈ (c − γ, c + γ)` reached from points of
-`Y` by `ε`-homeomorphisms (open by Lemma 2); for `z = h(y')` Lemma 3 gives `h[Y] = k⁻¹(k z)`, and
-`h(y)` is a point of the layer of `z` within `ε` of `y`. -/
-theorem hagopian76_lemma5_interior (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} [CompactSpace E] {k : E → unitInterval} (hE : IsMinimalAdmissible E k) (x : E)
-    (hx0 : 0 < k x) (hx1 : k x < 1) : LSCAt (Setoid.ker k) x :=
-  lemma5_interior_aux hX hi hE x hx0 hx1
-
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **Lemma 5, upper semicontinuity** (Hagopian: "Since `A` is upper semicontinuous, `Y` contains
-`L`"): the decomposition into the layers of a continuous map on a compact space is u.s.c. -/
-theorem hagopian76_lemma5_usc {E : Set M} [CompactSpace E] {k : E → unitInterval}
-    (hE : IsMinimalAdmissible E k) : IsUSCDecomp (Setoid.ker k) :=
-  isUSCDecomp_ker hE.2.1.1
-
-/-- **Lemma 5, reduced to the end sets.** The decomposition of `E` is continuous as soon as it is
-lower semicontinuous at the points of the two end sets (`hagopian76_lemma5_interior` and
-`hagopian76_lemma5_usc` do the rest). -/
-theorem hagopian76_lemma5_of_ends (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} [CompactSpace E] {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hends : ∀ x, (k x = 0 ∨ k x = 1) → LSCAt (Setoid.ker k) x) :
-    IsContinuousDecomp (Setoid.ker k) :=
-  lemma5_of_ends_aux hX hi hE hends
 
 -- `hagopian76_lemma5`: proved in batch 158, `Hagopian76C.lean`.
 
@@ -179,48 +125,6 @@ theorem no_proper_subcontinuum_separates (hX : IsHomogeneous M) (hi : ¬ IsDecom
 
 /-! `layerKey`, `layerSetoid` (the relation `S`, p. 345) and `IsAccessibleFrom` are in
 `H76BDefs.lean`, verbatim. -/
-
-/-- **`S` satisfies Moore 1925's hypotheses** (compact connected nonseparating elements, upper
-semicontinuous in Moore's form). Upper semicontinuity follows from the continuity of `k` and the
-compactness of `E`; Lemma 5 is not needed.
-
-*Proof* (`layerSetoid_mooreDecomp_aux`, `H76Setup.lean`): the elements are the layers of `E` and the
-points off `E`; the layers are proper subcontinua of `M`, so `no_proper_subcontinuum_separates`
-applies; Moore's u.s.c. is `layer_usc` (a closed-map argument for `k`). -/
-theorem layerSetoid_mooreDecomp (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
-    {k : E → unitInterval} (hE : IsMinimalAdmissible E k) :
-    HPC.Moore.MooreDecomp (layerSetoid k) :=
-  layerSetoid_mooreDecomp_aux hX hi hE
-
-/-- **"Hence we can assume that the quotient space `R²/S` is `R²` [12]"** (p. 344), and "the arc
-`π[E]`" (p. 345): a quotient map `π` of the plane onto the plane whose fibres are the classes of
-`S`, carrying `E` onto an arc. From `m25_theorem22`.
-
-*Proof* (`exists_quotient_plane_aux`): `π` is the quotient map followed by the homeomorphism of
-Moore 1925 Theorem 22; `t ↦ π(k⁻¹(t))` is continuous (`k` is a quotient map) and injective on the
-compact `[0, 1]`, with image `π[E]`. -/
-theorem exists_quotient_plane (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
-    {k : E → unitInterval} (hE : IsMinimalAdmissible E k) :
-    ∃ π : Pt → Pt, IsQuotientMap π ∧ (∀ p q, π p = π q ↔ layerSetoid k p q) ∧
-      Nonempty (π '' toPt E ≃ₜ unitInterval) :=
-  exists_quotient_plane_aux hX hi hE
-
-/-- **"Since `M` is homogeneous, we can assume without loss of generality that `k⁻¹[(0, 1)]` is
-accessible from `R² − M`"** (p. 345): some type A′ subcontinuum (the image of `E` under a
-homeomorphism of `M`) has an accessible point in an interior layer. Needs: some point of `M` is
-accessible from `R² − M`.
-
-*Proof* (`exists_accessible_typeA'_aux`, `H76Setup.lean`): a point `p` of `M` nearest to a point off
-`M` is the end of a straight segment meeting `M` only in `p` (`exists_accessible_point`); a
-homeomorphism `h` of `M` takes a point of `k⁻¹(1/2)` to `p`, and `h[E]` carries the transported map
-(`exists_image_map`).
-
-*Shape change:* the hypothesis `hi` (indecomposability) is dropped; only homogeneity is used. -/
-theorem exists_accessible_typeA' (hX : IsHomogeneous M) {E : Set M} {k : E → unitInterval}
-    (hE : IsMinimalAdmissible E k) :
-    ∃ (E' : Set M) (k' : E' → unitInterval) (h : M ≃ₜ M), E' = h '' E ∧
-      IsMinimalAdmissible E' k' ∧ ∃ p ∈ layerSet k' (Ioo 0 1), IsAccessibleFrom M (p : Pt) :=
-  exists_accessible_typeA'_aux hX hE
 
 end Setup
 

@@ -76,9 +76,6 @@ theorem tube_eq_compl_image (U : Set Pt) : tube r U = (Quotient.mk r '' Uᶜ)ᶜ
 theorem mem_of_mem_tube {U : Set Pt} {q : Quotient r} {y : Pt} (hq : q ∈ tube r U)
     (hy : Quotient.mk r y = q) : y ∈ U := hq (show Quotient.mk r y ∈ ({q} : Set _) from hy)
 
-theorem ptsOf_tube_subset (U : Set Pt) : ptsOf r (tube r U) ⊆ U := fun _ hy =>
-  mem_of_mem_tube hy rfl
-
 /-! ### The quotient map is closed -/
 
 section hG
@@ -172,39 +169,6 @@ theorem isLimitElt_iff {p : Quotient r} {K : Set (Quotient r)} :
   · intro h e he
     obtain ⟨k, ⟨hkV, hkK⟩, hkp⟩ := h _ ((mem_nhds_iff_tube hG).2 ⟨e, he, subset_rfl⟩)
     exact ⟨k, hkK, hkp, upper_iff_mem_tube.2 hkV⟩
-
-/-- **Moore's domains are the connected open sets** (p. 417). -/
-theorem m25_domain_iff {D : Set (Quotient r)} :
-    (IsConnected D ∧ ∀ x, Quotient.mk r x ∈ D → ∃ d > 0, ∀ y,
-        (∀ z ∈ elt r y, infDist z (elt r x) < d) → Quotient.mk r y ∈ D) ↔
-      IsConnected D ∧ IsOpen D := by
-  refine and_congr_right fun _ => ?_
-  have key : ∀ (x y : Pt) (d : ℝ), (∀ z ∈ elt r y, infDist z (elt r x) < d) ↔
-      Quotient.mk r y ∈ tube r (thickening d (ptsOf r {Quotient.mk r x})) := by
-    intro x y d
-    rw [← upper_iff_mem_tube]
-    constructor
-    · intro h y' hy' z hz x' hx'
-      rw [elt_eq hx'.symm] at *
-      rw [elt_eq hy'] at hz
-      exact h z hz
-    · intro h z hz
-      exact h y rfl z hz x rfl
-  constructor
-  · intro h
-    rw [isOpen_iff_mem_nhds]
-    intro q hq
-    obtain ⟨x, rfl⟩ := Quotient.mk_surjective q
-    obtain ⟨d, hd, hdD⟩ := h x hq
-    refine (mem_nhds_iff_tube hG).2 ⟨d, hd, fun q' hq' => ?_⟩
-    obtain ⟨y, rfl⟩ := Quotient.mk_surjective q'
-    exact hdD y ((key x y d).2 hq')
-  · intro h x hx
-    obtain ⟨d, hd, hdD⟩ := (mem_nhds_iff_tube hG).1 (h.mem_nhds hx)
-    exact ⟨d, hd, fun y hy => hdD ((key x y d).1 hy)⟩
-where
-  elt_eq {a b : Pt} (h : Quotient.mk r a = Quotient.mk r b) : elt r a = elt r b := by
-    rw [← ptsOf_singleton, h, ptsOf_singleton]
 
 /-! ### Metrizability -/
 
@@ -359,14 +323,6 @@ theorem quot_brouwer {F : Set (Quotient r)} (hF : IsClosed F) (hFc : IsConnected
     ptsOf_connectedComponentIn hG, ptsOf_compl]
   exact (brouwer_boundary (isClosed_iff_ptsOf.1 hF) (isConnected_ptsOf hG hFc)
     ⟨x, hq, rfl⟩).image _ continuous_mk.continuousOn
-
-/-- **Theorem 1** (p. 418). If `K` is a set of points and `H` the set of elements meeting `K`, then
-`H` is closed if `K` is closed (the quotient map is closed) and connected if `K` is connected (it
-is continuous). -/
-theorem m25_theorem1 {K : Set Pt} :
-    (IsClosed K → IsClosed (Quotient.mk r '' K)) ∧
-      (IsConnected K → IsConnected (Quotient.mk r '' K)) :=
-  ⟨fun h => isClosedMap_mk_plane hG K h, fun h => h.image _ continuous_mk.continuousOn⟩
 
 end hG
 

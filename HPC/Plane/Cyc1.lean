@@ -486,41 +486,6 @@ theorem cycParity_symmDiff (G H : Finset Seg) (x : Pt) :
 `theorem sum_vJump_even (G : Finset Seg) (heven : ∀ w, Even (deg G w)) (x : Pt) :
     ∑ s ∈ G, (vJump x s.1 + vJump x s.2) = 0` -/
 
-/-- **The skeleton's `sum_vJump_even` is false as stated** (it has no nondegeneracy hypothesis):
-for `G = {(a, a), (a, b), (b, b)}` with `a = (1, 0)`, `b = (2, 1)` every degree is even (`deg a =
-deg b = 2`: a degenerate segment is counted once in `deg` but its jump twice in the sum), and at
-`x = (0, 0)` the sum is `1`. -/
-theorem not_sum_vJump_even_skeleton :
-    ¬ ∀ (G : Finset Seg), (∀ w, Even (deg G w)) → ∀ x : Pt,
-      ∑ s ∈ G, (vJump x s.1 + vJump x s.2) = 0 := by
-  intro h
-  have hab : ((1, 0) : Pt) ≠ (2, 1) := fun h => by simp [Prod.ext_iff] at h
-  have h1 : ((((1, 0) : Pt), ((1, 0) : Pt)) : Seg) ≠ ((1, 0), (2, 1)) :=
-    fun h' => hab (congrArg Prod.snd h')
-  have h2 : ((((1, 0) : Pt), ((1, 0) : Pt)) : Seg) ≠ ((2, 1), (2, 1)) :=
-    fun h' => hab (congrArg Prod.fst h')
-  have h3 : ((((1, 0) : Pt), ((2, 1) : Pt)) : Seg) ≠ ((2, 1), (2, 1)) :=
-    fun h' => hab (congrArg Prod.fst h')
-  have hdeg : ∀ w, Even (deg {((1, 0), (1, 0)), ((1, 0), (2, 1)), ((2, 1), (2, 1))} w) := by
-    intro w
-    by_cases hwa : w = (1, 0)
-    · rw [hwa]
-      have : deg {((1, 0), (1, 0)), ((1, 0), (2, 1)), ((2, 1), (2, 1))} (1, 0) = 2 := by
-        simp [deg, Finset.filter_insert, Finset.filter_singleton]
-      rw [this]; exact even_two
-    by_cases hwb : w = (2, 1)
-    · rw [hwb]
-      have : deg {((1, 0), (1, 0)), ((1, 0), (2, 1)), ((2, 1), (2, 1))} (2, 1) = 2 := by
-        simp [deg, Finset.filter_insert, Finset.filter_singleton]
-      rw [this]; exact even_two
-    have : deg {((1, 0), (1, 0)), ((1, 0), (2, 1)), ((2, 1), (2, 1))} w = 0 := by
-      simp [deg, Finset.filter_insert, Finset.filter_singleton, hwa, hwb]
-    rw [this]; exact Even.zero
-  have := h _ hdeg (0, 0)
-  rw [Finset.sum_insert (by simp [h1, h2]), Finset.sum_insert (by simp [h3])] at this
-  simp [vJump] at this
-  revert this; decide
-
 /-- **The telescoping of vertex jumps over an even-degree graph** (the generalisation of
 `sum_vJump_telescope`): `∑ s ∈ G, (vJump x s.1 + vJump x s.2) = 0` when every segment is
 nondegenerate and every degree is even. (The nondegeneracy hypothesis `hnd` is added to the
@@ -560,14 +525,6 @@ theorem cycParity_eventually_eq {G : Finset Seg} (hnd : ∀ s ∈ G, s.1 ≠ s.2
   · apply zmod2_eq_of_add_eq_zero
     rw [← Finset.sum_add_distrib, ← sum_vJump_even G hnd hG x]
     exact Finset.sum_congr rfl fun s hs => (hy s hs).2 h
-
-/-- **Local constancy of the parity of a cycle** off its point set (`crossesEast_jump` per edge,
-`sum_vJump_even` for the jumps). (Hypothesis `hnd` added; see `sum_vJump_even`.) -/
-theorem cycParity_locallyConstant {G : Finset Seg} (hnd : ∀ s ∈ G, s.1 ≠ s.2)
-    (hG : ∀ w, Even (deg G w)) {x : Pt} (hx : x ∉ graphSet G) :
-    ∃ ε > 0, ∀ y, dist y x < ε → cycParity G y = cycParity G x := by
-  obtain ⟨ε, hε, h⟩ := Metric.eventually_nhds_iff.1 (cycParity_eventually_eq hnd hG hx)
-  exact ⟨ε, hε, fun y hy => h hy⟩
 
 /-- Parity of a cycle is constant on preconnected subsets of the complement. (Hypothesis `hnd`
 added; see `sum_vJump_even`.) -/
@@ -860,19 +817,6 @@ theorem exists_path_zmod {G : Finset Seg} (hG : IsProper G) (hc : IsPreconnected
     · exact he'1
     · exact he'2
   exact hf'1 (hstep f' hf'G z hzW (by rcases hzz.2 with rfl | rfl <;> simp)).1
-
-/-- A finite union of segments that is connected and has two points is **graph-connected**: any
-two of its vertices are joined by a walk along its segments. -/
-theorem graph_connected_of_isConnected {G : Finset Seg} (hG : IsProper G)
-    (hc : IsConnected (graphSet G)) {a b : Pt} (ha : a ∈ vertices G) (hb : b ∈ vertices G)
-    (hab : a ≠ b) :
-    ∃ P : Finset Seg, P ⊆ G ∧ ∀ w, Odd (deg P w) ↔ (w = a ∨ w = b) := by
-  obtain ⟨P, hPG, hP⟩ := exists_path_zmod hG hc.isPreconnected ha hb
-  refine ⟨P, hPG, fun w => ?_⟩
-  rw [← ZMod.natCast_eq_one_iff_odd, hP]
-  by_cases h1 : w = a <;> by_cases h2 : w = b
-  · exact absurd (h1.symm.trans h2) hab
-  all_goals simp [h1, h2, hab, Ne.symm hab]
 
 /-! #### Mayer–Vietoris -/
 

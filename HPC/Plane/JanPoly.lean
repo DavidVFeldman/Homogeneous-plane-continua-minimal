@@ -192,10 +192,6 @@ theorem separatesPts_union_finite_iff {C P : Set Pt} (hC : IsClosed C) (hP : P.F
 
 /-! ### Polygonal Janiszewski -/
 
-/-- `IsPolygonal` is literally `∃ S, A = graphSet S` (`Seg = Pt × Pt`, `segSet s = segment ℝ s.1 s.2`). -/
-theorem isPolygonal_iff_graphSet {A : Set Pt} : IsPolygonal A ↔ ∃ S : Finset Seg, A = graphSet S :=
-  Iff.rfl
-
 /-- **Splitting off the isolated points**: a polygonal set is the union of the `graphSet` of its
 nondegenerate segments and of finitely many further points. -/
 theorem IsPolygonal.exists_split {A : Set Pt} (hA : IsPolygonal A) :
@@ -308,89 +304,6 @@ theorem janiszewski_polygonal {A B : Set Pt} (hA : IsPolygonal A) (hB : IsPolygo
   exact hsep
 
 /-! ### The local half-disk, segments against a polygon -/
-
-/-- At a non-vertex point `p` of an edge of a simple closed polygon `Γ`, the interior
-`polyInterior Γ` meets every small ball in exactly one of the two half-disks. Proof: `ball_diff_chord`
-splits `ball p ρ ∖ Γ` into the two (convex) half-disks; each lies in the bounded component `U` or
-in the unbounded one `V` of `jct_polygon` (`side_of_split`), and since `p` is in the closure of both
-(`frontier U = frontier V = Γ`) they lie in different ones; `polyInterior Γ = U`
-(`polyInterior_eq_of_split`). (`parity_flip_edge` is not needed.) -/
-theorem polyInterior_local_halfDisk {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (i : Fin n)
-    {p : Pt} (hp : p ∈ polyEdge v i) (hpv : ∀ k, p ≠ v k) :
-    ∃ ρ > 0, ∃ s : Bool, ∀ ρ', 0 < ρ' → ρ' ≤ ρ →
-      ball p ρ' ∩ polyInterior (polygonOf v) =
-        halfDisk p (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) ρ' s := by
-  set d := v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i with hd
-  have hJ : IsSimpleClosedPolygon (polygonOf v) := isSimpleClosedPolygon_iff.2 ⟨n, v, hv, rfl⟩
-  obtain ⟨U, V, hU, hV, hJUV, hdUV, hUc, hVc, hUb, hVb, hfU, hfV⟩ := jct_polygon _ hJ
-  rw [polyInterior_eq_of_split hU hV hJUV hdUV hUc hVc hUb hVb]
-  obtain ⟨ρ, hρ, hchord⟩ := ball_diff_chord hv i hp hpv
-  have hpΓ : p ∈ polygonOf v := mem_iUnion.2 ⟨i, hp⟩
-  have hUΓ : U ⊆ (polygonOf v)ᶜ := fun z hz => hJUV ▸ Or.inl hz
-  have hVΓ : V ⊆ (polygonOf v)ᶜ := fun z hz => hJUV ▸ Or.inr hz
-  have hsub : ∀ s : Bool, halfDisk p d ρ s ⊆ ball p ρ \ polygonOf v := by
-    intro s z hz
-    rw [hchord ρ hρ le_rfl]
-    cases s
-    · exact Or.inr hz
-    · exact Or.inl hz
-  have hside : ∀ s : Bool, halfDisk p d ρ s ⊆ U ∨ halfDisk p d ρ s ⊆ V := fun s =>
-    side_of_split hU hV hJUV hdUV (halfDisk_convex p d ρ s).isPreconnected
-      (Set.disjoint_left.2 fun z hz hzΓ => (hsub s hz).2 hzΓ)
-  have hmono : ∀ (s : Bool) (ρ' : ℝ), ρ' ≤ ρ → halfDisk p d ρ' s ⊆ halfDisk p d ρ s :=
-    fun s ρ' h z hz => ⟨ball_subset_ball h hz.1, hz.2⟩
-  have hreach : ∀ W : Set Pt, W ⊆ (polygonOf v)ᶜ → p ∈ closure W →
-      (W ∩ halfDisk p d ρ true).Nonempty ∨ (W ∩ halfDisk p d ρ false).Nonempty := by
-    intro W hW hpW
-    obtain ⟨w, hwW, hwd⟩ := Metric.mem_closure_iff.1 hpW ρ hρ
-    have : w ∈ ball p ρ \ polygonOf v := ⟨by rw [mem_ball, dist_comm]; exact hwd, hW hwW⟩
-    rw [hchord ρ hρ le_rfl] at this
-    rcases this with h | h
-    · exact Or.inl ⟨w, hwW, h⟩
-    · exact Or.inr ⟨w, hwW, h⟩
-  have hpU : p ∈ closure U := frontier_subset_closure (hfU.symm ▸ hpΓ)
-  have hpV : p ∈ closure V := frontier_subset_closure (hfV.symm ▸ hpΓ)
-  have key : ∀ s : Bool, halfDisk p d ρ s ⊆ U → halfDisk p d ρ (!s) ⊆ V →
-      ∀ ρ', 0 < ρ' → ρ' ≤ ρ → ball p ρ' ∩ U = halfDisk p d ρ' s := by
-    intro s hsU hsV ρ' hρ' hle
-    ext z
-    constructor
-    · rintro ⟨hzb, hzU⟩
-      have : z ∈ ball p ρ' \ polygonOf v := ⟨hzb, hUΓ hzU⟩
-      rw [hchord ρ' hρ' hle] at this
-      cases s <;> simp only [Bool.not_false, Bool.not_true] at hsV <;> rcases this with h | h
-      · exact absurd (hsV (hmono _ ρ' hle h)) (hdUV.notMem_of_mem_left hzU)
-      · exact h
-      · exact h
-      · exact absurd (hsV (hmono _ ρ' hle h)) (hdUV.notMem_of_mem_left hzU)
-    · intro hz
-      exact ⟨hz.1, hsU (hmono s ρ' hle hz)⟩
-  rcases hside true with hT | hT <;> rcases hside false with hF | hF
-  · exfalso
-    rcases hreach V hVΓ hpV with ⟨w, hwV, hw⟩ | ⟨w, hwV, hw⟩
-    · exact hdUV.notMem_of_mem_left (hT hw) hwV
-    · exact hdUV.notMem_of_mem_left (hF hw) hwV
-  · exact ⟨ρ, hρ, true, key true hT hF⟩
-  · exact ⟨ρ, hρ, false, key false hF hT⟩
-  · exfalso
-    rcases hreach U hUΓ hpU with ⟨w, hwU, hw⟩ | ⟨w, hwU, hw⟩
-    · exact hdUV.notMem_of_mem_left hwU (hT hw)
-    · exact hdUV.notMem_of_mem_left hwU (hF hw)
-
-/-- A segment `e` and a simple closed polygon `Γ₂` meet in a finite union of segments and points
-(`IsPolygonal.inter`: pairwise intersections of segments are segments, points or empty). -/
-theorem isPolygonal_segment_inter_polygon {a b : Pt} {Γ₂ : Set Pt}
-    (hΓ₂ : IsSimpleClosedPolygon Γ₂) : IsPolygonal (segment ℝ a b ∩ Γ₂) :=
-  isPolygonal_segment_inter a b hΓ₂.isPolygonal
-
-/-- `e ∖ Γ₂` is a finite union of open subsegments, each inside `polyInterior Γ₂` or inside its
-exterior; so `e ∩ polyInterior Γ₂` is a finite union of open subsegments (degenerate ones, i.e.
-points `openSegment ℝ q q = {q}`, allowed — they occur only for a degenerate `e`). From
-`exists_open_pieces_of_saturated`; no Jordan curve theorem is used. -/
-theorem exists_open_pieces {a b : Pt} {Γ₂ : Set Pt} (hΓ₂ : IsSimpleClosedPolygon Γ₂) :
-    ∃ P : Finset (Pt × Pt), (∀ q ∈ P, q.1 ∈ segment ℝ a b ∧ q.2 ∈ segment ℝ a b) ∧
-      segment ℝ a b ∩ polyInterior Γ₂ = ⋃ q ∈ P, openSegment ℝ q.1 q.2 :=
-  exists_open_pieces_of_saturated a b hΓ₂.isPolygonal (isSaturated_polyInterior Γ₂)
 
 /-! ### The interface down to one field -/
 

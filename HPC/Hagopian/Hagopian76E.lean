@@ -1,7 +1,7 @@
 import HPC.Hagopian.Hagopian76D
 import HPC.Hagopian.H76Essential
-import HPC.Hagopian.H76USC
-import HPC.Hagopian.H76Schoen2
+import HPC.Hagopian.H76Defs
+import HPC.Hagopian.H76Schoen
 
 /-!
 # Batch 160 skeleton: Hagopian 1976, Lemma 6 (steps 1–8) and the unnumbered claims, Lemma 7;
@@ -38,59 +38,15 @@ theorem hagopian76_lemma6_X (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace 
     Fold.Q78.IsIndecomposable (closure (extUnion E (layer k 0))) :=
   lemma6_X_aux hX hi hE
 
-/-- **Lemma 6, the step "`Cl R(X, E) = Cl R(E)`"** (p. 343, step 8). -/
-theorem hagopian76_closure_extUnion (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k) :
-    closure (extUnion E (layer k 0)) = closure (Rset k) :=
-  closure_extUnion_aux hX hi hE
-
-/-- **Lemma 6** (p. 341). "The continuum `Cl R(E)` is indecomposable." -/
-theorem hagopian76_lemma6 (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
-    {k : E → unitInterval} (hE : IsMinimalAdmissible E k) :
-    Fold.Q78.IsIndecomposable (closure (Rset k)) :=
-  lemma6_aux hX hi hE
-
-/-- **"Since `M` is atriodic, `R(E)` is a composant of `Cl R(E)`"** (p. 343). -/
-theorem hagopian76_Rset_composant (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {x : M}
-    (hx : x ∈ Rset k) : Rset k = HPC.composant (closure (Rset k)) x :=
-  Rset_composant_aux hX hi hE hx
-
-/-- **"Note that every continuum essential to `R(E)` is of type A′ (Lemma 5)"** (p. 343). -/
-theorem hagopian76_essential_typeA' (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {H : Set M}
-    (hH : IsEssential k H) : IsTypeA' H :=
-  essential_typeA'_aux hX hi hE hH
-
 /-! ## B. Lemma 7 -/
 
 -- `hagopian76_lemma7`: proved in batch 162, `Hagopian76G.lean`.
 
 /-! ## C. Upper semicontinuity in metric form -/
 
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **Layers near a layer are near it** (report 159 §5): upper semicontinuity of the decomposition
-of `E` in metric form. -/
-theorem layer_nbhd_small {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    {ε : ℝ} (hε : 0 < ε) (s : unitInterval) :
-    ∃ δ > 0, ∀ t : unitInterval, dist t s < δ →
-      toPt (layer k t) ⊆ Metric.thickening ε (toPt (layer k s)) :=
-  layer_nbhd_small_aux hE hε s
-
 end Section2
 
 /-! ## D. Two-sided Schoenflies -/
-
-/-- **Schoenflies with two adjacent sides prescribed** (report 159 §5): bottom side on `φ`, left
-side on `ψ`, the two arcs of `J` meeting only at their common first point. -/
-theorem plane_schoenflies₂ {J D : Set Pt} (hJ : TSCC J) (hD : IsOpen D) (hDc : IsConnected D)
-    (hDb : Bornology.IsBounded D) (hDJ : frontier D = J) {φ ψ : unitInterval → Pt}
-    (hφ : IsEmbedding φ) (hψ : IsEmbedding ψ) (hφJ : range φ ⊆ J) (hψJ : range ψ ⊆ J)
-    (h0 : φ 0 = ψ 0) (hφψ : range φ ∩ range ψ = {φ 0}) :
-    ∃ f : unitInterval × unitInterval → Pt, IsEmbedding f ∧ range f = J ∪ D ∧
-      (∀ t, f (t, 0) = φ t) ∧ (∀ t, f (0, t) = ψ t) ∧
-      f '' {p | 0 < p.1 ∧ p.1 < 1 ∧ 0 < p.2 ∧ p.2 < 1} = D :=
-  plane_schoenflies₂_aux hJ hD hDc hDb hDJ hφ hψ hφJ hψJ h0 hφψ
 
 /-! ## E. Lemma 9 (restated from `Hagopian76D.lean`) -/
 

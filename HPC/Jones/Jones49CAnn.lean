@@ -55,23 +55,9 @@ theorem mx_pos (θ : ℝ) : 0 < mx θ := by
   rw [hc, hs] at this
   norm_num at this
 
-theorem continuous_mx : Continuous mx := by
-  unfold mx; fun_prop
-
 /-- The covering map of the annulus by the strip: polar coordinates for the sup metric. -/
 noncomputable def Ecov (P : ℝ × ℝ) (x : ℝ × ℝ) : ℝ × ℝ :=
   (P.1 + x.2 * (Real.cos x.1 / mx x.1), P.2 + x.2 * (Real.sin x.1 / mx x.1))
-
-theorem continuous_Ecov (P : ℝ × ℝ) : Continuous (Ecov P) := by
-  unfold Ecov
-  have h1 : Continuous fun x : ℝ × ℝ => Real.cos x.1 / mx x.1 :=
-    (Real.continuous_cos.comp continuous_fst).div (continuous_mx.comp continuous_fst)
-      fun x => (mx_pos _).ne'
-  have h2 : Continuous fun x : ℝ × ℝ => Real.sin x.1 / mx x.1 :=
-    (Real.continuous_sin.comp continuous_fst).div (continuous_mx.comp continuous_fst)
-      fun x => (mx_pos _).ne'
-  exact (continuous_const.add (continuous_snd.mul h1)).prodMk
-    (continuous_const.add (continuous_snd.mul h2))
 
 theorem dist_Ecov (P x : ℝ × ℝ) : dist (Ecov P x) P = |x.2| := by
   have hm := mx_pos x.1
@@ -581,61 +567,6 @@ theorem two_piece_lift (h0 : 0 < r₁) (h12 : r₁ < r₂) {K K' A B : Set (ℝ 
   · exact Ecov_image_open h0 sec_subset fun y hy =>
       sec_open_rel hBc.compact.isClosed hA1c.compact.isClosed hy
 
-/-- Some translate of a lift of `K'` lies between a lift `A` of `K` and `A + 2π`. -/
-theorem exists_between_lift (h12 : r₁ < r₂) {K K' A B : Set (ℝ × ℝ)} (hA : IsLift P r₁ r₂ K A)
-    (hB : IsLift P r₁ r₂ K' B) (hd : Disjoint K K') :
-    ∃ j : ℤ, Prec r₁ r₂ A (sh (2 * Real.pi * j) B) ∧
-      Prec r₁ r₂ (sh (2 * Real.pi * j) B) (sh (2 * Real.pi) A) := by
-  classical
-  have hF := liftFam_fam2 hA hB hd
-  have hT : (0 : ℝ) < 2 * Real.pi := by positivity
-  have hAF : A ∈ fam2 A B := self_mem_fam2_A
-  have hne : ∀ j : ℤ, sh (2 * Real.pi * j) B ≠ A := by
-    intro j h
-    obtain ⟨z, hz⟩ := hA.cross.conn.nonempty
-    have := hF.disj _ hAF _ (mem_fam2_B j)
-    have hd' : Disjoint (sh (2 * Real.pi * (0 : ℤ)) A) (sh (2 * Real.pi * j) B) := by
-      refine disjoint_left.2 fun x hxA hxB => ?_
-      have hxs : x ∈ Strip r₁ r₂ := (hA.cross.sh _).sub hxA
-      exact disjoint_left.1 hd ((hA.pre x hxs).2 ⟨0, hxA⟩) ((hB.pre x hxs).2 ⟨j, hxB⟩)
-    simp only [Int.cast_zero, mul_zero, sh_zero] at hd'
-    rw [h] at hd'
-    exact disjoint_left.1 hd' hz hz
-  obtain ⟨M₁, hM₁⟩ := (hA.cross.compact.image continuous_fst).isBounded.bddBelow
-  obtain ⟨M₂, hM₂⟩ := (hA.cross.compact.image continuous_fst).isBounded.bddAbove
-  obtain ⟨N₁, hN₁⟩ := (hB.cross.compact.image continuous_fst).isBounded.bddBelow
-  obtain ⟨w, hw⟩ := hB.cross.conn.nonempty
-  set S : ℤ → Prop := fun j => Prec r₁ r₂ A (sh (2 * Real.pi * j) B)
-  have hbdd : ∃ N : ℤ, ∀ j, S j → N ≤ j := by
-    refine ⟨⌊(M₁ - w.1) / (2 * Real.pi)⌋, fun j hj => ?_⟩
-    obtain ⟨z, hz, hzle⟩ := prec_min h12 hA.cross hj (w.1 + 2 * Real.pi * j, w.2)
-      ⟨w, hw, rfl⟩
-    have := hM₁ (mem_image_of_mem Prod.fst hz)
-    have h1 : (M₁ - w.1) / (2 * Real.pi) ≤ j := by
-      rw [div_le_iff₀ hT]; simp only at hzle; linarith
-    exact Int.floor_le_iff.2 (by exact_mod_cast h1.trans_lt (lt_add_one _))
-  have hinh : ∃ j, S j := by
-    by_contra hcon
-    push_neg at hcon
-    set j := ⌈(M₂ - N₁) / (2 * Real.pi)⌉ + 1
-    have hp := (hF.total hAF (mem_fam2_B j) (hne j).symm).resolve_left (hcon j)
-    obtain ⟨z, hz⟩ := hA.cross.conn.nonempty
-    obtain ⟨_, ⟨u, hu, rfl⟩, hle⟩ := prec_min h12 (hF.cross _ (mem_fam2_B j)) hp z hz
-    have h1 := hM₂ (mem_image_of_mem Prod.fst hz)
-    have h2 := hN₁ (mem_image_of_mem Prod.fst hu)
-    have h3 : (M₂ - N₁) / (2 * Real.pi) < j := by
-      simp only [j]; push_cast; linarith [Int.le_ceil ((M₂ - N₁) / (2 * Real.pi))]
-    rw [div_lt_iff₀ hT] at h3
-    simp only at hle h1 h2
-    linarith
-  obtain ⟨j₁, hj₁, hmin⟩ := Int.exists_least_of_bdd hbdd hinh
-  refine ⟨j₁, hj₁, ?_⟩
-  have hnot : ¬ S (j₁ - 1) := fun h => by have := hmin _ h; omega
-  have hp := (hF.total hAF (mem_fam2_B (j₁ - 1)) (hne _).symm).resolve_left hnot
-  have := (hF.prec_sh_iff' (mem_fam2_B (j₁ - 1)) (2 * Real.pi)).2 hp
-  rwa [sh_sh, show 2 * Real.pi * ((j₁ - 1 : ℤ) : ℝ) + 2 * Real.pi = 2 * Real.pi * j₁ by
-    push_cast; ring] at this
-
 end TwoPiece
 
 /-! ### Infinitely many crossing continua: the cyclic order -/
@@ -901,18 +832,6 @@ theorem sector_cyclic (h0 : 0 < r₁) (h12 : r₁ < r₂) {k : ℕ → Set (ℝ 
       · refine Ecov_image_disjoint h0 sec_subset sec_subset fun j => ?_
         exact hF.sec_disjoint h12 hT (hmem _) (hmem _) (hmem _) (hmem _)
           (hle (m + 1) (n - 1) (by omega)) (Or.inr (hper _ _)) j
-
-/-- **Two disjoint crossing continua cut the annulus into two pieces.** The annulus minus
-`K ∪ K'` is the union of two nonempty disjoint sets, each open in the annulus. -/
-theorem sector_two (h0 : 0 < r₁) (h12 : r₁ < r₂) {K K' : Set (ℝ × ℝ)}
-    (hK : IsCrossA P r₁ r₂ K) (hK' : IsCrossA P r₁ r₂ K') (hd : Disjoint K K') :
-    ∃ V₁ V₂ : Set (ℝ × ℝ), V₁.Nonempty ∧ V₂.Nonempty ∧ Disjoint V₁ V₂ ∧
-      V₁ ∪ V₂ = Ann P r₁ r₂ \ (K ∪ K') ∧ RelOpenAnn P r₁ r₂ V₁ ∧ RelOpenAnn P r₁ r₂ V₂ := by
-  obtain ⟨A, hA⟩ := exists_lift h0 h12 hK hK' hd
-  obtain ⟨B, hB⟩ := exists_lift h0 h12 hK' hK hd.symm
-  obtain ⟨j, h1, h2⟩ := exists_between_lift h12 hA hB hd
-  obtain ⟨n1, n2, d, c, o1, o2⟩ := two_piece_lift h0 h12 hA (hB.sh j) hd h1 h2
-  exact ⟨_, _, n1, n2, d, c, o1, o2⟩
 
 end Cyclic2
 

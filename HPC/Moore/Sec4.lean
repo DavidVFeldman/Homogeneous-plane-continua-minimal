@@ -42,12 +42,6 @@ section Sec4
 variable (h1 : σ.Axiom1) (h4 : σ.Axiom4)
 include h1 h4
 
-/-- **Theorem 11.** `(R₁ + ⋯ + Rₙ)'` has the Heine–Borel property. (No proof printed.)
-*Axioms used: 1, 4.* The closure of a finite union is the union of the closures. -/
-theorem fa_theorem11 (F : Finset (Set S)) (hF : ↑F ⊆ σ.region) :
-    σ.HeineBorel (σ.cl (⋃₀ ↑F)) :=
-  heineBorel_iff.mpr (isCompact_cl_sUnion h1 h4 hF)
-
 /-- **Theorem 12.** Every closed bounded set has the Heine–Borel property. *Axioms used: 1, 4.* -/
 theorem fa_theorem12 {M : Set S} (hc : σ.IsClosedM M) (hb : σ.IsBoundedM M) :
     σ.HeineBorel M := by
@@ -65,38 +59,7 @@ theorem fa_theorem13 {M : Set S} (hi : M.Infinite) (hb : σ.IsBoundedM M) :
     (isCompact_closure_of_isBoundedM h1 h4 hb) subset_closure
   exact ⟨P, (isLimitPt_iff h1).mpr hP⟩
 
-/-- **Theorem 14.** If `M₁, M₂, …` are bounded and `Mₙ ⊇ M'ₙ₊₁`, the `Mₙ` have a common point,
-and the set of common points is closed. *Axioms used: 1, 4.*
-**Shape:** the hypothesis `hne` (every `Mₙ` nonempty) is needed; the printed statement without it
-is refuted by `not_fa_theorem14_printed`. -/
-theorem fa_theorem14 {M : ℕ → Set S} (hb : ∀ n, σ.IsBoundedM (M n))
-    (hsub : ∀ n, σ.cl (M (n + 1)) ⊆ M n) (hne : ∀ n, (M n).Nonempty) :
-    (⋂ n, M n).Nonempty ∧ σ.IsClosedM (⋂ n, M n) := by
-  letI := σ.topology
-  haveI := t2Space h1
-  simp only [cl_eq_closure h1] at hsub
-  have heq : (⋂ n, M n) = ⋂ n, closure (M (n + 1)) := by
-    refine Subset.antisymm (fun x hx => mem_iInter.mpr fun n => ?_) fun x hx => ?_
-    · exact subset_closure (mem_iInter.mp hx (n + 1))
-    · exact mem_iInter.mpr fun n => hsub n (mem_iInter.mp hx n)
-  rw [heq, isClosedM_iff h1]
-  refine ⟨IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed _
-    (fun n => (hsub (n + 1)).trans subset_closure) (fun n => (hne (n + 1)).mono subset_closure)
-    (isCompact_closure_of_isBoundedM h1 h4 (hb 1)) (fun n => isClosed_closure),
-    isClosed_iInter fun n => isClosed_closure⟩
-
 end Sec4
-
-/-- **Theorem 14 as printed is false.** In any space satisfying Axiom 1, the sequence
-`Mₙ = ∅` satisfies the hypotheses of the printed statement (bounded; `M'ₙ₊₁ = ∅ ⊆ Mₙ`) and has no
-common point. -/
-theorem not_fa_theorem14_printed (h1 : σ.Axiom1) :
-    ¬ ∀ M : ℕ → Set S, (∀ n, σ.IsBoundedM (M n)) → (∀ n, σ.cl (M (n + 1)) ⊆ M n) →
-      (⋂ n, M n).Nonempty ∧ σ.IsClosedM (⋂ n, M n) := by
-  intro h
-  have := (h (fun _ => ∅) (fun _ => ⟨∅, by simp, empty_subset _⟩) (fun _ => by
-    rw [cl_eq_closure h1]; exact (@closure_empty S σ.topology).subset)).1
-  simp at this
 
 section Sec5
 
@@ -114,14 +77,6 @@ theorem fa_theorem17 {R : Set S} (hR : R ∈ σ.region) :
     obtain ⟨P, hP⟩ := fa_theorem13 h1 h4 hinf ⟨{R}, by simpa using hR, by simp⟩
     exact hlim P (hP.mono inter_subset_left)
   refine ⟨M \ σ.cl R, fun x hx => hx.2, by rw [← diff_self_inter]; exact hM.diff hfin, fun P hP => hlim P (hP.mono diff_subset)⟩
-
-/-- **Theorem 18.** The exterior of a region is not bounded. (No proof printed.)
-*Axioms used: 1, 4, 5* (Theorems 13 and 17). -/
-theorem fa_theorem18 {R : Set S} (hR : R ∈ σ.region) : ¬ σ.IsBoundedM (σ.ext R) := by
-  rintro ⟨F, hF, hsub⟩
-  obtain ⟨M, hMR, hM, hlim⟩ := fa_theorem17 h1 h4 h5 hR
-  obtain ⟨P, hP⟩ := fa_theorem13 h1 h4 hM ⟨F, hF, hMR.trans hsub⟩
-  exact hlim P hP
 
 /-- **Theorem 19.** Every (nonempty) region has at least one boundary point.
 *Axioms used: 1, 3, 4, 5.* Moore's proof: a region `Rₙ ∋ P` with `Rₙ' ⊆ R − X`; its exterior is

@@ -156,25 +156,6 @@ theorem JonesSetting.line_recurrent (S : JonesSetting Y) {ℓ : ℝ → Y} (hℓ
   have := S.zero_mem_omegaLim (hℓ.shift c)
   simpa [omegaLim_shift] using this
 
-/-- **§4.3, Jones (d), second sentence** (\"every point of `ab` is a limit point of `T − ab`\"), for
-every line and both directions. -/
-theorem JonesSetting.jones75_d (S : JonesSetting Y) {ℓ : ℝ → Y} (hℓ : IsLine ℓ) (s : ℝ) :
-    ℓ '' Iic s ⊆ closure (ℓ '' Ioi s) ∧ ℓ '' Ici s ⊆ closure (ℓ '' Iio s) := by
-  constructor
-  · rintro _ ⟨v, -, rfl⟩
-    have := mem_iInter.1 (S.line_recurrent hℓ (mem_range_self v)) (s + 1)
-    refine closure_mono (image_mono fun w hw => ?_) this
-    simp only [mem_Ici] at hw
-    simp only [mem_Ioi]
-    linarith
-  · rintro _ ⟨v, -, rfl⟩
-    have h2 := mem_iInter.1 (S.line_recurrent hℓ.neg (mem_range_self (-v))) (-s + 1)
-    simp only [neg_neg] at h2
-    refine closure_mono ?_ h2
-    rintro _ ⟨w, hw, rfl⟩
-    simp only [mem_Ici] at hw
-    exact ⟨-w, by simp only [mem_Iio]; linarith, rfl⟩
-
 end General
 
 /-! ## §5. In the plane: (L), no backtracking near an arc of a line

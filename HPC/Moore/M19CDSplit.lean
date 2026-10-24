@@ -23,14 +23,6 @@ theorem inter_eq_singleton_of_sub {U V U' V' : Set S} {p : S} (hU : U ⊆ U') (h
   · rw [← h]; exact inter_subset_inter hU hV
   · rintro y rfl; exact ⟨hpU, hpV⟩
 
-theorem inter_eq_empty_of_sub {U V U' V' : Set S} {p : S} (hU : U ⊆ U') (hV : V ⊆ V')
-    (h : U' ∩ V' = {p}) (hpU : p ∉ U) : U ∩ V = ∅ := by
-  rw [eq_empty_iff_forall_notMem]
-  rintro y ⟨hyU, hyV⟩
-  have : y ∈ U' ∩ V' := ⟨hU hyU, hV hyV⟩
-  rw [h] at this
-  exact hpU (this ▸ hyU)
-
 theorem union_shuffle_A (a b c d : Set S) : b ∪ (a ∪ d ∪ c) = a ∪ b ∪ c ∪ d := by
   ext; simp only [mem_union]; tauto
 

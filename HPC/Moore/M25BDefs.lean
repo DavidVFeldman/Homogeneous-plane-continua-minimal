@@ -50,12 +50,6 @@ element, disconnected by the omission of any two of its elements. -/
 def IsSCCElt (J : Set (Quotient r)) : Prop :=
   IsClosed J ∧ IsConnected J ∧ J.Nontrivial ∧ IsSCCEltPrinted J
 
-/-- Moore's *complementary domain*, **as printed** (p. 417): "A domain of elements of `G` is said to
-be a complementary domain of a closed set `H` of elements of `G` provided the boundary of `D` is a
-subset of `H`." -/
-def IsComplDomPrinted (H D : Set (Quotient r)) : Prop :=
-  IsOpen D ∧ IsConnected D ∧ frontier D ⊆ H
-
 /-- A simple continuous arc of elements is a cut-point arc in the sense of `CutArc.lean`. -/
 theorem IsArcElt.isCutArc {A B : Quotient r} {H : Set (Quotient r)} (h : IsArcElt A B H) :
     IsCutArc A B H := by

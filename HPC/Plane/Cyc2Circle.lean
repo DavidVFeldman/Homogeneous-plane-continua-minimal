@@ -123,10 +123,6 @@ theorem continuous_circPt (w : Pt) (ρ : ℝ) : Continuous (circPt w ρ) := by
 theorem circPt_add_two_pi (w : Pt) (ρ θ : ℝ) : circPt w ρ (θ + 2 * π) = circPt w ρ θ := by
   simp [circPt, Real.cos_add_two_pi, Real.sin_add_two_pi]
 
-theorem circPt_add_int_mul_two_pi (w : Pt) (ρ θ : ℝ) (k : ℤ) :
-    circPt w ρ (θ + k * (2 * π)) = circPt w ρ θ := by
-  simp [circPt, Real.cos_add_int_mul_two_pi, Real.sin_add_int_mul_two_pi]
-
 /-- The circle point lies within sup-distance `ρ` of the centre. -/
 theorem dist_circPt_le (w : Pt) {ρ : ℝ} (hρ : 0 ≤ ρ) (θ : ℝ) : dist (circPt w ρ θ) w ≤ ρ := by
   rw [Prod.dist_eq, Real.dist_eq, Real.dist_eq]

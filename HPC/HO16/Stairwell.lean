@@ -16,38 +16,6 @@ section Stairwells
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- **p. 192, observation after Definition 12**: `π` restricted to `S \ 𝓔(S)` is an open map
-into `G`. -/
-theorem ho16_obs12 {G : Set E} {S : Set (E × ℝ)} (hG : IsPLGraph G) (hS : IsStraight G S)
-    {U : Set (E × ℝ)} (hU : IsOpen U) :
-    ∃ W : Set E, IsOpen W ∧ Prod.fst '' (U ∩ (S \ endSet G S)) = W ∩ G := by
-  obtain ⟨hSG, hSc, hinj, -⟩ := hS
-  have hScpt : IsCompact S := (hG.isCompact.prod isCompact_Icc).of_isClosed_subset hSc hSG
-  have hcl : IsClosed (Prod.fst '' (S \ U)) :=
-    ((hScpt.diff hU).image continuous_fst).isClosed
-  refine ⟨(Prod.fst '' (S \ U))ᶜ ∩ (closure (G \ Prod.fst '' S))ᶜ,
-    hcl.isOpen_compl.inter isClosed_closure.isOpen_compl, ?_⟩
-  ext y
-  constructor
-  · rintro ⟨p, ⟨hpU, hpS, hpE⟩, rfl⟩
-    refine ⟨⟨?_, ?_⟩, (hSG hpS).1⟩
-    · rintro ⟨q, ⟨hqS, hqU⟩, hq⟩
-      have := hinj hqS hpS hq
-      subst this
-      exact hqU hpU
-    · intro h
-      exact hpE ⟨hpS, subset_closure ⟨p, hpS, rfl⟩, h⟩
-  · rintro ⟨⟨h1, h2⟩, hyG⟩
-    have hyS : y ∈ Prod.fst '' S := by
-      by_contra h
-      exact h2 (subset_closure ⟨hyG, h⟩)
-    obtain ⟨p, hpS, rfl⟩ := hyS
-    refine ⟨p, ⟨?_, hpS, ?_⟩, rfl⟩
-    · by_contra hpU
-      exact h1 ⟨p, ⟨hpS, hpU⟩, rfl⟩
-    · rintro ⟨-, -, h⟩
-      exact h2 h
-
 /-- **p. 193, observation after Definition 13**, relative to the component `C` (the form used in
 Proposition 19 and Theorem 20). -/
 theorem ho16_obs13_comp {G : Set E} {S : Set (E × ℝ)} {k : ℕ} {T α : ℕ → Set (E × ℝ)}
@@ -379,12 +347,6 @@ theorem ho16_prop17 {G : Set E} {S : Set (E × ℝ)} {k : ℕ} {T α : ℕ → S
     exact hS5.perm List.perm_append_comm
   · simp only [if_pos, image_empty]
     exact empty_disjoint _
-
-/-- **H–O Proposition 17**, existence form. -/
-theorem ho16_prop17_exists {G : Set E} {S : Set (E × ℝ)} {k : ℕ} (h : HasStairwell G S k)
-    (hk : 3 ≤ k) : HasBrokenStairwell G S (k - 2) 1 := by
-  obtain ⟨T, α, h⟩ := h
-  exact ⟨_, _, _, _, _, ho16_prop17 h hk⟩
 
 /-- **p. 201, first remark**: if `γ_{i₀} = ∅`, then `⟨S₁, …, S_k⟩` is a stairwell structure for
 `S₁ ∪ … ∪ S_k`. -/

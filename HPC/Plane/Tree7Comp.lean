@@ -737,13 +737,6 @@ theorem PlaneFacts.component_inter_eq_polyInterior (hPF : PlaneFacts) {J P : Set
 
 /-! ### 5. Theorem 7 -/
 
-/-- The vertex function of the 20-gon satisfies the vertex-level predicate (the content of
-`isSimpleClosedPolygon_notchedPoly`, batch 119: `notchedVertices_injective` and
-`notchedVertices_edges` of `Tree7Notched`; there was no lemma of this exact name). -/
-theorem isSimpleVertices_notchedVertices (o : Pt) {δ η r : ℝ} (hη : 0 < η) (hr : 0 < r)
-    (h4 : 4 * r ≤ δ) (a b : ℤ) : IsSimpleVertices (notchedVertices o δ η r a b) :=
-  ⟨by norm_num, notchedVertices_injective o hη hr h4 a b, notchedVertices_edges o hη hr h4 a b⟩
-
 /-- In general position the boundaries of the polygon `polygonOf v` and of a notched square meet
 in a finite set (`finite_inter_of_gp`, `notchedPoly = polygonOf notchedVertices`). -/
 theorem finite_inter_notchedPoly_of_gp {n : ℕ} {v : Fin n → Pt} (o : Pt) (δ η r : ℝ) (a b : ℤ)
@@ -809,22 +802,5 @@ theorem theorem6_1951_rel (hPF : PlaneFacts) {M : Set Pt} (hM : Fold.Q78.IsConti
   refine ⟨G, hG, fun h hh => ⟨?_, hGd h hh⟩, hGM⟩
   obtain ⟨Γ, hΓ, rfl⟩ := hpoly h hh
   exact (hPF.polyInterior_eq hΓ).2.2.1
-
-/-- **Theorem 7, weak form** (batch 119; moved here and re-proved from `theorem7_1951` in batch 129):
-the links of the tree chain are bounded, open, connected, regular open, and do not separate the
-plane — as interiors of simple closed polygons (`polyInterior_eq`, `polyInterior_regular`,
-`compl_polyInterior`). Statement unchanged.
-
-Relative form; the unconditional theorem is `HPC.Plane.theorem7_weak` in `Enc2.lean` (batch 131). -/
-theorem theorem7_weak_rel (hPF : PlaneFacts) {M : Set Pt} (hM : Fold.Q78.IsContinuum M)
-    (hns : ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K) {ε : ℝ} (hε : 0 < ε) :
-    ∃ G : Finset (Set Pt), IsTreeChain G ∧ (∀ h ∈ G, diam h < ε) ∧ M ⊆ ⋃ h ∈ G, h ∧
-      ∀ h ∈ G, IsOpen h ∧ IsConnected h ∧ Bornology.IsBounded h ∧
-        interior (closure h) = h ∧ ¬ SeparatesPlane h := by
-  obtain ⟨G, hG, hpoly, hGd, hGM⟩ := theorem7_1951_rel hPF hM hns hε
-  refine ⟨G, hG, hGd, hGM, fun h hh => ?_⟩
-  obtain ⟨Γ, hΓ, rfl⟩ := hpoly h hh
-  obtain ⟨ho, hc, hb, -, -⟩ := hPF.polyInterior_eq hΓ
-  exact ⟨ho, hc, hb, hPF.polyInterior_regular hΓ, fun hs => hs (hPF.compl_polyInterior hΓ).1⟩
 
 end HPC.Plane

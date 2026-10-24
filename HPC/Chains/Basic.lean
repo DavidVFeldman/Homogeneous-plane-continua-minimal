@@ -51,14 +51,6 @@ def sub (D : Chain X n) (i j : Fin n) (hij : i ≤ j) : Chain X (j.val - i.val +
     simp only []
     omega
 
-/-- Part of **T1**: the union of a subchain lies in the union of the chain. -/
-theorem sub_union_subset (D : Chain X n) (i j : Fin n) (hij : i ≤ j) :
-    (D.sub i j hij).union ⊆ D.union := by
-  intro z hz
-  simp only [union, mem_iUnion] at hz ⊢
-  obtain ⟨t, ht⟩ := hz
-  exact ⟨_, ht⟩
-
 /-- **D4.** A chain from `P` to `Q`: `P` in the first link only, `Q` in the last link only. -/
 def IsFrom (D : Chain X n) (P Q : X) : Prop :=
   ∃ hn : 0 < n,
@@ -83,17 +75,6 @@ def FollowsPattern (D : Chain X n) (x : Fin n → Fin m) (E : Chain X m) : Prop 
 `r` and `s` lie strictly between `i` and `j`, with `r` nearer `i`. -/
 def Between (i r s j : Fin m) : Prop :=
   (i < r ∧ r < s ∧ s < j) ∨ (i > r ∧ r > s ∧ s > j)
-
-/-- **D8.** Crookedness, 1951 form (Bing, *Concerning hereditarily indecomposable continua*, §2).
-For links of `E` *contained in* `D.link h` and `D.link k` with `k - h > 2`, there are links of
-`E` between them, in reversed order, contained in `D.link (k-1)` and `D.link (h+1)`. -/
-def IsCrookedIn (E : Chain X m) (D : Chain X n) : Prop :=
-  E.Refines D ∧
-  ∀ (h k : Fin n) (_hk : h.val + 2 < k.val),
-    ∀ (i j : Fin m), E.link i ⊆ D.link h → E.link j ⊆ D.link k →
-      ∃ (r s : Fin m), Between i r s j ∧
-        E.link r ⊆ D.link ⟨k.val - 1, by omega⟩ ∧
-        E.link s ⊆ D.link ⟨h.val + 1, by omega⟩
 
 /-- **D9.** Crookedness, 1948 form (Bing, *A homogeneous indecomposable plane continuum*, §1).
 Same conclusion as `IsCrookedIn`, but the hypothesis is that the links of `E` *meet*
@@ -261,18 +242,6 @@ theorem index_dist_le_of_subset {E : Chain X m} {D : Chain X n} (hED : E.Refines
     have k2 := (D.adjacent (refineIdx hED c) k).mp ⟨z2, refineIdx_subset hED c hz21, hb hz22⟩
     omega
 
-/-- **T2.** The 1948 notion implies the 1951 notion. -/
-theorem IsCrookedIn'.isCrookedIn {E : Chain X m} {D : Chain X n} (h : E.IsCrookedIn' D) :
-    E.IsCrookedIn D := by
-  obtain ⟨hR, hC⟩ := h
-  refine ⟨hR, ?_⟩
-  intro a b hab i j hi hj
-  refine hC a b hab i j ?_ ?_
-  · obtain ⟨z, hz⟩ := E.link_nonempty i
-    exact ⟨z, hz, hi hz⟩
-  · obtain ⟨z, hz⟩ := E.link_nonempty j
-    exact ⟨z, hz, hj hz⟩
-
 /-- **T4** (Bing 1948, Theorem 1). Crookedness passes down a consolidation. -/
 theorem isCrookedIn'_of_isConsolidationOf {D : Chain X n} {E : Chain X m} {F : Chain X l}
     (hDE : D.IsConsolidationOf E) (hFE : F.IsCrookedIn' E) : F.IsCrookedIn' D := by
@@ -379,11 +348,6 @@ theorem isCrookedIn'_of_refines {D : Chain X n} {E : Chain X m} {F : Chain X l}
   obtain ⟨r, s, hb, hr, hs⟩ := hEC a b hab _ _ hu hv
   obtain ⟨x, y, hbxy, hx, hy⟩ := exists_between_of_pattern (refineIdx hFE) hφ hb
   exact ⟨x, y, hbxy, (hφ x).trans (hx ▸ hr), (hφ y).trans (hy ▸ hs)⟩
-
-/-- **T5′** (Bing 1948, Corollary to Theorem 2). -/
-theorem isCrookedIn'_of_isConsolidationOf' {D : Chain X n} {E : Chain X m} {F : Chain X l}
-    (hED : E.IsCrookedIn' D) (hEF : E.IsConsolidationOf F) : F.IsCrookedIn' D :=
-  isCrookedIn'_of_refines hEF.1 hED
 
 /-- **T6.** A chain from `P` to `Q` of length `n` consolidates, still from `P` to `Q`, to any
 length `m` with `2 ≤ m ≤ n`. -/

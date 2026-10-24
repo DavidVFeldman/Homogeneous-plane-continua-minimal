@@ -187,20 +187,4 @@ theorem ingram_theorem2_circleLike {Y A : Set S} (hY : IsSnakeLike Y) (hA : IsSn
   sorry
 -/
 
-/-- **Fugate 1966, Corollary 1** (p. 467), as stated, every clause. A finite chain of
-snake-like continua, consecutive ones meeting: the union is snake-like iff it is atriodic and
-unicoherent. Fugate states it without proof. Proved from Theorem 1 and (∗)
-(`fugate_cor1_of_ingramStar`, `ingramStar_holds`). (∗) rests on Ingram's Lemmas 1–2 and the
-direct route (`Ingram68Core`, `Ingram68Star`); Ingram 1968 postdates Fugate 1966. The sorried
-declaration of the same name in `Fugate66.lean` is deleted in this batch
-(COMMISSION-batch132.md §2). -/
-theorem fugate_cor1 {k : ℕ} (A : Fin (k + 1) → Set S) (hA : ∀ i, IsSnakeLike (A i))
-    (hmeet : ∀ i : Fin k, (A i.castSucc ∩ A i.succ).Nonempty) :
-    IsSnakeLike (⋃ i, A i) ↔ IsAtriodic (⋃ i, A i) ∧ IsUnicoherent (⋃ i, A i) :=
-  fugate_cor1_of_ingramStar ingramStar_holds A hA hmeet
-
-/-- **(U) holds.** -/
-theorem fugateU_holds : FugateU S :=
-  fugateU_of_ingramStar ingramStar_holds
-
 end HPC.Plane

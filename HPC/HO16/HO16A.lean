@@ -84,13 +84,4 @@ theorem isPseudoArc_of_indec_homogeneous (h20 : HOThm20) (M : Set Pt) [CompactSp
   have hHI := HPC.Hagopian.hagopian76_theorem1 M hhom hind
   exact ⟨ho16_theorem1_plane h20 M hHI (theoremC M hhom hind), hHI, hnt⟩
 
-/-- The same, as a homeomorphism onto a plane pseudo-arc (`pseudoArc_unique`). -/
-theorem homeomorph_pseudoArc_of_indec_homogeneous (h20 : HOThm20) (M : Set Pt) [CompactSpace M]
-    [ConnectedSpace M] (hhom : IsHomogeneous M) (hind : ¬ IsDecomposableSpace M)
-    (hnt : (univ : Set M).Nontrivial) :
-    ∃ M₀ : Set Pt, IsPseudoArc M₀ ∧ Nonempty (M ≃ₜ M₀) := by
-  obtain ⟨M₀, hM₀, huniq⟩ := pseudoArc_unique
-  obtain ⟨e⟩ := huniq M univ (isPseudoArc_of_indec_homogeneous h20 M hhom hind hnt)
-  exact ⟨M₀, hM₀, ⟨(Homeomorph.Set.univ M).symm.trans e⟩⟩
-
 end HPC.HO16

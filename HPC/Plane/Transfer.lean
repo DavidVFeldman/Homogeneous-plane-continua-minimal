@@ -25,13 +25,6 @@ theorem preimage_inter_nonempty_iff {K : Set X} {A B : Set X} (hA : A ⊆ K) :
   · rintro ⟨z, h1, h2⟩; exact ⟨z.1, h1, h2⟩
   · rintro ⟨z, h1, h2⟩; exact ⟨⟨z, hA h1⟩, h1, h2⟩
 
-omit [MetricSpace X] in
-theorem preimage_subset_iff {K : Set X} {A B : Set X} (hA : A ⊆ K) :
-    (Subtype.val : K → X) ⁻¹' A ⊆ Subtype.val ⁻¹' B ↔ A ⊆ B := by
-  constructor
-  · intro h z hz; exact h (show (⟨z, hA hz⟩ : K) ∈ Subtype.val ⁻¹' A from hz)
-  · intro h; exact preimage_mono h
-
 /-- The restriction of a chain to a set containing its links. -/
 def restrict (D : Chain X n) (K : Set X) (hK : ∀ j, D.link j ⊆ K) : Chain K n where
   link j := Subtype.val ⁻¹' D.link j
@@ -102,32 +95,6 @@ theorem isContinuum_M_of (hKc : IsCompact K) : Fold.Q78.IsContinuum Δ.M := by
   obtain ⟨h1, h2⟩ := (Δ.restrict K hK).isContinuum_M
   rw [Δ.M_eq_image K hK]
   exact ⟨h1.image continuous_subtype_val, h2.image _ continuous_subtype_val.continuousOn⟩
-
-/-- **Theorem 13 for a description whose links lie in a compact set.** -/
-theorem theorem13_of (hKc : IsCompact K) (hPQ : P ≠ Q) : Theorem13Statement Δ := by
-  haveI : CompactSpace K := isCompact_iff_compactSpace.mp hKc
-  have hPQ' : (⟨P, Δ.P_mem_of K hK 0⟩ : K) ≠ ⟨Q, Δ.Q_mem_of K hK 0⟩ := fun h =>
-    hPQ (congrArg Subtype.val h)
-  have hT := (Δ.restrict K hK).theorem13 hPQ'
-  have hMK := Δ.M_subset K hK
-  have hR := Δ.restrict_M K hK
-  -- the restricted continuum and the original one are homeomorphic by the identity
-  let e : (Δ.restrict K hK).M ≃ₜ Δ.M :=
-    { toFun := fun z => ⟨z.1.1, (Set.ext_iff.mp hR z.1).mp z.2⟩
-      invFun := fun z => ⟨⟨z.1, hMK z.2⟩, (Set.ext_iff.mp hR _).mpr z.2⟩
-      left_inv := fun z => rfl
-      right_inv := fun z => rfl
-      continuous_toFun := by fun_prop
-      continuous_invFun := by fun_prop }
-  intro p q hp hq
-  have hp' : (⟨p, hMK hp⟩ : K) ∈ (Δ.restrict K hK).M := (Set.ext_iff.mp hR _).mpr hp
-  have hq' : (⟨q, hMK hq⟩ : K) ∈ (Δ.restrict K hK).M := (Set.ext_iff.mp hR _).mpr hq
-  obtain ⟨T, hT⟩ := hT _ _ hp' hq'
-  refine ⟨(e.symm.trans T).trans e, ?_⟩
-  show e (T (e.symm ⟨p, hp⟩)) = ⟨q, hq⟩
-  have : e.symm ⟨p, hp⟩ = ⟨⟨p, hMK hp⟩, hp'⟩ := rfl
-  rw [this, hT]
-  rfl
 
 end Description
 

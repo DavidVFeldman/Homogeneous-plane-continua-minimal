@@ -74,12 +74,4 @@ theorem effros_homogeneous {Y : Type*} [MetricSpace Y] [CompactSpace Y]
       _ < ε / 2 + ε / 2 := add_lt_add hh hg
       _ = ε := add_halves ε
 
-/-- The same for a compact subset of a metric space, homogeneous in its own topology (the form
-needed for plane continua `M ⊆ Pt`). -/
-theorem effros_homogeneous_set {E : Type*} [MetricSpace E] {M : Set E} (hM : IsCompact M)
-    (hom : ∀ x y : M, ∃ h : M ≃ₜ M, h x = y) {ε : ℝ} (hε : 0 < ε) :
-    ∃ δ > 0, ∀ x y : M, dist x y < δ → ∃ h : M ≃ₜ M, h x = y ∧ ∀ z, dist (h z) z < ε := by
-  haveI := isCompact_iff_compactSpace.mp hM
-  exact effros_homogeneous hom hε
-
 end HPC.Effros

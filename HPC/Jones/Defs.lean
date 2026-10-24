@@ -34,15 +34,8 @@ continuum `H` and an open set `U` with `X − y ⊇ H ⊇ U ∋ x`. -/
 def AposAt (x y : X) : Prop :=
   ∃ H U : Set X, Fold.Q78.IsContinuum H ∧ IsOpen U ∧ x ∈ U ∧ U ⊆ H ∧ y ∉ H
 
-/-- `X` is **aposyndetic at `x`**: aposyndetic at `x` with respect to every other point. -/
-def AposyndeticAt (x : X) : Prop := ∀ y, y ≠ x → AposAt x y
-
 /-- `X` is **aposyndetic**: aposyndetic at each of its points. -/
 def IsAposyndetic (X : Type*) [MetricSpace X] : Prop := ∀ x y : X, x ≠ y → AposAt x y
-
-/-- `X` is **totally non-aposyndetic**: non-aposyndetic at each of its points. -/
-def TotallyNonAposyndetic (X : Type*) [MetricSpace X] : Prop :=
-  ∀ x : X, ¬ AposyndeticAt x
 
 /-- `X` is **semi-locally-connected at `x`** (Whyburn 1939). For each open `U ∋ x` there is an
 open `V` with `U ⊇ V ∋ x` such that `X − U` is contained in the union of finitely many components
@@ -50,18 +43,6 @@ of `X − V`. -/
 def SemiLocConnAt (x : X) : Prop :=
   ∀ U : Set X, IsOpen U → x ∈ U → ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧
     ∃ F : Finset X, (↑F : Set X) ⊆ Vᶜ ∧ Uᶜ ⊆ ⋃ c ∈ F, connectedComponentIn Vᶜ c
-
-/-- **`p` cuts `x` from `y`** (Jones 1948, p. 403). `x`, `y` are distinct points other than `p`,
-and every subcontinuum containing `x` and `y` contains `p`. -/
-def CutsPts (p x y : X) : Prop :=
-  x ≠ p ∧ y ≠ p ∧ x ≠ y ∧
-    ∀ K : Set X, Fold.Q78.IsContinuum K → x ∈ K → y ∈ K → p ∈ K
-
-/-- `p` is a **weak cut point**: it cuts some `x` from some `y`. -/
-def IsWeakCutPoint (p : X) : Prop := ∃ x y, CutsPts p x y
-
-/-- `p` is a **strong cut point** (separating point): `X − p` is not connected. -/
-def IsStrongCutPoint (p : X) : Prop := ¬ IsConnected ({p}ᶜ : Set X)
 
 /-- The **composant** of `x`: the union of the proper subcontinua containing `x`. -/
 def composant (x : X) : Set X :=
@@ -82,12 +63,6 @@ theorem AposAt.ne {x y : X} (h : AposAt x y) : x ≠ y := by
   rintro rfl
   exact not_aposAt_self x h
 
-/-- If `X` is aposyndetic at `x` with respect to `y` by `(H, U)`, it is so at every point of `U`
-with respect to every point outside `H`. -/
-theorem aposAt_of_mem {x y : X} {H U : Set X} (hH : Fold.Q78.IsContinuum H) (hU : IsOpen U)
-    (hxU : x ∈ U) (hUH : U ⊆ H) (hyH : y ∉ H) : AposAt x y :=
-  ⟨H, U, hH, hU, hxU, hUH, hyH⟩
-
 /-- **The pairs of aposyndesis form an open set** (the content of Jones 1948, Theorem 1). -/
 theorem isOpen_setOf_aposAt : IsOpen {p : X × X | AposAt p.1 p.2} := by
   rw [isOpen_iff_mem_nhds]
@@ -103,14 +78,8 @@ theorem isClosed_setOf_not_aposAt : IsClosed {p : X × X | ¬ AposAt p.1 p.2} :=
 theorem isOpen_aposAt_left (y : X) : IsOpen {x : X | AposAt x y} :=
   isOpen_setOf_aposAt.preimage (continuous_id.prodMk continuous_const)
 
-theorem isOpen_aposAt_right (x : X) : IsOpen {y : X | AposAt x y} :=
-  isOpen_setOf_aposAt.preimage (continuous_const.prodMk continuous_id)
-
 theorem isClosed_not_aposAt_left (y : X) : IsClosed {x : X | ¬ AposAt x y} := by
   simpa [compl_setOf] using (isOpen_aposAt_left y).isClosed_compl
-
-theorem isClosed_not_aposAt_right (x : X) : IsClosed {y : X | ¬ AposAt x y} := by
-  simpa [compl_setOf] using (isOpen_aposAt_right x).isClosed_compl
 
 /-- A continuum is the image of a continuum under a homeomorphism. -/
 theorem isContinuum_image_homeomorph (T : X ≃ₜ X) {H : Set X} (hH : Fold.Q78.IsContinuum H) :
@@ -131,16 +100,6 @@ theorem aposAt_homeomorph_iff (T : X ≃ₜ X) {x y : X} : AposAt (T x) (T y) �
   simpa using this
 
 /-! ### Topology -/
-
-/-- A connected set covered by two disjoint closed sets and meeting the second lies in it. -/
-theorem subset_of_isPreconnected_of_closed_cover {K W Q : Set X} (hK : IsPreconnected K)
-    (hW : IsClosed W) (hQ : IsClosed Q) (hWQ : Disjoint W Q) (hcov : K ⊆ W ∪ Q)
-    (hmeet : (K ∩ Q).Nonempty) : K ⊆ Q := by
-  rcases (isPreconnected_iff_subset_of_disjoint_closed.mp hK) W Q hW hQ hcov
-    (by rw [hWQ.inter_eq, inter_empty]) with h | h
-  · obtain ⟨z, hzK, hzQ⟩ := hmeet
-    exact absurd hzQ (Set.disjoint_left.mp hWQ (h hzK))
-  · exact h
 
 /-- The component of a closed set is closed. -/
 theorem isClosed_connectedComponentIn' {F : Set X} (hF : IsClosed F) (x : X) :
@@ -183,24 +142,8 @@ section Compact
 
 variable [CompactSpace X]
 
-theorem isClosed_fst_image {S : Set (X × X)} (hS : IsClosed S) : IsClosed (Prod.fst '' S) :=
-  isClosedMap_fst_of_compactSpace S hS
-
 theorem isClosed_snd_image {S : Set (X × X)} (hS : IsClosed S) : IsClosed (Prod.snd '' S) :=
   isClosedMap_snd_of_compactSpace S hS
-
-/-- For a closed `M`, the points at which `X` is not aposyndetic with respect to some point of `M`
-form a closed set. -/
-theorem isClosed_exists_not_aposAt_right {M : Set X} (hM : IsClosed M) :
-    IsClosed {x : X | ∃ y ∈ M, ¬ AposAt x y} := by
-  have h : {x : X | ∃ y ∈ M, ¬ AposAt x y} =
-      Prod.fst '' ({p : X × X | ¬ AposAt p.1 p.2} ∩ Prod.snd ⁻¹' M) := by
-    ext x
-    constructor
-    · rintro ⟨y, hy, hxy⟩; exact ⟨(x, y), ⟨hxy, hy⟩, rfl⟩
-    · rintro ⟨⟨a, b⟩, ⟨hab, hb⟩, rfl⟩; exact ⟨b, hb, hab⟩
-  rw [h]
-  exact isClosed_fst_image (isClosed_setOf_not_aposAt.inter (hM.preimage continuous_snd))
 
 /-- For a closed `M`, the points `y` such that `X` is not aposyndetic at some point of `M` with
 respect to `y` form a closed set. -/
@@ -228,33 +171,6 @@ theorem exists_finite_apos_cover {K : Set X} (hK : IsCompact K) {y : X}
   obtain ⟨t, htK, hcov⟩ := hK.elim_nhds_subcover U (fun x hx => (hU x hx).mem_nhds (hxU x hx))
   exact ⟨t, H, U, fun i hi => ⟨hH i (htK i hi), hU i (htK i hi), hUH i (htK i hi),
     hyH i (htK i hi)⟩, hcov⟩
-
-/-- **Heine–Borel, second form.** If `X` is aposyndetic at `x` with respect to every point of the
-compact `K`, one open `U ∋ x` works for all of them: for each `y ∈ K` some continuum contains `U`
-and misses `y`. -/
-theorem exists_nhd_uniform_apos {K : Set X} (hK : IsCompact K) {x : X}
-    (h : ∀ y ∈ K, AposAt x y) :
-    ∃ U : Set X, IsOpen U ∧ x ∈ U ∧ ∀ y ∈ K, ∃ H : Set X, Fold.Q78.IsContinuum H ∧ U ⊆ H ∧
-      y ∉ H := by
-  classical
-  choose! H U hH hU hxU hUH hyH using h
-  obtain ⟨t, htK, hcov⟩ := hK.elim_nhds_subcover (fun y => (H y)ᶜ)
-    (fun y hy => (hH y hy).1.isClosed.isOpen_compl.mem_nhds (hyH y hy))
-  refine ⟨⋂ i ∈ t, U i, isOpen_biInter_finset fun i hi => hU i (htK i hi),
-    mem_iInter₂.mpr fun i hi => hxU i (htK i hi), fun y hy => ?_⟩
-  obtain ⟨i, hi, hyi⟩ := mem_iUnion₂.mp (hcov hy)
-  exact ⟨H i, hH i (htK i hi), (biInter_subset_of_mem hi).trans (hUH i (htK i hi)), hyi⟩
-
-/-- The same with a closed ball: for `s` small, the closed ball `closedBall x s` lies in a
-continuum missing `y`, for every `y ∈ K`. -/
-theorem exists_radius_uniform_apos {K : Set X} (hK : IsCompact K) {x : X}
-    (h : ∀ y ∈ K, AposAt x y) :
-    ∃ s > 0, ∀ y ∈ K, ∃ H : Set X, Fold.Q78.IsContinuum H ∧ closedBall x s ⊆ H ∧ y ∉ H := by
-  obtain ⟨U, hU, hxU, hH⟩ := exists_nhd_uniform_apos hK h
-  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU x hxU
-  refine ⟨r / 2, half_pos hr, fun y hy => ?_⟩
-  obtain ⟨H, hH, hUH, hyH⟩ := hH y hy
-  exact ⟨H, hH, (closedBall_subset_ball (half_lt_self hr)).trans (hrU.trans hUH), hyH⟩
 
 section Compact
 
@@ -320,55 +236,5 @@ theorem aposAt_of_frontier [ConnectedSpace X] {V : Set X} (hV : IsOpen V) {b y :
 end Compact
 
 /-! ### Baire, and a third point -/
-
-/-- **Baire, in Jones's form.** If a nonempty open `D` is covered by countably many closed sets,
-one of them contains a ball lying in `D`. -/
-theorem exists_ball_subset_of_closed_cover [CompactSpace X] {ι : Type*} [Countable ι]
-    {D : Set X} (hD : IsOpen D) (hDne : D.Nonempty) {F : ι → Set X} (hF : ∀ i, IsClosed (F i))
-    (hcov : D ⊆ ⋃ i, F i) : ∃ i, ∃ x : X, ∃ r > 0, ball x r ⊆ D ∩ F i := by
-  haveI : Nonempty X := ⟨hDne.some⟩
-  have hall : ⋃ j : Option ι, (Option.elim j Dᶜ F) = univ := by
-    refine eq_univ_of_forall fun z => ?_
-    by_cases hz : z ∈ D
-    · obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov hz)
-      exact mem_iUnion.mpr ⟨some i, hi⟩
-    · exact mem_iUnion.mpr ⟨none, hz⟩
-  have hdense := dense_iUnion_interior_of_closed (f := fun j : Option ι => Option.elim j Dᶜ F)
-    (fun j => by cases j with
-      | none => exact hD.isClosed_compl
-      | some i => exact hF i) hall
-  obtain ⟨z, hzD, hz⟩ := hdense.inter_open_nonempty D hD hDne
-  obtain ⟨j, hj⟩ := mem_iUnion.mp hz
-  cases j with
-  | none =>
-    exact absurd (interior_subset hj) (by simpa using hzD)
-  | some i =>
-    have hO : IsOpen (D ∩ interior (F i)) := hD.inter isOpen_interior
-    obtain ⟨r, hr, hrO⟩ := Metric.isOpen_iff.mp hO z ⟨hzD, hj⟩
-    exact ⟨i, z, r, hr, fun w hw => ⟨(hrO hw).1, interior_subset (hrO hw).2⟩⟩
-
-/-- In a connected metric space, two distinct points `a ≠ b` have a point at distance
-`dist a b / 2` from `a`. -/
-theorem exists_dist_eq_half [ConnectedSpace X] {a b : X} (hab : a ≠ b) :
-    ∃ c : X, dist a c = dist a b / 2 := by
-  have hpos : 0 < dist a b := dist_pos.mpr hab
-  have h := isPreconnected_univ.intermediate_value (mem_univ a) (mem_univ b)
-    (f := fun z => dist a z) (continuous_const.dist continuous_id).continuousOn
-  obtain ⟨c, -, hc⟩ := h (show dist a b / 2 ∈ Icc (dist a a) (dist a b) by
-    rw [dist_self]; constructor <;> linarith)
-  exact ⟨c, hc⟩
-
-/-- **A third point.** A nondegenerate connected metric space has, for any two points, a point
-different from both. -/
-theorem exists_ne_ne [ConnectedSpace X] [Nontrivial X] (a b : X) : ∃ c : X, c ≠ a ∧ c ≠ b := by
-  by_cases hab : a = b
-  · subst hab
-    obtain ⟨c, hc⟩ := exists_ne a
-    exact ⟨c, hc, hc⟩
-  · obtain ⟨c, hc⟩ := exists_dist_eq_half hab
-    have hpos : 0 < dist a b := dist_pos.mpr hab
-    refine ⟨c, ?_, ?_⟩
-    · rintro rfl; rw [dist_self] at hc; linarith
-    · rintro rfl; linarith
 
 end HPC.Jones

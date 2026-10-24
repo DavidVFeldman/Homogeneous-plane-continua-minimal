@@ -30,11 +30,6 @@ theorem mem_span {D : Chain X n} {a b : Fin n} {x : X} :
     x ∈ D.span a b ↔ ∃ t : Fin n, a ≤ t ∧ t ≤ b ∧ x ∈ D.link t := by
   simp only [span, mem_iUnion, exists_prop, and_assoc]
 
-theorem span_subset_union (D : Chain X n) (a b : Fin n) : D.span a b ⊆ D.union := by
-  intro x hx
-  obtain ⟨t, -, -, hx⟩ := mem_span.mp hx
-  exact mem_iUnion.mpr ⟨t, hx⟩
-
 theorem union_eq_span (D : Chain X n) (hn : 0 < n) :
     D.union = D.span ⟨0, hn⟩ ⟨n - 1, by omega⟩ := by
   ext x
@@ -244,123 +239,6 @@ theorem isConnected_M [CompactSpace X] : IsConnected Δ.M := by
 
 theorem isContinuum_M [CompactSpace X] : Fold.Q78.IsContinuum Δ.M :=
   ⟨Δ.isCompact_M, Δ.isConnected_M⟩
-
-/-- **The limit step of Bing's first paragraph.** Chained sets through `R` and `S` inside the
-levels, all missing a fixed open set that meets `M`, would give a proper subcontinuum of `M`
-containing `R` and `S`. -/
-theorem false_of_disjoint_limit [CompactSpace X] {R S : X}
-    (hcomp : S ∉ composant Δ.M R) {I : Set ℕ} (hI : I.Infinite) (A : ℕ → Set X)
-    (hch : ∀ k ∈ I, T13.ChainedAt (A k) (Δ.ε k)) (hRA : ∀ k ∈ I, R ∈ A k)
-    (hSA : ∀ k ∈ I, S ∈ A k) (hAD : ∀ k ∈ I, A k ⊆ (Δ.D k).union) {O : Set X} (hO : IsOpen O)
-    (hOM : (O ∩ Δ.M).Nonempty) (hdisj : ∀ k ∈ I, Disjoint (A k) O) : False := by
-  set Z := T13.limSup I A
-  have hZc : IsClosed Z := T13.isClosed_limSup I A
-  have hZpc : IsPreconnected Z := T13.isPreconnected_limSup Δ.ε_tendsto hch hRA hI
-  have hRZ : R ∈ Z := T13.mem_limSup hI hRA
-  have hSZ : S ∈ Z := T13.mem_limSup hI hSA
-  have hZM : Z ⊆ Δ.M := by
-    intro z hz
-    simp only [M, mem_iInter]
-    intro i
-    refine Δ.closure_union_subset (Nat.lt_succ_self i) ?_
-    refine closure_mono ?_ (T13.limSup_subset_closure (i + 1) hz)
-    intro y hy
-    simp only [mem_iUnion] at hy
-    obtain ⟨k, hk, hik, hy⟩ := hy
-    exact Chain.union_subset_of_refines (Δ.refines_of_le hik) (hAD k hk hy)
-  have hZne : Z ≠ Δ.M := by
-    obtain ⟨w, hwO, hwM⟩ := hOM
-    intro heq
-    have hwZ : w ∈ Z := heq ▸ hwM
-    have := T13.limSup_subset_closure 0 hwZ
-    obtain ⟨y, hyO, hy⟩ := mem_closure_iff.mp this O hO hwO
-    simp only [mem_iUnion] at hy
-    obtain ⟨k, hk, -, hy⟩ := hy
-    exact (hdisj k hk).le_bot ⟨hy, hyO⟩
-  apply hcomp
-  exact mem_sUnion.mpr ⟨Z, ⟨⟨hZc.isCompact, ⟨R, hRZ⟩, hZpc⟩, hZM, hZne, hRZ⟩, hSZ⟩
-
-/-- A point of a nontrivial `M` lies in its own composant (`{R}` is a proper subcontinuum). -/
-theorem mem_composant_self {R : X} (hR : R ∈ Δ.M) (hPQ : P ≠ Q) : R ∈ composant Δ.M R := by
-  refine mem_sUnion.mpr ⟨{R}, ⟨⟨isCompact_singleton, isConnected_singleton⟩,
-    singleton_subset_iff.mpr hR, ?_, rfl⟩, rfl⟩
-  intro h
-  have hP : P ∈ ({R} : Set X) := h ▸ Δ.P_mem_M
-  have hQ : Q ∈ ({R} : Set X) := h ▸ Δ.Q_mem_M
-  exact hPQ ((mem_singleton_iff.mp hP).trans (mem_singleton_iff.mp hQ).symm)
-
-theorem ne_of_not_mem_composant {R S : X} (hR : R ∈ Δ.M) (hPQ : P ≠ Q)
-    (hcomp : S ∉ composant Δ.M R) : R ≠ S := by
-  rintro rfl
-  exact hcomp (Δ.mem_composant_self hR hPQ)
-
-/-- For every level deep enough (mesh below `dist R S`) there is a subchain from `R` to `S`. -/
-theorem exists_isSubchainFrom_of_lt {R S : X} (hR : R ∈ Δ.M) (hS : S ∈ Δ.M) {k : ℕ}
-    (hk : Δ.ε k < dist R S) : ∃ a b : Fin (Δ.n k), (Δ.D k).IsSubchainFrom a b R S := by
-  refine (Δ.D k).exists_isSubchainFrom (Δ.M_subset_union k hR) (Δ.M_subset_union k hS) ?_
-  intro t hRt hSt
-  have := dist_le_diam_of_mem (Δ.bdd k t) hRt hSt
-  linarith [Δ.diam_le k t]
-
-/-- **Reaching both ends** (Bing p. 740, first paragraph), with the placeholder index bounds of
-the skeleton discharged. -/
-theorem exists_subchain_meets_ends' [CompactSpace X] (hPQ : P ≠ Q)
-    {R S : X} (hR : R ∈ Δ.M) (hS : S ∈ Δ.M) (hcomp : S ∉ composant Δ.M R) (j : ℕ) :
-    ∃ k, j < k ∧ ∃ a b : Fin (Δ.n k), (Δ.D k).IsSubchainFrom a b R S ∧
-      (∃ t : Fin (Δ.n k), a ≤ t ∧ t ≤ b ∧
-        ((Δ.D k).link t ∩ (Δ.D j).link ⟨0, (Δ.isFrom j).1⟩).Nonempty) ∧
-      (∃ t : Fin (Δ.n k), a ≤ t ∧ t ≤ b ∧
-        ((Δ.D k).link t ∩ (Δ.D j).link ⟨Δ.n j - 1, by have := (Δ.isFrom j).1; omega⟩).Nonempty) := by
-  classical
-  have hRS : 0 < dist R S := dist_pos.mpr (Δ.ne_of_not_mem_composant hR hPQ hcomp)
-  obtain ⟨k0, hk0⟩ : ∃ k0, ∀ k, k0 ≤ k → Δ.ε k < dist R S :=
-    eventually_atTop.mp (Δ.ε_tendsto.eventually (gt_mem_nhds hRS))
-  by_contra hcon
-  -- the chosen subchains
-  have hex : ∀ k, max k0 (j + 1) ≤ k → ∃ ab : Fin (Δ.n k) × Fin (Δ.n k),
-      (Δ.D k).IsSubchainFrom ab.1 ab.2 R S := fun k hk => by
-    obtain ⟨a, b, h⟩ := Δ.exists_isSubchainFrom_of_lt hR hS (hk0 k (le_of_max_le_left hk))
-    exact ⟨(a, b), h⟩
-  let A : ℕ → Set X := fun k =>
-    if h : max k0 (j + 1) ≤ k then (Δ.D k).span (hex k h).choose.1 (hex k h).choose.2 else ∅
-  have hAspec : ∀ k (h : max k0 (j + 1) ≤ k), A k = (Δ.D k).span (hex k h).choose.1
-      (hex k h).choose.2 := fun k h => by simp only [A, dif_pos h]
-  set O₁ := (Δ.D j).link ⟨0, (Δ.isFrom j).1⟩
-  set O₂ := (Δ.D j).link ⟨Δ.n j - 1, by have := (Δ.isFrom j).1; omega⟩
-  let I₁ := {k | max k0 (j + 1) ≤ k ∧ Disjoint (A k) O₁}
-  let I₂ := {k | max k0 (j + 1) ≤ k ∧ Disjoint (A k) O₂}
-  have hcov : Ici (max k0 (j + 1)) ⊆ I₁ ∪ I₂ := by
-    intro k hk
-    have hk' : max k0 (j + 1) ≤ k := hk
-    by_contra hk2
-    simp only [mem_union, mem_setOf_eq, not_or, not_and, I₁, I₂] at hk2
-    have d1 := hk2.1 hk'
-    have d2 := hk2.2 hk'
-    rw [hAspec k hk', not_disjoint_iff] at d1 d2
-    obtain ⟨x, hx, hx1⟩ := d1
-    obtain ⟨y, hy, hy2⟩ := d2
-    obtain ⟨t, ht1, ht2, hxt⟩ := Chain.mem_span.mp hx
-    obtain ⟨u, hu1, hu2, hyu⟩ := Chain.mem_span.mp hy
-    exact hcon ⟨k, by omega, _, _, (hex k hk').choose_spec, ⟨t, ht1, ht2, x, hxt, hx1⟩,
-      ⟨u, hu1, hu2, y, hyu, hy2⟩⟩
-  have main : ∀ I : Set ℕ, I ⊆ Ici (max k0 (j + 1)) → I.Infinite → ∀ O : Set X, IsOpen O →
-      (O ∩ Δ.M).Nonempty → (∀ k ∈ I, Disjoint (A k) O) → False := by
-    intro I hI hinf O hO hOM hdisj
-    refine Δ.false_of_disjoint_limit hcomp hinf A (fun k hk => ?_) (fun k hk => ?_)
-      (fun k hk => ?_) (fun k hk => ?_) hO hOM hdisj
-    · rw [hAspec k (hI hk)]
-      exact Chain.chainedAt_span _ _ _ (Δ.bdd k) (Δ.diam_le k)
-    · rw [hAspec k (hI hk)]
-      exact ((hex k (hI hk)).choose_spec.mem_span).1
-    · rw [hAspec k (hI hk)]
-      exact ((hex k (hI hk)).choose_spec.mem_span).2
-    · rw [hAspec k (hI hk)]
-      exact Chain.span_subset_union _ _ _
-  rcases infinite_union.mp ((Ici_infinite _).mono hcov) with h | h
-  · exact main I₁ (fun k hk => hk.1) h O₁ ((Δ.D j).isOpen _) (Δ.link_inter_M_nonempty j _)
-      (fun k hk => hk.2)
-  · exact main I₂ (fun k hk => hk.1) h O₂ ((Δ.D j).isOpen _) (Δ.link_inter_M_nonempty j _)
-      (fun k hk => hk.2)
 
 end Description
 

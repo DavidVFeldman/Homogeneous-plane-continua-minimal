@@ -329,11 +329,6 @@ theorem gapA_subset (hL : IsLadder G S y ev) (i : ℕ) : gapA S y ev i ⊆ G := 
   rintro _ ⟨a, ha, rfl⟩
   exact lineMap_mem_of_mem hL.G_eq hs (eQA_sub (hL.evOK hs) ha)
 
-theorem gapB_subset (hL : IsLadder G S y ev) (i : ℕ) : gapB S y ev i ⊆ G := by
-  refine iUnion₂_subset fun s hs => ?_
-  rintro _ ⟨a, ha, rfl⟩
-  exact lineMap_mem_of_mem hL.G_eq hs (eQB_sub (hL.evOK hs) ha)
-
 /-- Every point of `G` is on the sheet or in a gap. -/
 theorem subset_sheet_union_gaps (hL : IsLadder G S y ev) {i : ℕ} (hi : 1 ≤ i) :
     G ⊆ Prod.fst '' ladderSheet S y ev i ∪ gapA S y ev i ∪ gapB S y ev i := by

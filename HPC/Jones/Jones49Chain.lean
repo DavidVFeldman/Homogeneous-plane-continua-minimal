@@ -261,13 +261,6 @@ theorem lt_total {p q : X} (hp : p ∈ C.T) (hq : q ∈ C.T) (hpq : p ≠ q) :
   · exact Or.inl ((lt_iff hp hq hpq).2 h)
   · exact Or.inr h
 
-theorem lt_asymm {p q : X} (hp : p ∈ C.T) (hq : q ∈ C.T) (h : C.lt p q) : ¬ C.lt q p := by
-  intro h'
-  have hpq : p ≠ q := by rintro rfl; exact notMem_B hp h
-  exact notMem_B_of_A hq ((lt_iff hp hq hpq).1 h) h'
-
-theorem lt_irrefl {p : X} (hp : p ∈ C.T) : ¬ C.lt p p := notMem_B hp
-
 theorem ne_of_lt {p q : X} (hp : p ∈ C.T) (h : C.lt p q) : p ≠ q := by
   rintro rfl; exact notMem_B hp h
 
@@ -425,8 +418,6 @@ theorem exists_succ_between {p q : X} (hp : p ∈ C.T) (hq : q ∈ C.T) (hg : C.
   obtain ⟨y, ⟨hyA, hyN⟩, hyT, hqy⟩ := mem_closure_iff_nhds.1 hg.2 _ hAN
   have hyp : y ≠ p := by rintro rfl; exact notMem_A hp hyA
   exact ⟨y, hyT, hqy, (lt_iff hyT hp hyp).2 hyA, hyN⟩
-
-theorem Res_sub_Q {p : X} : C.Res p ⊆ C.Q := fun _ hz => hz.1
 
 /-- Residues of good points are ordered like the points: if `p < q`, `Res q ⊆ B p`. -/
 theorem Res_sub_B {p q : X} (hp : p ∈ C.T) (hg : C.Good q) (h : C.lt p q) :

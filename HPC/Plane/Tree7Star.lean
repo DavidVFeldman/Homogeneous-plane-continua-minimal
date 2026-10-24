@@ -53,30 +53,6 @@ theorem StrongStar.isConnected {N : Set Pt} {c : Pt} (h : StrongStar N c) (hc : 
     IsConnected N :=
   ((h.starConvex hc).isPathConnected hc).isConnected
 
-/-- A strongly star-shaped open set is regular open. -/
-theorem StrongStar.regular {N : Set Pt} {c : Pt} (h : StrongStar N c) (ho : IsOpen N) :
-    interior (closure N) = N := by
-  apply subset_antisymm _ (ho.subset_interior_iff.2 subset_closure)
-  intro p hp
-  by_contra hpN
-  have hout : ∀ s : ℝ, 1 < s → c + s • (p - c) ∉ closure N := by
-    intro s hs hy
-    have := h _ hy (1 / s) (by positivity) (by rw [div_lt_one (by linarith)]; exact hs)
-    apply hpN
-    convert this using 1
-    rw [add_sub_cancel_left, smul_smul, one_div_mul_cancel (by linarith), one_smul,
-      add_sub_cancel]
-  have hlim : Filter.Tendsto (fun s : ℝ => c + s • (p - c)) (nhdsWithin 1 (Ioi 1)) (nhds p) := by
-    have : Filter.Tendsto (fun s : ℝ => c + s • (p - c)) (nhds 1)
-        (nhds (c + (1:ℝ) • (p - c))) :=
-      ((continuous_const.add (continuous_id.smul continuous_const)).tendsto 1)
-    rw [one_smul, add_sub_cancel] at this
-    exact this.mono_left nhdsWithin_le_nhds
-  have hev : ∀ᶠ s in nhdsWithin (1:ℝ) (Ioi 1), c + s • (p - c) ∈ interior (closure N) :=
-    hlim (isOpen_interior.mem_nhds hp)
-  obtain ⟨s, hs1, hs2⟩ := (hev.and self_mem_nhdsWithin).exists
-  exact hout s hs2 (interior_subset hs1)
-
 /-- The complement of a closed sup-metric ball is connected and unbounded. -/
 theorem isConnected_compl_closedBall_pt (c : Pt) (R : ℝ) :
     IsConnected (closedBall c R)ᶜ ∧ ¬ Bornology.IsBounded (closedBall c R)ᶜ := by
@@ -158,16 +134,6 @@ theorem StrongStar.pull {N : Set Pt} {c : Pt} (h : StrongStar N c) {x : Pt} {s :
   have := h _ hy (1 / s) (by positivity) (by rw [div_lt_one (by linarith)]; exact hs)
   convert this using 1
   rw [add_sub_cancel_left, smul_smul, one_div_mul_cancel (by linarith), one_smul, add_sub_cancel]
-
-/-- The complement of a bounded strongly star-shaped set is connected and unbounded. -/
-theorem StrongStar.compl_connected {N : Set Pt} {c : Pt} (h : StrongStar N c) (hc : c ∈ N)
-    (hb : Bornology.IsBounded N) : IsConnected Nᶜ ∧ ¬ Bornology.IsBounded Nᶜ := by
-  obtain ⟨R, hR⟩ := hb.subset_closedBall c
-  refine isConnected_of_outward (fun h' => h' hc) (fun x hx s hs hy => ?_)
-    (compl_subset_compl.2 hR)
-  rcases eq_or_lt_of_le hs with rfl | hs
-  · exact hx (by simpa using hy)
-  · exact hx (h.pull hs (subset_closure hy))
 
 /-- The exterior (complement of the closure) of a bounded strongly star-shaped set is connected
 and unbounded. -/

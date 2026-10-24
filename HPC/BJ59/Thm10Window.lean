@@ -70,10 +70,6 @@ theorem winScale_eq_iff {a b : unitInterval} (hab : a < b) {s : unitInterval} (h
     have hne : (b : ℝ) - a ≠ 0 := by linarith
     rw [show (a : ℝ) + s' * ((b : ℝ) - a) - a = s' * ((b : ℝ) - a) by ring, mul_div_cancel_right₀ _ hne]
 
-theorem winScale_winInv {a b : unitInterval} (hab : a < b) (s' : unitInterval) :
-    winScale a b (winInv a b hab.le s') = s' :=
-  (winScale_eq_iff hab (winInv_mem hab.le s') s').2 rfl
-
 /-- **Transfer to a window**: `g ⁻¹' [a, b]`, with `g` rescaled to `[0, 1]`, is again a
 continuous snake-like arc of pseudo-arcs. -/
 theorem window_transfer {g : Y → unitInterval} (hg : IsContArcPA g)

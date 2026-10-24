@@ -1,4 +1,4 @@
-import HPC.Hagopian.H76T9Full
+import HPC.Hagopian.H76T7
 
 /-!
 # Batch 166, item A: the domain under a crossing arc (collar coordinates)
@@ -181,31 +181,5 @@ theorem rect_domain_low {a b c : ℝ} (hab : a < b) {r s : ℝ × ℝ} {I D : Se
   · simp only [mem_singleton_iff] at hy; linarith
   · simp only [mem_singleton_iff] at hx; linarith
   · simp only [mem_singleton_iff] at hx; linarith
-
-/-- **A vertical segment from the bottom edge up to its first point on `I` lies in the domain.** -/
-theorem rect_domain_vert {a b c : ℝ} (hab : a < b) {r s : ℝ × ℝ} {I D : Set (ℝ × ℝ)}
-    (hI : IsCompact I) (hI0 : ∀ z ∈ I, 0 < z.2) (hDR : D ⊆ Ioo a b ×ˢ Ioo 0 c)
-    (hDf : frontier D = I ∪ Icc a b ×ˢ {0} ∪ ({a} : Set ℝ) ×ˢ Icc 0 r.2 ∪
-      ({b} : Set ℝ) ×ˢ Icc 0 s.2) {x w : ℝ} (hx : x ∈ Ioo a b) (hw : 0 < w)
-    (hxI : Disjoint (({x} : Set ℝ) ×ˢ Ioo 0 w) I) :
-    ({x} : Set ℝ) ×ˢ Ioo 0 w ⊆ D := by
-  obtain ⟨c₀, hc₀, -, hc₀I⟩ := exists_height_below hI hI0
-  have hlow := rect_domain_low hab hDR hDf hc₀ fun z hz => (hc₀I z hz).le
-  have hpt : ((x, min w c₀ / 2) : ℝ × ℝ) ∈ ({x} : Set ℝ) ×ˢ Ioo 0 w := by
-    refine ⟨rfl, by positivity, ?_⟩
-    have := min_le_left w c₀; show min w c₀ / 2 < w; linarith
-  have hptD : ((x, min w c₀ / 2) : ℝ × ℝ) ∈ D := by
-    apply hlow
-    refine ⟨hx, by positivity, ?_⟩
-    have := min_le_right w c₀; show min w c₀ / 2 < c₀; linarith
-  have hS : IsPreconnected (({x} : Set ℝ) ×ˢ Ioo 0 w) :=
-    ((convex_singleton x).prod (convex_Ioo 0 w)).isPreconnected
-  refine conn_sub_of_frontier hS ?_ ⟨_, hpt, hptD⟩
-  rw [hDf, disjoint_left]
-  rintro ⟨x', y⟩ ⟨hx', hy1, hy2⟩ (((hI' | ⟨-, hy⟩) | ⟨hx'', -⟩) | ⟨hx'', -⟩)
-  · exact disjoint_left.1 hxI ⟨hx', hy1, hy2⟩ hI'
-  · simp only [mem_singleton_iff] at hy; linarith
-  · simp only [mem_singleton_iff] at hx' hx''; linarith [hx.1]
-  · simp only [mem_singleton_iff] at hx' hx''; linarith [hx.2]
 
 end HPC.Hagopian

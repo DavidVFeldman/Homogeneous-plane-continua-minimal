@@ -37,39 +37,6 @@ def Jones49Thm1 : Prop :=
 theorem isHomogeneous_of_subsingleton {Y : Type*} [TopologicalSpace Y] [Subsingleton Y] :
     IsHomogeneous Y := fun x y => ⟨Homeomorph.refl Y, Subsingleton.elim x y⟩
 
-/-- A subsingleton metric space is (vacuously) aposyndetic. -/
-theorem isAposyndetic_of_subsingleton {Y : Type*} [MetricSpace Y] [Subsingleton Y] :
-    IsAposyndetic Y := fun x y hxy => absurd (Subsingleton.elim x y) hxy
-
-/-- The circle is not homeomorphic to a subsingleton. -/
-theorem not_homeomorph_circle_of_subsingleton {Y : Type*} [TopologicalSpace Y] [Subsingleton Y]
-    (e : Y ≃ₜ Circle) : False := by
-  have hne : Circle.exp Real.pi ≠ 1 := by
-    rw [Ne, Circle.exp_eq_one]
-    rintro ⟨n, hn⟩
-    have h1 : (1 : ℝ) = 2 * n := by
-      have := Real.pi_pos
-      field_simp at hn
-      linarith
-    have h2 : (1 : ℤ) = 2 * n := by exact_mod_cast h1
-    omega
-  exact hne (e.symm.injective (Subsingleton.elim _ _))
-
-/-- Jones 1949 Theorem 1 **as printed** is false for a one-point continuum (vacuously homogeneous and
-aposyndetic, not a simple closed curve) — unless "continuum" excludes points in the convention of
-the books Jones's footnote 3 refers to (Moore 1932, Whyburn 1942). Record the convention.
-
-*Convention recorded:* Whyburn 1942, Ch. I §10 (p. 15): "A compact connected set will be called a
-continuum"; by §8 (p. 13) a one-point set is connected. One-point sets are continua there, and the
-printed form is false as stated. -/
-theorem not_jones49_theorem1_point :
-    ¬ ∀ K : Set Pt, IsCompact K → IsConnected K → IsHomogeneous K → IsAposyndetic K →
-      Nonempty (K ≃ₜ Circle) := by
-  intro h
-  obtain ⟨e⟩ := h {0} isCompact_singleton isConnected_singleton isHomogeneous_of_subsingleton
-    isAposyndetic_of_subsingleton
-  exact not_homeomorph_circle_of_subsingleton e
-
 /-! ## The circle is two arcs with common end points -/
 
 /-- The half-circle `t ↦ exp (s π t)` (`s = ±1`). -/

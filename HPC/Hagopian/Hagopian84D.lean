@@ -473,21 +473,6 @@ theorem CoverData84.isJonesDecomp (hX : IsHomogeneous M) (hi : ¬ IsDecomposable
       rw [← Subtype.ext hwz]
       exact hw.symm
 
-open Classical in
-/-- **§5.8, the printed closedness of `⋃𝔅`** (p. 343: "it follows that `⋃𝔅` is a closed open subset
-of `M`. Hence `𝔅` covers `M`"): for any choice as in `exists_finite_cover84`, `⋃𝔅 = M` (so `⋃𝔅` is
-closed). The statement is a corollary of the finite cover; the printed reason is not used. -/
-theorem sUnion_cover84_eq_univ {P : Fin 5 → Set M} (hP : IsChain5 P) (hn : IsNormal5 P)
-    (hf : IsFree5 P) (hr : IsRegular5 P) (Q : Set M → Fin 5 → Set M)
-    (hQ : ∀ Z ∈ Omega5 P, Z ∉ Delta5 P → IsChain5 (Q Z) ∧ IsFree5 (Q Z) ∧ IsRegular5 (Q Z) ∧
-      Z ∈ Delta5 (Q Z) ∧ closure (Q Z 0 ∪ Q Z 4) ⊆ ⋃₀ Delta5 P) :
-    ⋃₀ Delta5 P ∪ (⋃ Z ∈ Omega5 P \ Delta5 P, ⋃₀ Delta5 (Q Z)) = univ := by
-  obtain ⟨S, hS, hcov⟩ := exists_finite_cover84 hP hn hf hr Q hQ
-  refine eq_univ_of_forall fun y => ?_
-  rcases hcov y with h | ⟨Z, hZ, h⟩
-  · exact Or.inl h
-  · exact Or.inr (mem_iUnion₂.2 ⟨Z, hS Z hZ, h⟩)
-
 end Decomp
 
 /-- **§5.6, Theorem 1 of 1984 with `N = M`, in the form used** (`Hagopian84Decomp`). -/

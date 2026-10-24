@@ -134,12 +134,6 @@ theorem layerGlueA_injective : Function.Injective layerGlueA := by
   simp only [layerGlueA] at this
   exact Subtype.ext (by linarith)
 
-theorem layerGlueB_injective : Function.Injective layerGlueB := by
-  intro s t h
-  have := congrArg Subtype.val h
-  simp only [layerGlueB] at this
-  exact Subtype.ext (by linarith)
-
 omit [CompactSpace M] [ConnectedSpace M] in
 /-- The layers of `A` are layers of the glued map. -/
 theorem layer_glue_A {A B : Set M} {a : A → unitInterval} {b : B → unitInterval}

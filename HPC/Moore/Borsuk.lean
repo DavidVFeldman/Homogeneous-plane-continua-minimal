@@ -325,9 +325,6 @@ theorem exists_log_of_goodZeros {K B : Set Pt} (hK : IsCompact K) (hKc : IsConne
     rw [Complex.exp_add, hg'e z hz, hg₀e z hz]
     exact (hΦeq z (by rw [dist_comm]; exact infDist_le_dist_of_mem hz)).symm
 
-theorem toCpx_add (u v : Pt) : toCpx (u + v) = toCpx u + toCpx v := by
-  apply Complex.ext <;> simp [toCpx]
-
 theorem toCpx_sub (u v : Pt) : toCpx (u - v) = toCpx u - toCpx v := by
   apply Complex.ext <;> simp [toCpx]
 

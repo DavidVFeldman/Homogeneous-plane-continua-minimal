@@ -29,22 +29,6 @@ theorem tarc_of_isSimplePolyArc {α : Set Pt} {p q : Pt} (h : IsSimplePolyArc α
     TArc p q α :=
   tarc_of_isSimplePolyArc' h
 
-/-- **The arc theorem for Peano continua** (Moore–Mazurkiewicz; e.g. Whyburn, *Analytic Topology*,
-Ch. II; Nadler 8.23): two distinct points of a locally connected compact connected metric space are
-joined by an arc.
-
-*Route (batch 153):* neither `exists_tarc_of_seq` nor a new chain construction. Moore's own
-nested-chain proof of F.A. Theorem 15 is already formalized for any metric space with a family of
-"regions" that are connected open sets with compact closures, small ones inside any neighbourhood
-(`HPC.Moore.exists_irreducible`, batch 137). Taking the regions to be all connected open sets of `X`
-gives a compact connected set irreducible between `a` and `b`, an arc by
-`isIrreducibleConnected_iff_arc`. The general form, for a connected open subset of a compact locally
-connected metric space, is `exists_tarc_in_open`; item E uses it in `X − c`. -/
-theorem exists_tarc_of_locallyConnected {X : Type*} [MetricSpace X] [CompactSpace X]
-    [ConnectedSpace X] [LocallyConnectedSpace X] {a b : X} (hab : a ≠ b) :
-    ∃ C : Set X, TArc a b C :=
-  exists_tarc_of_locallyConnected' hab
-
 /-- **Accessibility.** For `M` compact, connected, semi-locally connected and cyclic, every boundary
 point `p` of a complementary domain `R` is the end of an arc from any point of `R` lying, except
 for `p`, in `R`. Proof (`accessible_of_cyclic'`): the route of REPORT-batch152 §8 —

@@ -1,6 +1,10 @@
-import HPC.Fold.Open
+import HPC.Fold.Minimal
+import HPC.Fold.OffCenter
+import HPC.Fold.Faithful
+import HPC.Fold.Zig77Main
 import HPC.Fold.Splice78
-import HPC.Fold.Theorem3Bing
+import Mathlib.Tactic
+import HPC.Fold.BingCrook
 import HPC.PseudoArc.Description
 
 /-!
@@ -57,19 +61,6 @@ theorem isFrom_ofBlocks_iff {n q : ℕ} (E : Chain X n) (β : Fin n → Fin q) (
       obtain ⟨v, hv, hSv⟩ := hu
       rw [← hv]
       exact Fin.ext (hS1 v hSv)
-
-/-- When `R` lies in `E.link r` alone and `S` in `E.link s` alone, the conclusion of `theorem4`
-(`β r = 0`, `β s = q - 1`) makes the consolidation a chain from `R` to `S`. -/
-theorem isFrom_ofBlocks_of_theorem4 {n q : ℕ} (E : Chain X n) (β : Fin n → Fin q)
-    (hβ : IsBlockMap β) (r s : Fin n) (hr : (β r).val = 0) (hs : (β s).val = q - 1) (R S : X)
-    (hR : R ∈ E.link r) (hRonly : ∀ t, R ∈ E.link t → t = r)
-    (hS : S ∈ E.link s) (hSonly : ∀ t, S ∈ E.link t → t = s) :
-    (E.ofBlocks β hβ).IsFrom R S := by
-  have hq : 0 < q := Fin.pos (β r)
-  rw [isFrom_ofBlocks_iff E β hβ hq]
-  refine ⟨⟨r, hR⟩, fun t ht => ?_, ⟨s, hS⟩, fun t ht => ?_⟩
-  · rw [hRonly t ht, hr]
-  · rw [hSonly t ht, hs]
 
 /-- A continuum: a nonempty compact connected set. -/
 def IsContinuum (K : Set X) : Prop := IsCompact K ∧ IsConnected K

@@ -49,15 +49,6 @@ namespace Space
 
 variable {S : Type*} (σ : Space S)
 
-/-- **Axiom 6′** (F.A. p. 163): "If `R` is a region and `AB` is an arc such that `AB − A` is a subset
-of `R` then `(R + A) − AB` is connected." -/
-def Axiom6' : Prop :=
-  ∀ R ∈ σ.region, ∀ (A B : S) (C : Set S), σ.IsArc A B C → C \ {A} ⊆ R → σ.IsConn ((R ∪ {A}) \ C)
-
-/-- **Axiom 7′** (F.A. p. 163): "Every boundary point of a region is a limit point of the exterior of
-that region." -/
-def Axiom7' : Prop := ∀ R ∈ σ.region, ∀ P ∈ σ.bdry R, σ.IsLimitPt P (σ.ext R)
-
 end Space
 
 end HPC.Moore

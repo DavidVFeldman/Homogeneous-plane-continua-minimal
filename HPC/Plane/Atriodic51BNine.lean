@@ -1,4 +1,4 @@
-import HPC.Plane.Atriodic51BElt
+import HPC.Plane.Atriodic51Defs
 
 /-!
 # Bing 1951, §4: supporting facts for Theorem 9 (batch 93)

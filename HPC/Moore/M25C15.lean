@@ -108,46 +108,6 @@ theorem m25_theorem15 {p q : Quotient r} {X Y Z : Set (Quotient r)} (hX : IsArcE
   exact th24_disj hopen (isPreconnected_restricted hG) hR subset_union_left hR₁ hR₂ hR₂R hext
     ((isArcElt_iff_tarc hG).1 hY).nonempty_diff
 
-/-- **Theorem 16** (p. 423). Under the hypothesis of Theorem 15, `R` is the sum of `R₁`, `R₂` and
-`pzq − (p + q)`. (\"Closely parallel\" to F.A. Theorem 25.) -/
-theorem m25_theorem16 {p q : Quotient r} {X Y Z : Set (Quotient r)} (hX : IsArcElt p q X)
-    (hY : IsArcElt p q Y) (hZ : IsArcElt p q Z) (hXY : X ∩ Y = {p, q})
-    (hZR : Z \ {p, q} ⊆ sccInterior (X ∪ Y)) :
-    sccInterior (X ∪ Y) = sccInterior (X ∪ Z) ∪ sccInterior (Y ∪ Z) ∪ (Z \ {p, q}) := by
-  haveI := t2Space_quot hG
-  haveI := locallyConnectedSpace_quot hG
-  obtain ⟨-, -, hJ, hJ₁, hJ₂⟩ := setting_int hG hX hY hZ hXY fun z hz => (hZR hz).1
-  have h := th25 (isOpen_restricted hG) (isPreconnected_restricted hG) (th21Prop_restricted hG)
-    (arcConn_quot hG) (ax8Prop_restricted hG) (ext_restricted hG) (tInt_sccInterior hG hJ)
-    ((isArcElt_iff_tarc hG).1 hX) ((isArcElt_iff_tarc hG).1 hY) hXY rfl
-    ((isArcElt_iff_tarc hG).1 hZ) hZR (tInt_comm hG hJ₁) (tInt_comm hG hJ₂)
-  rw [h]
-  ext x; simp only [mem_union]; tauto
-
-/-- **Theorem 17** (p. 423). Three arcs from `p` to `q`, no two with a common element except `p`,
-`q`: the interiors of the three closed curves they form in pairs are not mutually exclusive. (\"A method
-similar to that used in F.A. to prove Theorem 26.\") -/
-theorem m25_theorem17 {p q : Quotient r} {X Y Z : Set (Quotient r)} (hX : IsArcElt p q X)
-    (hY : IsArcElt p q Y) (hZ : IsArcElt p q Z) (hXY : X ∩ Y = {p, q}) (hXZ : X ∩ Z = {p, q})
-    (hYZ : Y ∩ Z = {p, q}) :
-    ¬ (Disjoint (sccInterior (X ∪ Y)) (sccInterior (X ∪ Z)) ∧
-      Disjoint (sccInterior (X ∪ Y)) (sccInterior (Y ∪ Z)) ∧
-      Disjoint (sccInterior (X ∪ Z)) (sccInterior (Y ∪ Z))) := by
-  haveI := t2Space_quot hG
-  haveI := locallyConnectedSpace_quot hG
-  have h := th26 (isOpen_restricted hG) (isPreconnected_restricted hG) (th21Prop_restricted hG)
-    (arcConn_quot hG) (ax8Prop_restricted hG) (ext_restricted hG)
-    (isCompact_closure_restricted hG) (not_isCompact_univ_quot hG)
-    ((isArcElt_iff_tarc hG).1 hX) ((isArcElt_iff_tarc hG).1 hY) ((isArcElt_iff_tarc hG).1 hZ)
-    hXY hXZ hYZ (tInt_sccInterior hG (isSCCElt_union hG hX hZ hXZ))
-    (tInt_sccInterior hG (isSCCElt_union hG hX hY hXY))
-    (tInt_sccInterior hG (isSCCElt_union hG hY hZ hYZ))
-  rintro ⟨h1, h2, h3⟩
-  rcases h with h | h | h
-  · exact (not_disjoint_iff_nonempty_inter.2 h) h1.symm
-  · exact (not_disjoint_iff_nonempty_inter.2 h) h3
-  · exact (not_disjoint_iff_nonempty_inter.2 h) h2
-
 /-- **Theorem 18** (pp. 423–424). `pxq`, `pyq` arcs with only their extremities in common, `J` the
 curve they form, `pzq` an arc lying, except for its extremities, in the exterior of `J`;
 `J₁ = pxq + pzq`, `J₂ = pyq + pzq`. Then \"(1) either `y` is without `J₁` … or `x` is in the exterior of

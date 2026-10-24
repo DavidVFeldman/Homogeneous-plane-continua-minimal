@@ -168,8 +168,6 @@ theorem interp_bijective {w a : I → I} (ha : Continuous a) (hmono : StrictMono
     obtain ⟨y, -, hy⟩ := intermediate_value_Icc (zero_le_one' I) hc hv
     exact ⟨(x, y), Prod.ext rfl (Subtype.ext hy)⟩
 
-theorem interp_fst (w a : I → I) (p : I × I) : (interp w a p).1 = p.1 := rfl
-
 theorem interp_of_w0 {w a : I → I} {p : I × I} (h : w p.1 = 0) : interp w a p = p := by
   ext <;> simp [interp, h]
 

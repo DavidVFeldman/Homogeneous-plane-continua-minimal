@@ -55,30 +55,6 @@ theorem subset_fibre_or_saturated {f : X → Y} (hf : IsAtomicMap f) {L : Set X}
 theorem fibre_subset_of_saturated {f : X → Y} {L : Set X} (hL : f ⁻¹' (f '' L) = L) {x : X}
     (hx : x ∈ L) : f ⁻¹' {f x} ⊆ L := fun z hz => hL ▸ ⟨x, hx, (show f z = f x from hz).symm⟩
 
-/-- Test: the identity is atomic. -/
-theorem isAtomicMap_id : IsAtomicMap (id : X → X) := by
-  intro y L _ ⟨x, hxL, hx⟩
-  right
-  intro z hz
-  have h1 : z = y := hz
-  have h2 : x = y := hx
-  rw [h1, ← h2]; exact hxL
-
-/-- Test: a product projection is not atomic. -/
-theorem not_isAtomicMap_snd :
-    ¬ IsAtomicMap (Prod.snd : unitInterval × unitInterval → unitInterval) := by
-  intro h
-  have hL : Fold.Q78.IsContinuum (({0} : Set unitInterval) ×ˢ (univ : Set unitInterval)) :=
-    ⟨isCompact_singleton.prod isCompact_univ, isConnected_singleton.prod isConnected_univ⟩
-  rcases h 0 _ hL ⟨(0, 0), ⟨rfl, mem_univ _⟩, rfl⟩ with h' | h'
-  · have : ((0 : unitInterval), (1 : unitInterval)) ∈
-        (Prod.snd : unitInterval × unitInterval → unitInterval) ⁻¹' {0} :=
-      h' ⟨rfl, mem_univ _⟩
-    exact one_ne_zero (show (1 : unitInterval) = 0 from this)
-  · have := (h' (show ((1 : unitInterval), (0 : unitInterval)) ∈
-        (Prod.snd : unitInterval × unitInterval → unitInterval) ⁻¹' {0} from rfl)).1
-    exact one_ne_zero (show (1 : unitInterval) = 0 from this)
-
 end Atomic
 
 /-! ## §3. Atomic arcs are snake-like -/
@@ -295,17 +271,5 @@ theorem isSnakeLike_of_atomic {f : X → unitInterval} (hc : Continuous f)
 
 end Arc
 
-
-/-- Non-vacuity of `isSnakeLike_of_atomic'` and `isHereditarilyUnicoherent_of_atomic`: the identity
-of `[0, 1]`. -/
-theorem nonvac_isSnakeLike_of_atomic' :
-    Continuous (id : unitInterval → unitInterval) ∧
-      (∀ t : unitInterval, IsSnakeLike ((id : unitInterval → unitInterval) ⁻¹' {t}) ∧
-        IsHereditarilyIndecomposable ((id : unitInterval → unitInterval) ⁻¹' {t})) ∧
-      IsAtomicMap (id : unitInterval → unitInterval) := by
-  refine ⟨continuous_id, fun t => ⟨⟨⟨isCompact_singleton, isConnected_singleton⟩,
-    fun ε hε => epsCoverable_singleton t hε⟩, fun K hK hKc => ?_⟩, isAtomicMap_id⟩
-  have : K = {t} := (Set.Nonempty.subset_singleton_iff hKc.2.nonempty).1 hK
-  rw [this]; exact isIndecomposable_singleton t
 
 end HPC.BJ59

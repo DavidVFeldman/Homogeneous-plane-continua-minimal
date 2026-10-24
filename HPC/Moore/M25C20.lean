@@ -196,33 +196,6 @@ theorem m25r_axiom8 : (spaceRestricted r).Axiom8 := by
   rw [bdry_restricted hG]
   exact (sccInterior_spec hG hJ).2.2.2.1
 
-/-- Axioms 6′ and 7′ for the restricted regions (\"a consequence of Theorems 11 and 13\", p. 425). -/
-theorem m25_axioms6'7' : (spaceRestricted r).Axiom6' ∧ (spaceRestricted r).Axiom7' := by
-  have h1 := m25r_axiom1 hG
-  constructor
-  · intro R hR A B C hC hCR
-    rw [isArc_restricted_iff hG] at hC
-    have hAC : A ∈ C := hC.2.2.2.2.1
-    have heq : (R ∪ {A}) \ C = R \ C := by
-      ext x
-      simp only [mem_diff, mem_union, mem_singleton_iff]
-      constructor
-      · rintro ⟨hx | rfl, hxC⟩
-        · exact ⟨hx, hxC⟩
-        · exact absurd hAC hxC
-      · rintro ⟨hx, hxC⟩; exact ⟨Or.inl hx, hxC⟩
-    rw [heq, isConn_iff h1, spaceRestricted_topology hG]
-    exact (m25_theorem13 hG (mooreRegion_of_restricted hG hR)
-      (Or.inr ⟨A, B, hC, Or.inl hCR⟩)).2.isPreconnected
-  · rintro R ⟨J, hJ, rfl⟩ P hP
-    rw [bdry_restricted hG, (sccInterior_spec hG hJ).2.2.2.1] at hP
-    rw [isLimitPt_iff h1, Space.ext, cl_eq_closure_restricted hG, spaceRestricted_topology hG,
-      compl_closure_sccInterior hG hJ, accPt_iff_nhds]
-    intro U hU
-    have hPE : P ∈ frontier (sccExterior J) := by rw [(sccInterior_spec hG hJ).2.2.2.2.2.2.2.1]; exact hP
-    obtain ⟨y, hyU, hyE⟩ := mem_closure_iff_nhds.1 (frontier_subset_closure hPE) U hU
-    exact ⟨y, ⟨hyU, hyE⟩, fun h => hyE.1 (h ▸ hP)⟩
-
 end M25C20
 
 end HPC.Moore

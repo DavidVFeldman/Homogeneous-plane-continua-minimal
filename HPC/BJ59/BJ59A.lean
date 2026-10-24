@@ -39,13 +39,6 @@ theorem homeomorph_of_isCircleOfPA (h10 : BJThm10) {X Y : Type} [MetricSpace X] 
 theorem isHomogeneous_circle : IsHomogeneous Circle := by
   exact isHomogeneous_circle'
 
-/-- **Jones's elements are pseudo-arcs** (Jones 1955 Theorem 2 with Part F), unconditional: in a
-decomposable homogeneous plane continuum, each non-degenerate element of Jones's decomposition is
-a pseudo-arc. -/
-theorem isPseudoArc_Lset {M : Set Pt} [CompactSpace M] [ConnectedSpace M] (hX : IsHomogeneous M)
-    (hd : IsDecomposableSpace M) (x : M) (hnt : (Lset x).Nontrivial) : IsPseudoArc (Lset x) := by
-  exact isPseudoArc_Lset' hX hd x hnt
-
 /-- **The decomposable case**: a decomposable homogeneous plane continuum is a simple closed curve
 or a circle of pseudo-arcs. -/
 theorem circle_or_circleOfPA_of_decomposable (hCL : HOCircleLike) {M : Set Pt} [CompactSpace M]
@@ -137,23 +130,6 @@ section Section3
 
 variable {X : Type*} [MetricSpace X] [CompactSpace X]
 
-/-- **Bing–Jones, Theorem 2** (p. 174). -/
-theorem bj_theorem2 {f : X → unitInterval} (hf : IsArcOfContinua f)
-    (hS : IsSnakeLike (univ : Set X)) {a b c d : unitInterval} (h0a : 0 < a) (hab : a < b)
-    (hbc : b < c) (hcd : c < d) (hd1 : d < 1) :
-    ∃ ε > 0, ∀ (n : ℕ) (D : Chain X n), IsEpsChain D ε → univ ⊆ D.union →
-      ∀ i j k : Fin n, (D.link i ∩ f ⁻¹' Icc 0 a).Nonempty →
-        (D.link j ∩ f ⁻¹' Icc b c).Nonempty → (D.link k ∩ f ⁻¹' Icc d 1).Nonempty →
-          (i < j ∧ j < k) ∨ (k < j ∧ j < i) := by
-  exact theorem2_arc hf.1 hf.2.1 (fun t => (hf.2.2 t).2.isPreconnected) hab hbc hcd
-
-/-- **Bing–Jones, Theorem 3** (pp. 174–175): an `ε`-chain from `g₀` to `g₁`. -/
-theorem bj_theorem3 {f : X → unitInterval} (hf : IsArcOfContinua f)
-    (hS : IsSnakeLike (univ : Set X)) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (m : ℕ) (D : Chain X (m + 1)), IsEpsChain D ε ∧ univ ⊆ D.union ∧
-      (D.link 0 ∩ f ⁻¹' {0}).Nonempty ∧ (D.link (Fin.last m) ∩ f ⁻¹' {1}).Nonempty := by
-  exact theorem3_arc hf.1 hf.2.1 (fun t => (hf.2.2 t).2.isPreconnected) hS hε
-
 /-- **Bing–Jones, Theorem 4** (p. 175): a non-empty open set missing the end elements separates
 them. -/
 theorem bj_theorem4 {f : X → unitInterval} (hf : IsArcOfContinua f)
@@ -177,73 +153,6 @@ theorem bj_theorem4 {f : X → unitInterval} (hf : IsArcOfContinua f)
   exact theorem4_of_chain hU hU01 (hf.2.2 0).2.isPreconnected (hf.2.2 1).2.isPreconnected D hcov
     h0 h1 l hlU
 
-/-- **Bing–Jones, Theorem 5, repaired** (pp. 175–176; stretch). Changed hypotheses (commission
-§6): `f` open, and no fibre meets a link only inside `Ū` (`hEU`, which implies Bing–Jones's
-"E properly covers each g_x"). The hypotheses `hE` and `hUE` turn out not to be needed by the
-proof (kept verbatim from the skeleton). -/
-theorem bj_theorem5 {f : X → unitInterval} (hf : IsArcOfContinua f) (hfo : IsOpenMap f)
-    (hS : IsSnakeLike (univ : Set X)) (hind : ∀ t, Fold.Q78.IsIndecomposable (f ⁻¹' {t}))
-    {n : ℕ} (E : Chain X n) (hE : univ ⊆ E.union)
-    {U : Set X} (hU : IsOpen U) (hUne : U.Nonempty) (hU01 : Disjoint U (f ⁻¹' {0, 1}))
-    (hUE : ∃ i, closure U ⊆ E.link i) (hEU : ∀ t i, ¬ E.link i ∩ f ⁻¹' {t} ⊆ closure U) :
-    ∃ A B : Set X, IsClosed A ∧ IsClosed B ∧ Disjoint A B ∧ A ∪ B = Uᶜ ∧ f ⁻¹' {0} ⊆ A ∧
-      f ⁻¹' {1} ⊆ B ∧ ∀ t, (∀ i, (E.link i ∩ (A ∩ f ⁻¹' {t})).Nonempty) ∨
-        (∀ i, (E.link i ∩ (B ∩ f ⁻¹' {t})).Nonempty) :=
-  theorem5_repaired hf hfo hS hind E hU hUne hU01 hEU
-
-/-- **Bing–Jones's Theorem 5 as printed is false** (commission §6): its hypotheses (a chain
-properly covering each fibre, `Ū` in a link) do not give its conclusion. -/
-theorem bj_theorem5_printed_false : ¬ ∀ (X : Type) [MetricSpace X] [CompactSpace X]
-    (f : X → unitInterval), IsArcOfContinua f → IsSnakeLike (univ : Set X) →
-    (∀ t, Fold.Q78.IsIndecomposable (f ⁻¹' {t})) → ∀ (n : ℕ) (E : Chain X n), univ ⊆ E.union →
-    (∀ t i, (E.link i ∩ f ⁻¹' {t}).Nonempty) → ∀ U : Set X, IsOpen U → U.Nonempty →
-    Disjoint U (f ⁻¹' {0, 1}) → (∃ i, closure U ⊆ E.link i) →
-    ∃ A B : Set X, IsClosed A ∧ IsClosed B ∧ Disjoint A B ∧ A ∪ B = Uᶜ ∧ f ⁻¹' {0} ⊆ A ∧
-      f ⁻¹' {1} ⊆ B ∧ ∀ t, (∀ i, (E.link i ∩ (A ∩ f ⁻¹' {t})).Nonempty) ∨
-        (∀ i, (E.link i ∩ (B ∩ f ⁻¹' {t})).Nonempty) := by
-  intro h
-  set U : Set unitInterval := {x | (1 / 4 : ℝ) < x ∧ (x : ℝ) < 3 / 4}
-  have hU : IsOpen U := (isOpen_lt continuous_const continuous_subtype_val).inter
-    (isOpen_lt continuous_subtype_val continuous_const)
-  set x₀ : unitInterval := ⟨1 / 2, by norm_num, by norm_num⟩
-  have hx₀ : x₀ ∈ U := ⟨by norm_num [x₀], by norm_num [x₀]⟩
-  have hU01 : Disjoint U (id ⁻¹' {0, 1}) := by
-    rw [Set.disjoint_left]
-    rintro x ⟨h1, h2⟩ (hx | hx)
-    · have : (x : ℝ) = 0 := congrArg Subtype.val hx
-      linarith
-    · have : (x : ℝ) = 1 := congrArg Subtype.val hx
-      linarith
-  obtain ⟨A, B, -, -, -, hAB, -, -, hall⟩ := h unitInterval id isArcOfContinua_id
-    isSnakeLike_univ_unitInterval (fun t => isIndecomposable_singleton t) 1
-    (oneLinkChain unitInterval) (fun x _ => mem_iUnion.2 ⟨0, mem_univ x⟩)
-    (fun t _ => ⟨t, mem_univ t, rfl⟩) U hU ⟨x₀, hx₀⟩ hU01 ⟨0, subset_univ _⟩
-  have hnot : ∀ y ∈ A ∪ B, y ≠ x₀ := fun y hy hyx => by
-    rw [hAB] at hy; exact hy (hyx ▸ hx₀)
-  rcases hall x₀ with h' | h'
-  · obtain ⟨y, -, hyA, hy⟩ := h' 0
-    exact hnot y (Or.inl hyA) hy
-  · obtain ⟨y, -, hyB, hy⟩ := h' 0
-    exact hnot y (Or.inr hyB) hy
-
 end Section3
-
-/-- **Bing–Jones, Theorem 6** (p. 176), on indices: two chain maps of `D` into `E` that each take
-a link into `e_{m−1}` (index `m − 2`) agree up to adjacency at some link. -/
-theorem bj_theorem6 {n m : ℕ} {H₁ H₂ : Fin n → Fin m} (h₁ : IsChainMap H₁) (h₂ : IsChainMap H₂)
-    (h₁e : ∃ i, (H₁ i : ℕ) + 2 = m) (h₂e : ∃ i, (H₂ i : ℕ) + 2 = m) :
-    ∃ i, ((H₁ i : ℤ) - H₂ i).natAbs ≤ 1 := by
-  by_contra hcon
-  push_neg at hcon
-  obtain ⟨i₁, hi₁⟩ := h₁e
-  obtain ⟨i₂, hi₂⟩ := h₂e
-  rcases lt_or_gt_of_ne (show ((H₁ i₂ : ℤ) - H₂ i₂) ≠ 0 by have := hcon i₂; omega) with h | h
-  · have hs := sign_persist h₂ h₁ (fun i => by have := hcon i; omega) i₂ i₁
-      (by have := hcon i₂; omega)
-    have := (H₂ i₁).2
-    omega
-  · have hs := sign_persist h₁ h₂ hcon i₂ i₂ (by have := hcon i₂; omega)
-    have := (H₁ i₂).2
-    omega
 
 end HPC.BJ59

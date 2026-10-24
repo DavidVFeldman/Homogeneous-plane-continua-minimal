@@ -1,6 +1,10 @@
-import HPC.Fold.Open
+import HPC.Fold.Minimal
+import HPC.Fold.OffCenter
+import HPC.Fold.Faithful
+import HPC.Fold.Zig77Main
 import HPC.Fold.Splice78
-import HPC.Fold.Theorem3Bing
+import Mathlib.Tactic
+import HPC.Fold.BingCrook
 import HPC.Fold.Pair79Assemble
 
 /-!

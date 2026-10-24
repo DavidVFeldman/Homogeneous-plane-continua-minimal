@@ -414,42 +414,6 @@ theorem eq_add_smul_of_cross_zero {d z p : Pt} (hd : d ≠ 0)
     · simp only [Prod.fst_add, Prod.smul_fst, smul_eq_mul]; field_simp; ring
     · simp only [Prod.snd_add, Prod.smul_snd, smul_eq_mul]; field_simp; linarith
 
-/-- At a point `p` of the edge `i` that is not a vertex, a small ball meets `Γ` only in the line
-of the edge: `ball p ρ ∩ polygonOf v = ball p ρ ∩ segment`, and the segment there is the chord of
-the line `L_i` through the edge. -/
-theorem polygon_local_chord {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (i : Fin n) {p : Pt}
-    (hp : p ∈ polyEdge v i) (hpv : ∀ k, p ≠ v k) :
-    ∃ ρ > 0, ball p ρ ∩ polygonOf v = ball p ρ ∩ polyEdge v i ∧
-      ∀ z ∈ ball p ρ ∩ polyEdge v i,
-        ∃ t : ℝ, z = p + t • (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) := by
-  classical
-  set K := ⋃ j ∈ (Finset.univ.erase i), polyEdge v j with hK_def
-  have hK : IsClosed K := isClosed_biUnion_finset fun j _ => (isCompact_segment' _ _).isClosed
-  have hpK : p ∉ K := by
-    simp only [K, mem_iUnion, not_exists]
-    intro j hj
-    exact not_mem_polyEdge_of_ne hv (Finset.ne_of_mem_erase hj) hp hpv
-  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.1 hK.isOpen_compl p hpK
-  refine ⟨ρ, hρ, ?_, ?_⟩
-  · ext z
-    constructor
-    · rintro ⟨hzb, hzΓ⟩
-      refine ⟨hzb, ?_⟩
-      obtain ⟨j, hj⟩ := mem_iUnion.1 hzΓ
-      by_cases hji : j = i
-      · rw [← hji]; exact hj
-      · exact absurd (mem_iUnion₂.2 ⟨j, Finset.mem_erase.2 ⟨hji, Finset.mem_univ _⟩, hj⟩)
-          (hball hzb)
-    · rintro ⟨hzb, hze⟩
-      exact ⟨hzb, mem_iUnion.2 ⟨i, hze⟩⟩
-  · rintro z ⟨-, hz⟩
-    have hz' : z ∈ segment ℝ (v i) (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩) := hz
-    have hp' : p ∈ segment ℝ (v i) (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩) := hp
-    rw [segment_eq_image'] at hz' hp'
-    obtain ⟨s, -, rfl⟩ := hz'
-    obtain ⟨s', -, rfl⟩ := hp'
-    exact ⟨s - s', by beta_reduce; rw [sub_smul]; abel⟩
-
 /-- The two open half-disks at `p`: the points of `ball p ρ` strictly on each side of the line of
 the edge. (`sideOf p d z := (z - p).1 * d.2 - (z - p).2 * d.1`, the sign of the cross product
 with the edge direction `d`.) -/
@@ -512,136 +476,6 @@ theorem halfDisk_nonempty (p d : Pt) (hd : d ≠ 0) {ρ : ℝ} (hρ : 0 < ρ) (s
       τ0 * (d.1 ^ 2 + d.2 ^ 2) := by ring
     rw [this]; exact mul_pos hτ0p hd2
 
-/-- The ball minus the chord is the two half-disks. -/
-theorem ball_diff_chord {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (i : Fin n) {p : Pt}
-    (hp : p ∈ polyEdge v i) (hpv : ∀ k, p ≠ v k) :
-    ∃ ρ > 0, ∀ ρ', 0 < ρ' → ρ' ≤ ρ →
-      ball p ρ' \ polygonOf v =
-        halfDisk p (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) ρ' true ∪
-        halfDisk p (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) ρ' false := by
-  obtain ⟨ρ₁, hρ₁, hch, -⟩ := polygon_local_chord hv i hp hpv
-  set d := v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i with hd_def
-  have hd : d ≠ 0 := edge_ends_ne hv i
-  have hp' : p ∈ segment ℝ (v i) (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩) := hp
-  rw [segment_eq_image'] at hp'
-  obtain ⟨s₀, ⟨hs0, hs1⟩, hps⟩ := hp'
-  have hs0' : 0 < s₀ := lt_of_le_of_ne hs0 fun h => hpv i (by rw [← hps, ← h]; simp)
-  have hs1' : s₀ < 1 := lt_of_le_of_ne hs1 fun h =>
-    hpv ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ (by rw [← hps, h]; simp)
-  have hdn : 0 < ‖d‖ := norm_pos_iff.2 hd
-  have hm : 0 < min s₀ (1 - s₀) := lt_min hs0' (by linarith)
-  refine ⟨min ρ₁ (min s₀ (1 - s₀) * ‖d‖), lt_min hρ₁ (mul_pos hm hdn), fun ρ' hρ' hρ'le => ?_⟩
-  have hon : ∀ z ∈ ball p ρ', (z.1 - p.1) * d.2 - (z.2 - p.2) * d.1 = 0 →
-      z ∈ polyEdge v i := by
-    intro z hz hc
-    obtain ⟨τ, rfl⟩ := eq_add_smul_of_cross_zero hd hc
-    have h1 : |τ| * ‖d‖ < min s₀ (1 - s₀) * ‖d‖ := by
-      have := mem_ball.1 hz
-      rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs] at this
-      exact this.trans_le (hρ'le.trans (min_le_right _ _))
-    have hτ : |τ| < min s₀ (1 - s₀) := lt_of_mul_lt_mul_right h1 hdn.le
-    rw [abs_lt] at hτ
-    show _ ∈ segment ℝ _ _
-    rw [segment_eq_image']
-    refine ⟨s₀ + τ, ⟨by linarith [min_le_left s₀ (1 - s₀)],
-      by linarith [min_le_right s₀ (1 - s₀)]⟩, ?_⟩
-    rw [← hps]; beta_reduce; rw [add_smul, hd_def]; abel
-  have hcross_edge : ∀ z ∈ polyEdge v i, (z.1 - p.1) * d.2 - (z.2 - p.2) * d.1 = 0 :=
-    fun z hz => cross_zero_of_mem_segment hz hp
-  ext z
-  simp only [mem_diff, mem_union]
-  constructor
-  · rintro ⟨hzb, hzΓ⟩
-    have hc : (z.1 - p.1) * d.2 - (z.2 - p.2) * d.1 ≠ 0 := fun hc =>
-      hzΓ (mem_iUnion.2 ⟨i, hon z hzb hc⟩)
-    rcases lt_or_gt_of_ne hc with h | h
-    · exact Or.inr (mem_halfDisk_false (mem_ball.1 hzb) h)
-    · exact Or.inl (mem_halfDisk_true (mem_ball.1 hzb) h)
-  · have hoff : ∀ z ∈ ball p ρ', z ∈ polygonOf v →
-        (z.1 - p.1) * d.2 - (z.2 - p.2) * d.1 = 0 := by
-      intro z hzb hzΓ
-      have : z ∈ ball p ρ₁ ∩ polygonOf v :=
-        ⟨ball_subset_ball (hρ'le.trans (min_le_left _ _)) hzb, hzΓ⟩
-      rw [hch] at this
-      exact hcross_edge z this.2
-    rintro (⟨hzb, hz⟩ | ⟨hzb, hz⟩)
-    · refine ⟨hzb, fun hzΓ => ?_⟩
-      have := hoff z hzb hzΓ
-      simp only [if_true] at hz; linarith
-    · refine ⟨hzb, fun hzΓ => ?_⟩
-      have := hoff z hzb hzΓ
-      simp only [Bool.false_eq_true, if_false] at hz; linarith
-
-/-- **The parity flips across every edge**, horizontal ones included: the two half-disks at a
-non-vertex point of an edge have different parities. -/
-theorem parity_flip_edge {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (i : Fin n) {p : Pt}
-    (hp : p ∈ polyEdge v i) (hpv : ∀ k, p ≠ v k) {ρ : ℝ} (hρ : 0 < ρ)
-    (hball : ball p ρ ∩ polygonOf v ⊆ polyEdge v i) :
-    ∀ z₁ ∈ halfDisk p (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) ρ true,
-    ∀ z₂ ∈ halfDisk p (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i) ρ false,
-      parity v z₁ ≠ parity v z₂ := by
-  set d := v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩ - v i with hd_def
-  have hd : d ≠ 0 := edge_ends_ne hv i
-  have hcross_edge : ∀ z ∈ polyEdge v i, (z.1 - p.1) * d.2 - (z.2 - p.2) * d.1 = 0 :=
-    fun z hz => cross_zero_of_mem_segment hz hp
-  have hHoff : ∀ s, halfDisk p d ρ s ⊆ (polygonOf v)ᶜ := by
-    intro s z hz hzΓ
-    have h0 := hcross_edge z (hball ⟨hz.1, hzΓ⟩)
-    have h2 := hz.2
-    cases s
-    · simp only [Bool.false_eq_true, if_false] at h2; linarith
-    · simp only [if_true] at h2; linarith
-  have hconst : ∀ s, ∀ x ∈ halfDisk p d ρ s, ∀ y ∈ halfDisk p d ρ s, parity v x = parity v y :=
-    fun s x hx y hy =>
-      parity_eq_of_isPreconnected (halfDisk_convex p d ρ s).isPreconnected (hHoff s) hx hy
-  suffices h : ∃ y₁ ∈ halfDisk p d ρ true, ∃ y₂ ∈ halfDisk p d ρ false,
-      parity v y₁ ≠ parity v y₂ by
-    obtain ⟨y₁, hy₁, y₂, hy₂, hne⟩ := h
-    intro z₁ hz₁ z₂ hz₂
-    rw [hconst true z₁ hz₁ y₁ hy₁, hconst false z₂ hz₂ y₂ hy₂]
-    exact hne
-  by_cases hh : (v i).2 = (v ⟨(i.val + 1) % n, Nat.mod_lt _ (Fin.pos i)⟩).2
-  · have hd2 : d.2 = 0 := by simp only [hd_def, Prod.snd_sub, hh, sub_self]
-    have hd1 : d.1 ≠ 0 := fun h => hd (Prod.ext h hd2)
-    obtain ⟨ε, hε, hflip⟩ := parity_flip_vertical hv i hh hp hpv
-    have ht : 0 < min ε ρ / 2 := by positivity
-    have htε : min ε ρ / 2 < ε := by linarith [min_le_left ε ρ]
-    have htρ : min ε ρ / 2 < ρ := by linarith [min_le_right ε ρ]
-    obtain ⟨-, -, hne⟩ := hflip _ ht htε
-    have hdp : dist ((p.1, p.2 + min ε ρ / 2) : Pt) p < ρ := by
-      rw [dist_shift_snd, abs_of_pos ht]; exact htρ
-    have hdm : dist ((p.1, p.2 - min ε ρ / 2) : Pt) p < ρ := by
-      rw [dist_shift_snd_sub, abs_of_pos ht]; exact htρ
-    rcases lt_or_gt_of_ne hd1 with h | h
-    · exact ⟨_, mem_halfDisk_true hdp (by simp only [hd2]; nlinarith), _,
-        mem_halfDisk_false hdm (by simp only [hd2]; nlinarith), hne⟩
-    · exact ⟨_, mem_halfDisk_true hdm (by simp only [hd2]; nlinarith), _,
-        mem_halfDisk_false hdp (by simp only [hd2]; nlinarith), hne.symm⟩
-  · have hd2 : d.2 ≠ 0 := fun h => hh (by simp only [hd_def, Prod.snd_sub] at h; linarith)
-    have hc : (0 : ℝ) * d.1 + 1 * d.2 ≠ 0 := by simpa using hd2
-    obtain ⟨q, hq, hqp, hqF⟩ := exists_near_on_segment hp
-      (Finset.univ.image fun k => 0 * (v k).1 + 1 * (v k).2) 0 1 hc (half_pos hρ)
-    have hcv : ∀ k, (v k).2 ≠ q.2 := fun k h => hqF (Finset.mem_image.2 ⟨k, Finset.mem_univ _, by
-      rw [h]; ring⟩)
-    obtain ⟨ε, hε, hflip⟩ := parity_flip_at hv i hh hq hcv
-    have ht : 0 < min ε (ρ / 2) / 2 := by positivity
-    have htε : min ε (ρ / 2) / 2 < ε := by linarith [min_le_left ε (ρ / 2)]
-    have htρ : min ε (ρ / 2) / 2 < ρ / 2 := by linarith [min_le_right ε (ρ / 2)]
-    obtain ⟨-, -, hne⟩ := hflip _ ht htε
-    have hcq := hcross_edge q hq
-    have hdq : ∀ s : ℝ, |s| < ρ / 2 → dist ((q.1 + s, q.2) : Pt) p < ρ := by
-      intro s hs
-      have : dist ((q.1 + s, q.2) : Pt) q = |s| := dist_shift_fst q s
-      linarith [dist_triangle ((q.1 + s, q.2) : Pt) q p]
-    have hdp := hdq (min ε (ρ / 2) / 2) (by rwa [abs_of_pos ht])
-    have hdm := hdq (-(min ε (ρ / 2) / 2)) (by rwa [abs_neg, abs_of_pos ht])
-    simp only [← sub_eq_add_neg] at hdm
-    rcases lt_or_gt_of_ne hd2 with h | h
-    · exact ⟨_, mem_halfDisk_true hdm (by simp only; nlinarith), _,
-        mem_halfDisk_false hdp (by simp only; nlinarith), hne⟩
-    · exact ⟨_, mem_halfDisk_true hdp (by simp only; nlinarith), _,
-        mem_halfDisk_false hdm (by simp only; nlinarith), hne.symm⟩
-
 /-! ### The split of the complement -/
 
 theorem compl_eq_union_parity_sets {n : ℕ} (v : Fin n → Pt) (e : ZMod 2) :
@@ -675,49 +509,6 @@ theorem local_piece {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (e : 
     (mem_closure_parity_set hv e hw) (mem_closure_parity_set hv (e + 1) hw)
 
 /-! ### Local structure at a vertex -/
-
-/-- At a vertex `w = v i`, with `ρ` from `polygon_local_rays`: the ball minus `Γ` is two preconnected
-pieces (`ball_diff_rays`) of **different parities**, each piece of constant parity. -/
-theorem vertex_two_pieces {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (i : Fin n) :
-    ∃ ρ > 0, ∃ P₀ P₁ : Set Pt, IsPreconnected P₀ ∧ IsPreconnected P₁ ∧
-      ball (v i) ρ \ polygonOf v = P₀ ∪ P₁ ∧
-      (∀ z ∈ P₀, parity v z = 0) ∧ (∀ z ∈ P₁, parity v z = 1) ∧
-      P₀.Nonempty ∧ P₁.Nonempty := by
-  have hΓ := isSimpleClosedPolygon_iff.2 ⟨n, v, hv, rfl⟩
-  have hw : v i ∈ polygonOf v := mem_iUnion.2 ⟨i, left_mem_segment _ _ _⟩
-  obtain ⟨ρ, hρ, a, b, ha, hb, hab, hloc⟩ := polygon_local_rays hΓ hw
-  obtain ⟨Q₁, Q₂, h1, h2, hQ⟩ := ball_diff_rays (v i) a b ha hb hab hρ
-  have hdiff : ball (v i) ρ \ polygonOf v = Q₁ ∪ Q₂ := by
-    rw [← hQ]; ext x
-    simp only [mem_diff]
-    constructor
-    · rintro ⟨hxb, hxΓ⟩
-      refine ⟨hxb, fun hr => hxΓ ?_⟩
-      have : x ∈ (rayFrom (v i) a ∪ rayFrom (v i) b) ∩ ball (v i) ρ := ⟨hr, hxb⟩
-      rw [← hloc] at this; exact this.1
-    · rintro ⟨hxb, hxr⟩
-      refine ⟨hxb, fun hΓx => hxr ?_⟩
-      have : x ∈ polygonOf v ∩ ball (v i) ρ := ⟨hΓx, hxb⟩
-      rw [hloc] at this; exact this.1
-  have hQsub : Q₁ ∪ Q₂ ⊆ (polygonOf v)ᶜ := by rw [← hdiff]; exact fun x hx => hx.2
-  have hs1 : Q₁ ⊆ (polygonOf v)ᶜ := subset_union_left.trans hQsub
-  have hs2 : Q₂ ⊆ (polygonOf v)ᶜ := subset_union_right.trans hQsub
-  have hz : ∀ e : ZMod 2, ∃ z, z ∈ Q₁ ∪ Q₂ ∧ parity v z = e := fun e => by
-    obtain ⟨y, hy, hdy⟩ := Metric.mem_closure_iff.1 (mem_closure_parity_set hv e hw) ρ hρ
-    exact ⟨y, by rw [← hdiff]; exact ⟨by rw [mem_ball, dist_comm]; exact hdy, hy.1⟩, hy.2⟩
-  obtain ⟨z₀, hz₀, hp₀⟩ := hz 0
-  obtain ⟨z₁, hz₁, hp₁⟩ := hz 1
-  rcases hz₀ with h0 | h0 <;> rcases hz₁ with h1' | h1'
-  · have := parity_eq_of_isPreconnected h1 hs1 h0 h1'
-    rw [hp₀, hp₁] at this; exact absurd this zero_ne_one
-  · exact ⟨ρ, hρ, Q₁, Q₂, h1, h2, hdiff,
-      fun z hz => (parity_eq_of_isPreconnected h1 hs1 hz h0).trans hp₀,
-      fun z hz => (parity_eq_of_isPreconnected h2 hs2 hz h1').trans hp₁, ⟨z₀, h0⟩, ⟨z₁, h1'⟩⟩
-  · exact ⟨ρ, hρ, Q₂, Q₁, h2, h1, by rw [hdiff, union_comm],
-      fun z hz => (parity_eq_of_isPreconnected h2 hs2 hz h0).trans hp₀,
-      fun z hz => (parity_eq_of_isPreconnected h1 hs1 hz h1').trans hp₁, ⟨z₀, h0⟩, ⟨z₁, h1'⟩⟩
-  · have := parity_eq_of_isPreconnected h2 hs2 h0 h1'
-    rw [hp₀, hp₁] at this; exact absurd this zero_ne_one
 
 /-! ### The first hit, and the neighbourhood of `Γ` -/
 
@@ -758,21 +549,6 @@ theorem segment_subset_of_first_hit {n : ℕ} {v : Fin n → Pt} {x p : Pt}
   show x + s • (x + t • (p - x) - x) ∈ _
   rw [add_sub_cancel_left, smul_smul]
   exact hp _ (mul_nonneg hs0 ht0) (by nlinarith)
-
-/-- **Every point off `Γ` is joined, inside its parity class, to every ball about a point of `Γ`
-of the right parity.** -/
-theorem exists_segment_to_boundary {n : ℕ} (v : Fin n → Pt) {x : Pt} (hx : x ∉ polygonOf v)
-    (hn : 0 < n) :
-    ∃ p ∈ polygonOf v, ∀ ρ > 0, ∃ z ∈ ball p ρ \ polygonOf v,
-      parity v z = parity v x ∧ segment ℝ x z ⊆ (polygonOf v)ᶜ := by
-  obtain ⟨p, hp, hhit⟩ := exists_first_hit v hx hn
-  refine ⟨p, hp, fun ρ hρ => ?_⟩
-  obtain ⟨t, ht0, ht1, hdist⟩ := exists_param_near_end x p hρ
-  have hseg := segment_subset_of_first_hit hhit ht0 ht1
-  refine ⟨x + t • (p - x), ⟨by rw [mem_ball]; exact hdist, hseg (right_mem_segment _ _ _)⟩, ?_,
-    hseg⟩
-  exact parity_eq_of_isPreconnected (convex_segment _ _).isPreconnected hseg
-    (right_mem_segment _ _ _) (left_mem_segment _ _ _)
 
 /-- **The parity-`e` neighbourhood of `Γ`**: the union of all the preconnected local pieces
 `{x ∉ Γ | parity v x = e} ∩ ball w r`, `w ∈ Γ`, `r > 0`. -/
@@ -832,17 +608,6 @@ theorem sideNbhd_isConnected {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices
         have : dist y w' < r₀ w - dist w' w := hy.trans_le (min_le_right _ _)
         linarith
       exact ⟨y, hbase w hw ⟨hyS, hy2⟩, hbase w' hw' ⟨hyS, hy1⟩⟩
-
-/-- Every point of `Γ` has, in every ball about it, points of `sideNbhd v e` for both `e`. -/
-theorem sideNbhd_near {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) (e : ZMod 2) {p : Pt}
-    (hp : p ∈ polygonOf v) : ∀ ρ > 0, (ball p ρ ∩ sideNbhd v e).Nonempty := by
-  intro ρ hρ
-  obtain ⟨r₀, hr₀, hc⟩ := local_piece hv e hp
-  have hm : 0 < min ρ r₀ := lt_min hρ hr₀
-  obtain ⟨⟨y, hy⟩, hcon⟩ := hc _ hm (min_le_right _ _)
-  refine ⟨y, ball_subset_ball (min_le_left _ _) hy.2, ?_⟩
-  simp only [sideNbhd, mem_iUnion]
-  exact ⟨p, hp, _, hm, hcon.isPreconnected, hy⟩
 
 /-- Every point of `Γᶜ` of parity `e` is joined to `sideNbhd v e` by a segment in `Γᶜ`. -/
 theorem exists_segment_to_sideNbhd {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices v) {x : Pt}
@@ -921,19 +686,5 @@ theorem jct_polygon (J : Set Pt) (hJ : IsSimpleClosedPolygon J) :
     have := hC (hR x (by linarith [le_max_left R C]))
     rw [mem_closedBall] at this
     linarith [le_max_right R C]
-
-/-- `PlaneFacts` from its two remaining fields (batch 129: the `janiszewski` field, and so `hjan`,
-asks polygonal sets; with `janiszewski_polygonal` the interface reduces to `enclose`:
-`planeFacts_of_enclose`, `HPC/Plane/JanPoly.lean`). -/
-theorem planeFacts_of_enclose_janiszewski
-    (henc : ∀ M : Set Pt, Fold.Q78.IsContinuum M → ¬ SeparatesPlane M →
-      ∀ G : Set Pt, IsOpen G → M ⊆ G →
-        ∃ J : Set Pt, IsSimpleClosedPolygon J ∧ Disjoint J M ∧ M ⊆ polyInterior J ∧
-          polyInterior J ⊆ G)
-    (hjan : ∀ A B : Set Pt, IsPolygonal A → IsPolygonal B →
-      (IsConnected (A ∩ B) ∨ A ∩ B = ∅) →
-      ∀ x y : Pt, ¬ SeparatesPts A x y → ¬ SeparatesPts B x y → ¬ SeparatesPts (A ∪ B) x y) :
-    PlaneFacts :=
-  ⟨jct_polygon, henc, hjan⟩
 
 end HPC.Plane

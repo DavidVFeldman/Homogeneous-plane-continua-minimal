@@ -1,9 +1,13 @@
 import HPC.Plane.Theorem11
 import Mathlib
 import HPC.Plane.NonCut51Gen
-import HPC.Plane.Atriodic51B
+import HPC.Plane.Atriodic51BNine
+import HPC.Plane.Atriodic51Defs
 import HPC.Plane.EpsMap98
-import HPC.Plane.Recon91
+import HPC.Plane.Most51
+import HPC.Chains.Basic
+import HPC.Plane.Composant91
+import HPC.Plane.Surgery91
 
 /-!
 # Batch 99: the last-link claim of Bing's Theorem 10 (Duke 1951), by Fugate's counting argument
@@ -49,46 +53,6 @@ theorem clampVal_step {k m : ℕ} {D : Chain X m} {F : Chain X k} (hk : 0 < k) (
         show min i (k - 1) = k - 1 by omega]
     rw [this]
     simp
-
-/-- **Item 1. Discrete intermediate value for refinements.** If `F` refines `D` via the choice
-`idx` (`F.link i ⊆ D.link (idx i)`), a run `F(u..v)` passes through every `D`-index between
-`idx u` and `idx v`. -/
-theorem exists_link_in_between {m k : ℕ} {D : Chain X m} {F : Chain X k}
-    (idx : Fin k → Fin m) (hidx : ∀ i, F.link i ⊆ D.link (idx i))
-    {u v : Fin k} (huv : u ≤ v) {r : Fin m} (hr : idx u ≤ r ∧ r ≤ idx v ∨ idx v ≤ r ∧ r ≤ idx u) :
-    ∃ i : Fin k, u ≤ i ∧ i ≤ v ∧ idx i = r := by
-  have hk : 0 < k := u.pos
-  set C := clampVal hk idx with hC
-  have hstep := clampVal_step hk idx hidx
-  have hCu : C u = ((idx u : Fin m) : ℕ) := clampVal_of_lt hk idx u.isLt
-  have hCv : C v = ((idx v : Fin m) : ℕ) := clampVal_of_lt hk idx v.isLt
-  have huv' : u.val ≤ v.val := huv
-  -- it suffices to find a natural index in `[u, v]` with value `r`
-  suffices h : ∃ t : ℕ, u.val ≤ t ∧ t ≤ v.val ∧ C t = (r : ℕ) by
-    obtain ⟨t, h1, h2, h3⟩ := h
-    refine ⟨⟨t, by omega⟩, h1, h2, Fin.ext ?_⟩
-    rw [hC, clampVal_of_lt hk idx (by omega)] at h3
-    exact_mod_cast h3
-  have hr' : (C u ≤ (r : ℕ) ∧ ((r : ℕ) : ℤ) ≤ C v) ∨ (C v ≤ (r : ℕ) ∧ ((r : ℕ) : ℤ) ≤ C u) := by
-    rw [hCu, hCv]
-    rcases hr with ⟨h1, h2⟩ | ⟨h1, h2⟩
-    · left; exact ⟨by exact_mod_cast h1, by exact_mod_cast h2⟩
-    · right; exact ⟨by exact_mod_cast h1, by exact_mod_cast h2⟩
-  by_cases hu : C u = (r : ℕ)
-  · exact ⟨u, le_rfl, huv', hu⟩
-  by_cases hv : C v = (r : ℕ)
-  · exact ⟨v, huv', le_rfl, hv⟩
-  rcases hr' with ⟨h1, h2⟩ | ⟨h1, h2⟩
-  · obtain ⟨t, ht1, ht2, hc⟩ := exists_adjacent_cross hstep (a := u.val) (b := v.val)
-      (p := (r : ℕ)) h1 (show ((r : ℕ) : ℤ) + 1 ≤ C v.val by omega)
-    rcases hc with ⟨e1, -⟩ | ⟨-, e2⟩
-    · exact ⟨t, by omega, by omega, e1⟩
-    · exact ⟨t + 1, by omega, by omega, e2⟩
-  · obtain ⟨t, ht1, ht2, hc⟩ := exists_adjacent_cross hstep (a := v.val) (b := u.val)
-      (p := (r : ℕ)) h1 (show ((r : ℕ) : ℤ) + 1 ≤ C u.val by omega)
-    rcases hc with ⟨e1, -⟩ | ⟨-, e2⟩
-    · exact ⟨t, by omega, by omega, e1⟩
-    · exact ⟨t + 1, by omega, by omega, e2⟩
 
 /-! ### The combinatorial core -/
 
@@ -517,197 +481,6 @@ theorem refines_of_refines_sub {m n : ℕ} {D : Chain X m} {a b : Fin m} {hab : 
   obtain ⟨j, hj⟩ := h i
   exact ⟨_, hj⟩
 
-/-- **Theorem 10, the induction.** Strong induction on the length of `D`; inside, a minimal
-counterexample `M'` (Zorn), which meets every link of `D` (else a shorter subchain covers it), is
-nondegenerate, and contains a proper nondegenerate subcontinuum `K ∋ p` meeting every link; `K`
-has a Theorem-10 chain by minimality, a least one has its last link through
-`K ∩ (D_0 ∪ D_{m-1}) ∖ {p}` (`lastLink_of_minimal`), and Bing's surgery
-(`theorem10_1951_of_lastLink`, batch 91) gives one for `M'`. -/
-theorem theorem10_aux (p : X) : ∀ (m : ℕ) (D : Chain X m) (M : Set X), Fold.Q78.IsContinuum M →
-    M ⊆ D.union → CondA M p → ∃ (n : ℕ) (E : Chain X n), IsT10Chain D M p E := by
-  intro m
-  induction m using Nat.strong_induction_on with
-  | _ m IH =>
-  intro D M hM hD hp
-  by_contra hfail
-  set S : Set (Set X) := {W | W ⊆ M ∧ Fold.Q78.IsContinuum W ∧ p ∈ W ∧
-    ¬ ∃ (n : ℕ) (E : Chain X n), IsT10Chain D W p E} with hS
-  obtain ⟨M', -, hM'min⟩ := zorn_superset_nonempty S (fun c hcS hch hne => by
-    refine ⟨⋂₀ c, ⟨?_, ⟨?_, ?_⟩, ?_, ?_⟩, fun W hW => sInter_subset_of_mem hW⟩
-    · obtain ⟨W, hW⟩ := hne
-      exact (sInter_subset_of_mem hW).trans (hcS hW).1
-    · obtain ⟨W, hW⟩ := hne
-      exact (hcS hW).2.1.1.of_isClosed_subset
-        (isClosed_sInter fun W hW => (hcS hW).2.1.1.isClosed) (sInter_subset_of_mem hW)
-    · exact ⟨⟨p, mem_sInter.mpr fun W hW => (hcS hW).2.2.1⟩,
-        isPreconnected_sInter_chain' hne hch (fun W hW => (hcS hW).2.1.1)
-          (fun W hW => (hcS hW).2.1.2.isPreconnected)⟩
-    · exact mem_sInter.mpr fun W hW => (hcS hW).2.2.1
-    · rintro ⟨n, E, hn, hcov, hrest⟩
-      haveI : Nonempty c := hne.to_subtype
-      obtain ⟨⟨W, hWc⟩, hW⟩ := exists_subset_nhds_of_isCompact'
-        (V := fun i : c => (i : Set X)) (U := E.union)
-        (fun i j => by
-          rcases hch.total i.2 j.2 with h | h
-          · exact ⟨i, le_rfl, h⟩
-          · exact ⟨j, h, le_rfl⟩)
-        (fun i => (hcS i.2).2.1.1) (fun i => (hcS i.2).2.1.1.isClosed)
-        (fun x hx => (isOpen_iUnion E.isOpen).mem_nhds
-          (hcov (by rw [sInter_eq_iInter]; simpa using hx)))
-      exact (hcS hWc).2.2.2 ⟨n, E, hn, hW, hrest⟩) M ⟨subset_rfl, hM, hp.1, hfail⟩
-  obtain ⟨hM'M, hM'c, hpM', hM'fail⟩ := hM'min.1
-  have hA' : CondA M' p := ⟨hpM', fun W hW => hp.2 W (hW.trans hM'M)⟩
-  have hM'D : M' ⊆ D.union := hM'M.trans hD
-  obtain ⟨i₀, hi₀⟩ := mem_iUnion.mp (hM'D hpM')
-  have hm0 : 0 < m := i₀.pos
-  have hloc : ∀ x ∈ M', ∃ i : Fin m, x ∈ D.link i := fun x hx => mem_iUnion.mp (hM'D hx)
-  -- `M'` meets the two end links of `D`
-  have hend0 : (M' ∩ D.link ⟨0, hm0⟩).Nonempty := by
-    by_contra h0
-    rw [not_nonempty_iff_eq_empty] at h0
-    have hm2 : 2 ≤ m := by
-      by_contra hm2
-      have : i₀ = ⟨0, hm0⟩ := Fin.ext (by have := i₀.isLt; omega)
-      exact (eq_empty_iff_forall_notMem.mp h0) p ⟨hpM', this ▸ hi₀⟩
-    have hle : (⟨1, by omega⟩ : Fin m) ≤ ⟨m - 1, by omega⟩ := Fin.mk_le_mk.mpr (by omega)
-    obtain ⟨n, E, hn, hcovE, hED, hrest⟩ := IH _ (by simp only []; omega)
-      (D.sub ⟨1, by omega⟩ ⟨m - 1, by omega⟩ hle) M' hM'c
-      (subset_sub_union D hle fun x hx => by
-        obtain ⟨i, hi⟩ := hloc x hx
-        refine ⟨i, ?_, by simp only []; omega, hi⟩
-        by_contra h
-        have : i = ⟨0, hm0⟩ := Fin.ext (by simp only [] at h ⊢; omega)
-        exact (eq_empty_iff_forall_notMem.mp h0) x ⟨hx, this ▸ hi⟩) hA'
-    exact hM'fail ⟨n, E, hn, hcovE, refines_of_refines_sub hED, hrest⟩
-  have hend1 : (M' ∩ D.link ⟨m - 1, by omega⟩).Nonempty := by
-    by_contra h0
-    rw [not_nonempty_iff_eq_empty] at h0
-    have hm2 : 2 ≤ m := by
-      by_contra hm2
-      have : i₀ = ⟨m - 1, by omega⟩ := Fin.ext (by have := i₀.isLt; simp only []; omega)
-      exact (eq_empty_iff_forall_notMem.mp h0) p ⟨hpM', this ▸ hi₀⟩
-    have hle : (⟨0, by omega⟩ : Fin m) ≤ ⟨m - 2, by omega⟩ := Fin.mk_le_mk.mpr (by omega)
-    obtain ⟨n, E, hn, hcovE, hED, hrest⟩ := IH _ (by simp only []; omega)
-      (D.sub ⟨0, by omega⟩ ⟨m - 2, by omega⟩ hle) M' hM'c
-      (subset_sub_union D hle fun x hx => by
-        obtain ⟨i, hi⟩ := hloc x hx
-        refine ⟨i, by simp only []; omega, ?_, hi⟩
-        by_contra h
-        have : i = ⟨m - 1, by omega⟩ := Fin.ext (by have := i.isLt; simp only [] at h ⊢; omega)
-        exact (eq_empty_iff_forall_notMem.mp h0) x ⟨hx, this ▸ hi⟩) hA'
-    exact hM'fail ⟨n, E, hn, hcovE, refines_of_refines_sub hED, hrest⟩
-  -- hence every link
-  have hmeet : ∀ i, (D.link i ∩ M').Nonempty := by
-    intro i
-    rw [inter_comm]
-    by_cases hi0 : i.val = 0
-    · rwa [show i = ⟨0, hm0⟩ from Fin.ext hi0]
-    by_cases hi1 : i.val = m - 1
-    · rwa [show i = ⟨m - 1, by omega⟩ from Fin.ext hi1]
-    exact D.inter_link_nonempty_between hM'c.2.isPreconnected hM'D
-      (show (⟨0, hm0⟩ : Fin m) < i from Fin.mk_lt_mk.mpr (by omega))
-      (show i < ⟨m - 1, by omega⟩ from Fin.lt_def.mpr (by simp only []; omega)) hend0 hend1
-  -- `m ≥ 2`: a one-link chain is its own Theorem-10 chain
-  have hm2 : 2 ≤ m := by
-    by_contra hm2
-    refine hM'fail ⟨m, D, hm0, hM'D, fun i => ⟨i, subset_rfl⟩, ?_, fun j hj => ?_⟩
-    · rwa [show i₀ = ⟨0, hm0⟩ from Fin.ext (by have := i₀.isLt; omega)] at hi₀
-    · exact absurd (j.isLt) (by omega)
-  -- `M'` is nondegenerate: `{p}` has the one-link chain `D(i₀..i₀)`
-  have hnt : M'.Nontrivial := by
-    by_contra hnt
-    rw [not_nontrivial_iff] at hnt
-    have hM'p : M' = {p} := hnt.eq_singleton_of_mem hpM'
-    refine hM'fail ⟨_, D.sub i₀ i₀ le_rfl, by omega, ?_, refines_of_refines_sub
-      (fun i => ⟨i, subset_rfl⟩), ?_, fun j hj => absurd j.isLt (by omega)⟩
-    · rw [hM'p]
-      refine singleton_subset_iff.mpr (mem_iUnion.mpr ⟨⟨0, by omega⟩, ?_⟩)
-      show p ∈ D.link ⟨i₀.val + 0, _⟩
-      simpa using hi₀
-    · show p ∈ D.link ⟨i₀.val + 0, _⟩
-      simpa using hi₀
-  -- a proper nondegenerate subcontinuum through `p` meeting every link
-  have hB : CondB M' p := condB_of_condA hA'
-  obtain ⟨K₁, hK₁M, hK₁ne, hK₁c, hpK₁, hK₁meet⟩ := exists_proper_meeting_all_links hM'c hnt hA' D hmeet
-  obtain ⟨K₂, hK₂M, hK₂ne, hK₂c, hpK₂, z, hzK₂, hzp⟩ := exists_proper_subcontinuum_meeting hM'c hnt
-    hpM' (isOpen_compl_singleton (x := p))
-    (by obtain ⟨x, hx, hxp⟩ := hnt.exists_ne p; exact ⟨x, hxp, hx⟩)
-  have hK : ∃ K : Set X, K ⊆ M' ∧ K ≠ M' ∧ Fold.Q78.IsContinuum K ∧ p ∈ K ∧
-      (∀ i, (D.link i ∩ K).Nonempty) ∧ K.Nontrivial := by
-    rcases hB.2 K₁ K₂ hK₁M hK₂M hK₁c hK₂c hpK₁ hpK₂ with h | h
-    · exact ⟨K₂, hK₂M, hK₂ne, hK₂c, hpK₂, fun i => (hK₁meet i).mono (inter_subset_inter_right _ h),
-        ⟨z, hzK₂, p, hpK₂, hzp⟩⟩
-    · exact ⟨K₁, hK₁M, hK₁ne, hK₁c, hpK₁, hK₁meet, ⟨z, h hzK₂, p, hpK₁, hzp⟩⟩
-  obtain ⟨K, hKM, hKne, hKc, hpK, hKmeet, hKnt⟩ := hK
-  -- `K` has a Theorem-10 chain, by minimality of `M'`
-  have hKT : ∃ (n : ℕ) (E : Chain X n), IsT10Chain D K p E := by
-    by_contra hKT
-    exact hKne (Subset.antisymm hKM (hM'min.2 ⟨hKM.trans hM'M, hKc, hpK, hKT⟩ hKM))
-  obtain ⟨k, F, hF, hmin⟩ := exists_minimal_T10Chain D K p hKT
-  obtain ⟨y, hyK, hyp, hyF, hyD⟩ := lastLink_of_minimal D hm2 hKnt hKmeet F hF hmin
-  obtain ⟨hk, hKF, hFD, hp0, hpF⟩ := hF
-  rcases hyD with hyD | hyD
-  · obtain ⟨n, E, hn, h⟩ := theorem10_1951_of_lastLink hM'c D hM'D hB hKM hKc hpK F hk hKF hFD
-      hp0 hpF hm0 hyK hyF hyD hyp
-    exact hM'fail ⟨n, E, hn, h⟩
-  · obtain ⟨n, E, hn, h⟩ := theorem10_1951_of_lastLink' hM'c D hM'D hB hKM hKc hpK F hk hKF hFD
-      hp0 hpF hm0 hyK hyF hyD hyp
-    exact hM'fail ⟨n, E, hn, h⟩
-
-/-- **Item 4. Theorem 10** (Bing 1951, p. 659). If `D` covers the continuum `M` and `p ∈ M`
-satisfies condition A, some refinement `E` of `D` covers `M` with `p` in its first link and in
-the closure of no other link. -/
-theorem theorem10_1951 {M : Set X} (hM : Fold.Q78.IsContinuum M) {m : ℕ} (D : Chain X m)
-    (hD : M ⊆ D.union) {p : X} (hp : CondA M p) :
-    ∃ (n : ℕ) (E : Chain X n) (hn : 0 < n), M ⊆ E.union ∧ E.Refines D ∧
-      p ∈ E.link ⟨0, hn⟩ ∧ ∀ j : Fin n, j.val ≠ 0 → p ∉ closure (E.link j) := by
-  obtain ⟨n, E, hn, h⟩ := theorem10_aux p m D M hM hD hp
-  exact ⟨n, E, hn, h⟩
-
-@[inherit_doc theorem10_1951] alias theorem10_1951' := theorem10_1951
-
-/-- **Theorem 13, sufficiency for condition A**: in a snake-like continuum a point satisfying
-condition A is an end point (via Theorem 10). Batch 100 moved it here from `EndPoints51.lean`, which
-cannot import this file (`Surgery91.lean`, used here, imports `EndPoints51.lean`). -/
-theorem endPoint_of_condA {M : Set X} (hM : IsSnakeLike M) {p : X} (hp : CondA M p) :
-    IsEndPoint M p := by
-  refine ⟨hp.1, fun ε hε => ?_⟩
-  obtain ⟨m, D, hDε, hMD⟩ := hM.2 ε hε
-  obtain ⟨n, E, hn, hME, hED, hp0, hpj⟩ := theorem10_1951 hM.1 D hMD hp
-  refine ⟨n, E, hn, fun i => ?_, hME, hp0, fun j hj h => hpj j hj (subset_closure h)⟩
-  obtain ⟨k, hk⟩ := hED i
-  exact ⟨(hDε k).1.subset hk, (Metric.diam_mono hk (hDε k).1).trans_lt (hDε k).2⟩
-
-@[inherit_doc endPoint_of_condA] alias endPoint_of_condA' := endPoint_of_condA
-
 /-! ### The skeleton's form of the last-link claim is false for `K = {p}` -/
-
-/-- The chain of `n ≤ 2` links all equal to `ℝ`. -/
-def univChainR (n : ℕ) (hn : n ≤ 2) : Chain ℝ n where
-  link _ := univ
-  isOpen _ := isOpen_univ
-  adjacent i j := by
-    simp only [inter_self, univ_nonempty, true_iff]
-    have := i.isLt; have := j.isLt
-    omega
-
-/-- **Refutation of the skeleton's `lastLink_of_minimal`.** With `D = (ℝ, ℝ)`, `K = {0}`,
-`p = 0` and `F = (ℝ)`, every hypothesis holds (`F` has the least possible length, one), but no
-point of `K` differs from `p`. -/
-theorem lastLink_of_minimal_skeleton_false :
-    ¬ ∀ {m : ℕ} (D : Chain ℝ m) (hm : 2 ≤ m) {K : Set ℝ},
-      Fold.Q78.IsContinuum K → (∀ i, (D.link i ∩ K).Nonempty) → ∀ {p : ℝ}, p ∈ K →
-      ∀ {k : ℕ} (F : Chain ℝ k) (hF : IsT10Chain D K p F),
-      (∀ (k' : ℕ) (F' : Chain ℝ k'), IsT10Chain D K p F' → k ≤ k') →
-      ∃ y ∈ K, y ≠ p ∧ y ∈ F.link ⟨k - 1, by have := hF.1; omega⟩ ∧
-        (y ∈ D.link ⟨0, by omega⟩ ∨ y ∈ D.link ⟨m - 1, by omega⟩) := by
-  intro h
-  have hT : IsT10Chain (univChainR 2 le_rfl) {0} 0 (univChainR 1 (by norm_num)) :=
-    ⟨by norm_num, fun x _ => mem_iUnion.mpr ⟨0, trivial⟩, fun i => ⟨0, subset_rfl⟩, trivial,
-      fun j hj => absurd (Fin.val_eq_zero j) hj⟩
-  obtain ⟨y, hy, hyp, -⟩ := h (univChainR 2 le_rfl) le_rfl
-    ⟨isCompact_singleton, isConnected_singleton⟩ (fun i => ⟨0, trivial, rfl⟩) rfl
-    (univChainR 1 (by norm_num)) hT (fun k' F' hF' => hF'.1)
-  exact hyp hy
 
 end HPC.Plane

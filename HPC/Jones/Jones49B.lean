@@ -75,18 +75,6 @@ theorem whyburn_3_2 [CompactSpace X] [ConnectedSpace X] :
   · rw [hcc, hc]; exact ⟨a, hau.2, hau.1⟩
   · rw [hcc, hc]; exact ⟨b, hbv.2, hbv.1⟩
 
-/-- **Whyburn (8.4).** In a compact metric space, all but countably many separating points (in the
-sense of `IsSepPointOf p univ`; compare (8.32)) are of order 2. (The case `R = univ` of
-`countable_sepPoint_not_hasOrder_two`.) -/
-theorem whyburn_8_4 [CompactSpace X] :
-    {p : X | IsSepPointOf p univ ∧ ¬ HasOrder p 2}.Countable :=
-  countable_sepPoint_not_hasOrder_two isOpen_univ
-
-/-- **Whyburn (8.41).** The same for a locally compact separable metric space. -/
-theorem whyburn_8_41 [LocallyCompactSpace X] [TopologicalSpace.SeparableSpace X] :
-    {p : X | IsSepPointOf p univ ∧ ¬ HasOrder p 2}.Countable :=
-  countable_sepPoint_not_hasOrder_two isOpen_univ
-
 /-- **Whyburn (9.2)** — the statement left open in batch 149 (`OPEN.md`), restated verbatim.
 
 Whyburn's proof: a local separating point separates every basic open set inside its open set

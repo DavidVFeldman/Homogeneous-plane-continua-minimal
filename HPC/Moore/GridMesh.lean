@@ -136,9 +136,6 @@ theorem isOpen_boxOpen (j j' : ιX) (m m' : ιY) : IsOpen (g.boxOpen j j' m m') 
   ((((g.FX.closedL j).union (g.FX.closedR j')).union (g.FY.closedL m)).union
     (g.FY.closedR m')).isOpen_compl
 
-theorem box_eq_inter (j j' : ιX) (m m' : ιY) :
-    box g.FX g.FY j j' m m' = K ∩ g.boxOpen j j' m m' := rfl
-
 /-- **Counting.** If the complement in `U` of the lines of a finite subgrid has as many components
 as there are boxes, then every box lies in one component. -/
 theorem box_sub_component {G : Finset ιX} {H : Finset ιY} (hG : InjOn g.FX.t G)

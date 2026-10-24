@@ -162,15 +162,6 @@ theorem bddAbove_move (h : Y ≃ₜ Y) : BddAbove (range fun z : Y => dist (h z)
 theorem dist_le_supMove (h : Y ≃ₜ Y) (z : Y) : dist (h z) z ≤ supMove Y h :=
   le_ciSup (bddAbove_move h) z
 
-omit [CompactSpace Y] in
-theorem supMove_nonneg (h : Y ≃ₜ Y) : 0 ≤ supMove Y h :=
-  Real.iSup_nonneg fun _ => dist_nonneg
-
-omit [CompactSpace Y] in
-theorem supMove_le {h : Y ≃ₜ Y} {a : ℝ} (ha : 0 ≤ a) (hh : ∀ z, dist (h z) z ≤ a) :
-    supMove Y h ≤ a :=
-  Real.iSup_le hh ha
-
 /-- `supMove` is the uniform distance of `h` from the identity. -/
 theorem supMove_eq_dist (h : Y ≃ₜ Y) :
     supMove Y h = dist (homeoCM h) (ContinuousMap.id Y) := by
@@ -186,21 +177,6 @@ theorem supMove_symm (h : Y ≃ₜ Y) : supMove Y h.symm = supMove Y h := by
 
 omit [CompactSpace Y] in
 theorem supMove_inv (h : Y ≃ₜ Y) : supMove Y h⁻¹ = supMove Y h := supMove_symm h
-
-/-- `supMove (h⁻¹ ∘ g) ≤ supMove h + supMove g`. -/
-theorem supMove_symm_trans_le (g h : Y ≃ₜ Y) :
-    supMove Y (g.trans h.symm) ≤ supMove Y h + supMove Y g := by
-  refine supMove_le (add_nonneg (supMove_nonneg h) (supMove_nonneg g)) fun z => ?_
-  calc dist ((g.trans h.symm) z) z ≤ dist (h.symm (g z)) (g z) + dist (g z) z :=
-        dist_triangle _ _ _
-    _ ≤ supMove Y h.symm + supMove Y g :=
-        add_le_add (dist_le_supMove h.symm (g z)) (dist_le_supMove g z)
-    _ = supMove Y h + supMove Y g := by rw [supMove_symm]
-
-theorem supMove_mul_le (g h : Y ≃ₜ Y) : supMove Y (g * h) ≤ supMove Y g + supMove Y h := by
-  refine supMove_le (add_nonneg (supMove_nonneg g) (supMove_nonneg h)) fun z => ?_
-  calc dist ((g * h) z) z ≤ dist (g (h z)) (h z) + dist (h z) z := dist_triangle _ _ _
-    _ ≤ supMove Y g + supMove Y h := add_le_add (dist_le_supMove g _) (dist_le_supMove h z)
 
 /-- **C.3.** The `supMove`-balls form a basis of the neighbourhoods of `1`. -/
 theorem hasBasis_supMove :

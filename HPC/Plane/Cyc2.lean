@@ -247,13 +247,6 @@ theorem sideStrip_subset_compl (G : Finset Seg) (e : Seg) (s : Bool) :
   obtain ⟨-, hz⟩ := Set.mem_iUnion.1 hz
   exact halfDisk_subset_compl hp le_rfl s hz
 
-theorem sideStrip_nonempty {G : Finset Seg} (hG : IsProper G) {e : Seg} (he : e ∈ G) (s : Bool) :
-    (sideStrip G e s).Nonempty := by
-  obtain ⟨z, hz⟩ := halfDisk_nonempty (midpoint ℝ e.1 e.2) (segDir e) (segDir_ne_zero hG he)
-    (sideRadius_pos hG he (midpoint_mem_segSet e) (midpoint_not_mem_vertices hG he)) s
-  exact ⟨z, halfDisk_subset_sideStrip (midpoint_mem_segSet e) (midpoint_not_mem_vertices hG he)
-    le_rfl s hz⟩
-
 /-- The non-vertex points of an edge form the open segment. -/
 theorem nonvertex_eq_openSegment {G : Finset Seg} (hG : IsProper G) {e : Seg} (he : e ∈ G) :
     {p | p ∈ segSet e ∧ p ∉ vertices G} = openSegment ℝ e.1 e.2 := by

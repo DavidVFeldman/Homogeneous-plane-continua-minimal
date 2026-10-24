@@ -36,11 +36,6 @@ theorem Good.ell_a (hG : Good σ T B τ x p q a b e) (hBw : 2 * B + 10 ≤ w) (h
   have := al_near hs (hG.e_le hBw) hG.anca
   rw [abs_le] at this; linarith
 
-theorem Good.ell_b (hG : Good σ T B τ x p q a b e) (hBw : 2 * B + 10 ≤ w) (hs : Slow w τ) :
-    x q - 1 ≤ τ (σ b) := by
-  have := al_near hs (hG.e_le hBw) hG.ancb
-  rw [abs_le] at this; linarith
-
 theorem ell_lip (hS : Setting σ T) (hw : 1 ≤ w) (hs : Slow w τ) (f : ℕ) :
     |τ (σ (f + 1)) - τ (σ f)| ≤ 1 :=
   hs _ _ ((hS.lip f).trans (by exact_mod_cast hw))

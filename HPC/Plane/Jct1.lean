@@ -1,5 +1,11 @@
 import HPC.Plane.Tree7Comp
-import HPC.Fold.Theorem4Ge4
+import HPC.Fold.Minimal
+import HPC.Fold.OffCenter
+import HPC.Fold.Faithful
+import HPC.Fold.Zig77Main
+import HPC.Fold.Splice78
+import Mathlib.Tactic
+import HPC.Fold.BingCrook
 
 /-!
 # Batch 125: the Jordan curve theorem for simple closed polygons, part I — crossing parity;
@@ -152,14 +158,6 @@ theorem mem_segment_of_horizontal {a b z : Pt} (ha : a.2 = z.2) (hb : b.2 = z.2)
   · exact key a b ha hb h.1 h.2
   · rw [segment_symm]; exact key b a hb ha h.1 h.2
 
-/-- A point *on* the segment is never strictly to its own right:
-`x ∈ segment ℝ a b → ¬ CrossesEast x a b`. -/
-theorem not_crossesEast_of_mem {x a b : Pt} (hx : x ∈ segment ℝ a b) : ¬ CrossesEast x a b := by
-  rintro ⟨h1, h2⟩
-  have hab : a.2 ≠ b.2 := by rcases h1 with h | h <;> intro h' <;> linarith [h.1, h.2]
-  rw [← fst_eq_of_mem_segment hx hab] at h2
-  exact lt_irrefl _ h2
-
 /-! #### The indicator and the vertex rule -/
 
 open scoped Classical in
@@ -307,24 +305,6 @@ theorem ceInd_eventually_eq {x a b : Pt} (hx : x ∉ segment ℝ a b) (ha : x.2 
     have hvb : vJump x b = 0 := by simp [vJump, Ne.symm hb]
     exact zmod2_eq_of_add_eq_zero ((hy.2 h).trans (by rw [hva, hvb, add_zero]))
 
-/-- **Local constancy of a single edge's indicator away from the edge and away from the heights of
-its ends.** If `x ∉ segment ℝ a b` and `x.2 ≠ a.2`, `x.2 ≠ b.2`, the indicator of `CrossesEast · a b`
-is constant near `x`. -/
-theorem crossesEast_locallyConstant_of_ne {x a b : Pt} (hx : x ∉ segment ℝ a b) (ha : x.2 ≠ a.2)
-    (hb : x.2 ≠ b.2) :
-    ∃ ε > 0, ∀ y, dist y x < ε → (CrossesEast y a b ↔ CrossesEast x a b) := by
-  obtain ⟨ε, hε, h⟩ := Metric.eventually_nhds_iff.1 (crossesEast_jump hx)
-  refine ⟨ε, hε, fun y hy => ?_⟩
-  rcases le_or_gt x.2 y.2 with h' | h'
-  · exact (h hy).1 h'
-  · have hva : vJump x a = 0 := by simp [vJump, Ne.symm ha]
-    have hvb : vJump x b = 0 := by simp [vJump, Ne.symm hb]
-    have he := zmod2_eq_of_add_eq_zero ((h hy).2 h' |>.trans (by rw [hva, hvb, add_zero]))
-    unfold ceInd at he
-    constructor <;> intro hc
-    · by_contra hn; rw [if_pos hc, if_neg hn] at he; exact absurd he (by decide)
-    · by_contra hn; rw [if_pos hc, if_neg hn] at he; exact absurd he (by decide)
-
 /-! #### The parity as a sum; the telescoping of the vertex jumps -/
 
 theorem parity_eq_sum {n : ℕ} (v : Fin n → Pt) (x : Pt) :
@@ -364,13 +344,6 @@ theorem parity_eventually_eq {n : ℕ} (v : Fin n → Pt) {x : Pt} (hx : x ∉ p
   · apply zmod2_eq_of_add_eq_zero
     rw [← Finset.sum_add_distrib, ← sum_vJump_telescope v x]
     exact Finset.sum_congr rfl fun i _ => (hy i).2 h
-
-/-- **The parity is locally constant on `Γᶜ`.** (Simplicity of the polygon is not needed and the
-hypothesis of the skeleton is dropped.) -/
-theorem parity_locallyConstant {n : ℕ} {v : Fin n → Pt} {x : Pt}
-    (hx : x ∉ polygonOf v) : ∃ ε > 0, ∀ y, dist y x < ε → parity v y = parity v x := by
-  obtain ⟨ε, hε, h⟩ := Metric.eventually_nhds_iff.1 (parity_eventually_eq v hx)
-  exact ⟨ε, hε, fun y hy => h hy⟩
 
 /-- Parity is constant on preconnected subsets of `Γᶜ`. (Simplicity is not needed.) -/
 theorem parity_eq_of_isPreconnected {n : ℕ} {v : Fin n → Pt} {S : Set Pt}
@@ -683,22 +656,5 @@ end HPC.Plane
 namespace HPC.Fold
 
 open HPC.Chain
-
-/-- **Bing's Theorem 4 as printed, `k ≥ 4`** (`Theorem4LiteralGe4`): the two-link form with the
-only-clauses at both ends. Proved in `HPC/Fold/Theorem4Ge4.lean`: `two_core` with the pair form of
-Theorem 3 at both ends (`seg3Z`), the `G`-block of `d_k` sent to the top group (the new grouping
-for `K = 4`), and, where the companion would leave the segment of Theorem 3 (`r = h`, `s = k`), the
-meeting condition `OnlyE` instead of a companion. -/
-theorem theorem4_literal_ge4 {X : Type*} [MetricSpace X] {n k : ℕ} (hk : 4 ≤ k)
-    {E : Chain X n} {D : Chain X k} (hcr : E.IsCrookedIn' D) (r s : Fin n) (hrs : r ≤ s)
-    (hlow : ∃ h : Fin n, r ≤ h ∧ h ≤ s ∧ (E.link h ∩ D.link ⟨0, by omega⟩).Nonempty)
-    (hhigh : ∃ h : Fin n, r ≤ h ∧ h ≤ s ∧ (E.link h ∩ D.link ⟨k - 1, by omega⟩).Nonempty) :
-    ∃ (q : ℕ) (β : Fin n → Fin q) (hβ : IsBlockMap β),
-      (β r).val = 0 ∧ (β s).val = q - 1 ∧ OnlyIn E β hβ r ∧ OnlyIn E β hβ s ∧
-      ∀ u, ∃ j : ℕ, (E.ofBlocks β hβ).link u ⊆ D.unionRange j 2 :=
-  theorem4_literal_ge4_model hk hcr r s hrs hlow hhigh
-
-theorem theorem4LiteralGe4_holds : Theorem4LiteralGe4 :=
-  fun _ _ _ _ hk _ _ hcr r s hrs hlow hhigh => theorem4_literal_ge4 hk hcr r s hrs hlow hhigh
 
 end HPC.Fold

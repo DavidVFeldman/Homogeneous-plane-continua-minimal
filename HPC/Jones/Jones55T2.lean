@@ -151,36 +151,6 @@ theorem jones55_elements_indecomposable (h49 : Jones49Thm1) (hX : IsHomogeneous 
   intro hc
   exact false_of_split hc.isPreconnected hUo hVo hUc.nonempty hVc.nonempty hUV hUVe
 
-/-- p. 740: "every homogeneous, bounded continuum in the plane having more than two complementary
-domains is indecomposable and of Type 3" (Type 3, p. 735: "Those which separate the plane but are
-indecomposable"). Stated: three pairwise distinct complementary components force indecomposability
-(separation is then automatic). -/
-theorem jones55_three_domains (h49 : Jones49Thm1) (hX : IsHomogeneous M)
-    {a b c : Pt} (ha : a ∉ M) (hb : b ∉ M) (hc : c ∉ M)
-    (hab : connectedComponentIn Mᶜ a ≠ connectedComponentIn Mᶜ b)
-    (hac : connectedComponentIn Mᶜ a ≠ connectedComponentIn Mᶜ c)
-    (hbc : connectedComponentIn Mᶜ b ≠ connectedComponentIn Mᶜ c) :
-    ¬ IsDecomposableSpace M := by
-  intro hd
-  obtain ⟨U, V, hUo, hUc, hVo, hVc, hUV, hUVe⟩ := jones55_two_domains h49 hX hd
-  have key : ∀ p ∉ M, connectedComponentIn Mᶜ p = U ∨ connectedComponentIn Mᶜ p = V := by
-    intro p hp
-    have hpUV : p ∈ U ∪ V := hUVe ▸ hp
-    have hcs : connectedComponentIn Mᶜ p ⊆ U ∪ V :=
-      hUVe ▸ connectedComponentIn_subset _ _
-    have hpc := mem_connectedComponentIn (F := Mᶜ) hp
-    rcases hpUV with hpU | hpV
-    · left
-      refine (isPreconnected_connectedComponentIn.subset_left_of_subset_union hUo hVo hUV hcs
-        ⟨p, hpc, hpU⟩).antisymm ?_
-      exact hUc.isPreconnected.subset_connectedComponentIn hpU (hUVe ▸ subset_union_left)
-    · right
-      refine (isPreconnected_connectedComponentIn.subset_right_of_subset_union hUo hVo hUV hcs
-        ⟨p, hpc, hpV⟩).antisymm ?_
-      exact hVc.isPreconnected.subset_connectedComponentIn hpV (hUVe ▸ subset_union_right)
-  rcases key a ha with h1 | h1 <;> rcases key b hb with h2 | h2 <;>
-    rcases key c hc with h3 | h3 <;> simp_all
-
 end T2
 
 end HPC.Jones

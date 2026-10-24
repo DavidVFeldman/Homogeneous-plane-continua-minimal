@@ -42,13 +42,6 @@ theorem Chain.diam_le_of_followsPattern {N m : ℕ} {Y : Chain X₁ N} {Z : Chai
     ∀ t, Metric.diam (Y.link t) ≤ ε :=
   fun t => (Metric.diam_mono (h t) (hb (x t))).trans (hZ (x t))
 
-/-- A refinement of `Z` has mesh at most the mesh of `Z`. -/
-theorem Chain.diam_le_of_refines {N m : ℕ} {Y : Chain X₁ N} {Z : Chain X₁ m}
-    (h : Y.Refines Z) {ε : ℝ}
-    (hZ : ∀ s, Metric.diam (Z.link s) ≤ ε) (hb : ∀ s, Bornology.IsBounded (Z.link s)) :
-    ∀ t, Metric.diam (Y.link t) ≤ ε :=
-  Chain.diam_le_of_followsPattern (Chain.refineIdx h) (Chain.refineIdx_subset h) hZ hb
-
 /-- A consolidation of a level, being a chain from `P` to `Q` refined by that level, is
 followed in it by a pattern: the refinement map of the level into the consolidation is a
 pattern. Conversely every refinement `Y.Refines Z` of chains from `P` to `Q` yields a pattern

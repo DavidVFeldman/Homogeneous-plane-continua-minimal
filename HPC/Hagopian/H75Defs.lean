@@ -36,11 +36,6 @@ elements are connected sets and whose quotient space is the unit interval".) -/
 def IsAdmissibleMap (E : Set X) (k : E → unitInterval) : Prop :=
   Continuous k ∧ Function.Surjective k ∧ ∀ t, IsConnected (k ⁻¹' {t})
 
-/-- **Type A** (Thomas, via Hagopian p. 36): irreducible between two of its points, with an
-admissible decomposition. -/
-def IsTypeA (E : Set X) : Prop :=
-  (∃ a b, IsIrreducibleBetween E a b) ∧ ∃ k : E → unitInterval, IsAdmissibleMap E k
-
 /-- **Type A′** (p. 36): type A, with an admissible decomposition each of whose elements has void
 interior relative to `E`. -/
 def IsTypeA' (E : Set X) : Prop :=

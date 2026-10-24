@@ -67,17 +67,4 @@ theorem ho16_classification_plane₄ :
         (IsHomogeneous M ↔ Nonempty (M ≃ₜ C₁) ∨ Nonempty (M ≃ₜ C₂) ∨ Nonempty (M ≃ₜ C₃)) :=
   ho16_classification_plane₃ bjPlaneExample
 
-/-- **Domokos–Prajs, Theorem 6.1, "if"**, with no named hypothesis. -/
-theorem dp22_theorem61' {X Y : Type} [MetricSpace X] [CompactSpace X] [MetricSpace Y]
-    {f : X → Circle} (hf : IsAtomicCircPAMap f) (hY : IsCircleOfPA Y) : Nonempty (X ≃ₜ Y) :=
-  dp22_theorem61 bjThm10 hf hY
-
-/-- **Domokos–Prajs, Theorem 6.1, both directions**, with no named hypothesis. -/
-theorem dp22_theorem61_iff' {X : Type} [MetricSpace X] [CompactSpace X] :
-    IsCircleOfPA X ↔ ∃ f : X → Circle, IsAtomicCircPAMap f :=
-  dp22_theorem61_iff bjThm10 bjPlaneExample
-
-/-- **The circle-likeness step**, with no named hypothesis. -/
-theorem hoCircleLike' : HOCircleLike := hoCircleLike bjThm10 bjPlaneExample
-
 end HPC.BJ59

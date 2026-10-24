@@ -30,84 +30,6 @@ section Lemma13
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
 
-omit [ConnectedSpace M] in
-/-- **§2, Lemma 13, the chain part** (p. 339: "Note that `𝔏` is a normal chain in `M∖A`", unargued;
-ledger H84.18). There are numbers `x₀ = 0 < x₁ < ⋯ < x₁₅ = 1` (with `k⁻¹[[0, x₃]]` and
-`k⁻¹[[x₁₂, 1]]` inside `B`, commission 187 §2.4) such that for every small enough `δ > 0` the links
-`L i = W(k⁻¹[[x₃ᵢ, x₃ᵢ₊₃]], δ)` form a normal chain in `M ∖ A` with `Cl(L 0 ∪ L 4) ⊆ B`, and every
-`δ`-homeomorphism `h` satisfies conditions (1) and (2) of "runs straight" for `h[E]`, in the closure
-form of `chainLinks84_runsStraight` (`h[k⁻¹(0)] ⊆ L 0 ∖ Cl L 1`, `h[k⁻¹(1)] ⊆ L 4 ∖ Cl L 3`).
-
-*Proof* (`exists_x84`, `chainLinks84_chain_aux`): `W(S, δ)` lies in the `δ`-thickening of `S`;
-segments of non-adjacent links, and the end layers against the segments of `L 1` and `L 3`, are
-disjoint compact sets, hence a positive distance apart; `δ₀` is the least of these radii and of
-those for `A` and `B`. -/
-theorem chainLinks84_chain (hX : IsHomogeneous M) {E : Set M} {k : E → unitInterval}
-    (hE : IsMinimalAdmissible E k) {A B : Set M} (hA : IsClosed A) (hAE : Disjoint A E)
-    (hB : IsOpen B) (hBE : layer k 0 ∪ layer k 1 ⊆ B) :
-    ∃ x : Fin 16 → unitInterval, StrictMono x ∧ x 0 = 0 ∧ x 15 = 1 ∧ ∃ δ₀ > 0, ∀ δ, 0 < δ →
-      δ ≤ δ₀ → IsChain5 (chainLinks84 k x δ) ∧ IsNormal5 (chainLinks84 k x δ) ∧
-      (⋃ i, chainLinks84 k x δ i) ⊆ Aᶜ ∧
-      closure (chainLinks84 k x δ 0 ∪ chainLinks84 k x δ 4) ⊆ B ∧
-      ∀ h : M ≃ₜ M, (∀ v, dist v (h v) < δ) →
-        h '' E ⊆ ⋃ i, chainLinks84 k x δ i ∧
-        h '' layer k 0 ⊆ chainLinks84 k x δ 0 \ closure (chainLinks84 k x δ 1) ∧
-        h '' layer k 1 ⊆ chainLinks84 k x δ 4 \ closure (chainLinks84 k x δ 3) := by
-  obtain ⟨x, hx, hx0, hx15, hxB⟩ := exists_x84 hE hB hBE
-  exact ⟨x, hx, hx0, hx15, chainLinks84_chain_aux hX hE hA hAE hB hx hx0 hx15 hxB⟩
-
-/-- **§2, Lemma 13, steps (1)–(6)** (pp. 339–340; batch-186 shape, unchanged). There are numbers
-`x₀ = 0 < ⋯ < x₁₅ = 1` and `0 < δ < ε` such that the links `L i = W(k⁻¹[[x₃ᵢ, x₃ᵢ₊₃]], δ)` form a
-normal chain in `M ∖ A` with `Cl(L 0 ∪ L 4) ⊆ B`, and every `δ`-translate of `E` runs straight
-through them with its end layers in `L 0 ∖ Cl L 1` and `L 4 ∖ Cl L 3`.
-
-*Proof* (`chainLinks84_runsStraight_aux`, `H84Runs13.lean`): `δ` also below half of the fifteen gap
-radii `ρ(k⁻¹[[0, xⱼ]], k⁻¹[[xⱼ₊₁, 1]])` (`exists_gap84`). (3), `link_dichotomy84`: a point
-`h(z) = g(w)` gives `dist(z, w) < 2δ`, the gap bounds put both parameters in `[x₁, x₁₄]`, and Lemma 3
-for `h⁻¹ ∘ g` gives `h[k⁻¹(r)] = g[k⁻¹(s)] ⊆ L i` (commission 187 §2.1, no uniform continuity). (4),
-`layer_frontier84`: Effros with the room `δ − max dist(v, h v)` (§2.2). (5), `layer_convex84`: a
-non-interval among the parameter sets gives a fold (`exists_fold`), and `no_fold84` excludes kinds D
-and U (§2.3): the continuum `g[k⁻¹[[0, x₃ₚ₊₃]]]` (resp. `g[k⁻¹[[x₃ₚ, 1]]]`) lies in
-`h[k⁻¹[[r, t]]]` by atriodicity, and then the gap bound `j = 0` (resp. `j = 14`) puts `r` (resp.
-`t`) in the end segment, which forces `p = 0` (resp. `p = 4`). -/
-theorem chainLinks84_runsStraight (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {ε : ℝ} (hε : 0 < ε)
-    {A B : Set M} (hA : IsClosed A) (hAE : Disjoint A E) (hB : IsOpen B)
-    (hBE : layer k 0 ∪ layer k 1 ⊆ B) :
-    ∃ (x : Fin 16 → unitInterval) (δ : ℝ), 0 < δ ∧ δ < ε ∧ StrictMono x ∧ x 0 = 0 ∧ x 15 = 1 ∧
-      IsChain5 (chainLinks84 k x δ) ∧ IsNormal5 (chainLinks84 k x δ) ∧
-      (⋃ i, chainLinks84 k x δ i) ⊆ Aᶜ ∧
-      closure (chainLinks84 k x δ 0 ∪ chainLinks84 k x δ 4) ⊆ B ∧
-      ∀ h : M ≃ₜ M, (∀ v, dist v (h v) < δ) → ∃ g : (h '' E) → unitInterval,
-        IsMinimalAdmissible (h '' E) g ∧ RunsStraight g (chainLinks84 k x δ) ∧
-        layer g 0 ⊆ chainLinks84 k x δ 0 \ closure (chainLinks84 k x δ 1) ∧
-        layer g 1 ⊆ chainLinks84 k x δ 4 \ closure (chainLinks84 k x δ 3) :=
-  chainLinks84_runsStraight_aux hX hi hE hε hA hAE hB hBE
-
-/-- **§2, Lemma 13, regularity** (p. 340: "Let `K` be a component of `⋃𝔏′`. Let `h` be a
-`δ`-homeomorphism of `M` onto `M` such that `K ∩ h[E] ≠ ∅`. Since `M` is atriodic, it follows from
-(6) and Lemma 6 that `Cl K` is an essential subcontinuum of `h[E]` that runs straight through
-`𝔏`. Hence `𝔏` is regular.").
-
-*Shape* (batch 186: "for `x`, `δ` as in `chainLinks84_runsStraight`"): the hypothesis `hrs` is the
-last clause of `chainLinks84_runsStraight`. *Proof* (`chainLinks84_regular_aux`,
-`strand_of_runsStraight84`): a point of `⋃𝔏′` is `h(v)` with `v ∈ E` (definition of `W`); `Cl K ⊆ h[E]`
-by atriodicity; the parameter sets of the links are intervals, so `Cl K = h[E]`'s layers over
-`[a, c]` with `b⁻¹(a) ⊆ L 0 ∖ L 1` and `b⁻¹(c) ⊆ L 4 ∖ L 3`; two consecutive parameter sets meet
-(`params_adjacent_meet84`), which fixes the orientation. -/
-theorem chainLinks84_regular (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} {x : Fin 16 → unitInterval} {δ : ℝ}
-    (hch : IsChain5 (chainLinks84 k x δ)) (hn : IsNormal5 (chainLinks84 k x δ))
-    (hrs : ∀ h : M ≃ₜ M, (∀ v, dist v (h v) < δ) → ∃ g : (h '' E) → unitInterval,
-        IsMinimalAdmissible (h '' E) g ∧ RunsStraight g (chainLinks84 k x δ) ∧
-        layer g 0 ⊆ chainLinks84 k x δ 0 \ closure (chainLinks84 k x δ 1) ∧
-        layer g 1 ⊆ chainLinks84 k x δ 4 \ closure (chainLinks84 k x δ 3)) :
-    IsRegular5 (chainLinks84 k x δ) ∧ ∀ y ∈ midUnion (chainLinks84 k x δ),
-      ∃ h : M ≃ₜ M, (∀ v, dist v (h v) < δ) ∧ ∃ g : (h '' E) → unitInterval,
-        IsMinimalAdmissible (h '' E) g ∧
-        IsEssential84 g (closure (connectedComponentIn (midUnion (chainLinks84 k x δ)) y)) :=
-  chainLinks84_regular_aux hX hi hch hn hrs
-
 /-- **Lemma 13** (p. 339): "Suppose `ε` is a positive number, `A` is a closed set that misses `E`,
 and `B` is an open set that contains `k⁻¹(0) ∪ k⁻¹(1)`. Then `E` runs straight through a free normal
 regular chain `𝒫 = {Pᵢ : 1 ≤ i ≤ 5}` in `M∖A` with the property that `B` contains `Cl(P₁ ∪ P₅)` and
@@ -149,19 +71,6 @@ theorem strand_layer_mem_delta {P : Fin 5 → Set M} (hP : IsChain5 P) (hr : IsR
     {t : unitInterval} (hxt : x ∈ layer c t) : layer c t ∈ Delta5 P :=
   strand_layer_mem_delta_aux hP hr hx hx0 hc hxt
 
-/-- **§3.4, the degenerate alternative is impossible**: if `(F, d)` is type λ and its end layer
-`d⁻¹(0)` misses `midUnion P`, no layer of `F` contains a strand.
-
-*Proof* (`not_strand_subset_extension_layer_aux`): commission 187 §3.4, with the simplification that
-step 3 uses a single limit point `z ∈ d⁻¹(α) ∩ Cl P 2` (closedness of the set of parameters whose
-layer meets `Cl P 2`) instead of the Hausdorff limit of the `Zₙ`; Lemma 14 is not needed. -/
-theorem not_strand_subset_extension_layer (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {P : Fin 5 → Set M} (hP : IsChain5 P) (hn : IsNormal5 P) (hf : IsFree5 P) (hr : IsRegular5 P)
-    {F : Set M} {d : F → unitInterval} (hd : IsMinimalAdmissible F d)
-    (hd0 : Disjoint (layer d 0) (midUnion P)) {y : M} (hy : y ∈ midUnion P) (u : unitInterval) :
-    ¬ closure (connectedComponentIn (midUnion P) y) ⊆ layer d u :=
-  not_strand_subset_extension_layer_aux hX hi hP hn hf hr hd hd0 hy u
-
 /-- **§3.1, Lemma 16′** (p. 343: "By Lemmas 7 and 16, each element of the decomposition of `F(Z)`
 that intersects `⋃𝒫′` is an element of the decomposition of the closure of a component of
 `⋃𝒫′`"), for any type λ `F` whose end layer `d⁻¹(0)` misses `midUnion P`.
@@ -179,29 +88,6 @@ theorem strand_layer_of_extension (hX : IsHomogeneous M) (hi : ¬ IsDecomposable
         ∃ t, layer d u = layer c' t := by
   obtain ⟨c', hc', -, ht⟩ := strand_layer_of_extension_aux hX hi hP hn hf hr hd hd0 hy hym
   exact ⟨c', hc', ht⟩
-
-/-- **Lemma 16 as printed** (pp. 341–342): "Suppose `𝒫` is a free regular chain. Suppose `K` is a
-component of `⋃𝒫′` and `X` is an end set of `Cl K`. Suppose `F` is an extension of `Cl K` away from
-`X` and `𝔇` is the decomposition of `F`. Then no element of `𝔇` intersects three consecutive links
-of `𝒫`" (moved here from the commented-out block of `Hagopian84B.lean`).
-
-*Shape change:* normality `hn` is added (Lemma 16′ uses it; the chain of Lemma 13 is normal), and
-the hypothesis `Cl K ⊆ F` is dropped (not used). *Proof* (`hagopian84_lemma16_aux`, commission 187
-§3.5): `d⁻¹(0) = c⁻¹(0)` is an end layer of the strand, so it misses `midUnion P`
-(`strand_end_layer_not_mid`); a layer meeting `P i`, `P (i + 1)`, `P (i + 2)` meets `midUnion P`
-(through `P (i + 1)`), so by Lemma 16′ it is a layer of a strand running straight through `𝒫`, and
-then it lies in both `P i` and `P (i + 2)`, which are disjoint. Hagopian's subchain `𝔔` and his
-step (1) are not needed. -/
-theorem hagopian84_lemma16 (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {P : Fin 5 → Set M} (hP : IsChain5 P) (hn : IsNormal5 P) (hf : IsFree5 P) (hr : IsRegular5 P)
-    {x : M} (hx : x ∈ midUnion P)
-    {c : closure (connectedComponentIn (midUnion P) x) → unitInterval}
-    (hc : IsMinimalAdmissible (closure (connectedComponentIn (midUnion P) x)) c) {F : Set M}
-    {d : F → unitInterval} (hd : IsMinimalAdmissible F d) (hd0 : layer d 0 = layer c 0)
-    (t : unitInterval) (i : ℕ) (hi3 : i + 2 < 5) :
-    ¬ ((layer d t ∩ P ⟨i, by omega⟩).Nonempty ∧ (layer d t ∩ P ⟨i + 1, by omega⟩).Nonempty ∧
-      (layer d t ∩ P ⟨i + 2, hi3⟩).Nonempty) :=
-  hagopian84_lemma16_aux hX hi hP hn hf hr hx hc hd hd0 t i hi3
 
 end Lemma16
 

@@ -173,36 +173,6 @@ theorem access {J I M : Set S} (hI : σ.IsInteriorOf J I)
   rw [hf1] at hτ
   exact ⟨τ, hτ, hτsub⟩
 
-/-- **Theorem 39.** If `O` is a point on the closed curve `J`, every point not on `J` can be joined
-to `O` by an arc having no point except `O` in common with `J`. *Axioms used: 1–8.*
-**Proof replaced** (commission check 5): the point lies in the interior or the exterior of `J`
-(Axiom 8, `jordan`), and `access` reaches `O` from it. Moore's sequence of curves `Jₙ`, the curves
-`J̄ₙ` and the limit arc `P₁O` are not needed; the work they do is done by batch 138's
-`accessible`, whose limit arc (`Gen.exists_tarc_of_seq`) plays the part of Moore's
-`O + P₁Pₙ₂ + Pₙ₂Pₙ₃ + ⋯`. **Shape change:** the axioms are made explicit. -/
-theorem fa_theorem39 {J : Set S} (hJ : σ.IsSCC J) {O P : S} (hO : O ∈ J) (hP : P ∉ J) :
-    ∃ K, σ.IsArc P O K ∧ K ∩ J = {O} := by
-  letI := σ.topology
-  have h51 := axiom5₁_of_axiom5 h5
-  obtain ⟨I, hIr, hIJ⟩ := h8 J hJ
-  have hI : σ.IsInteriorOf J I := ⟨hJ, hIr, hIJ⟩
-  obtain ⟨-, -, -, -, -, -, -, -, -, hdis, hEJ, hcomp, -⟩ := jordan h1 h2 h3 h4 h51 h7 hI
-  obtain ⟨M, hM, hPM⟩ : ∃ M, (M = I ∨ M = (closure I)ᶜ) ∧ P ∈ M := by
-    have : P ∈ Jᶜ := hP
-    rw [hcomp] at this
-    rcases this with h | h
-    · exact ⟨I, Or.inl rfl, h⟩
-    · exact ⟨_, Or.inr rfl, h⟩
-  have hMJ : Disjoint M J := by rcases hM with rfl | rfl <;> assumption
-  obtain ⟨τ, hτ, hτsub⟩ := access h1 h2 h3 h4 h5 h6 h7 h8 hI hM hO hPM
-  refine ⟨τ, (isArc_iff_tarc h1 h3 h4 h51).mpr hτ, ?_⟩
-  apply subset_antisymm
-  · rintro x ⟨hxτ, hxJ⟩
-    rcases hτsub hxτ with h | h
-    · exact h
-    · exact absurd hxJ (disjoint_left.mp hMJ h)
-  · rintro x rfl; exact ⟨hτ.right_mem, hO⟩
-
 /-- An arc from `A` to `B` (two points of `J`) whose open part lies in `M`, the interior or the
 exterior of `J`. -/
 theorem exists_arc_through {J I M : Set S} (hI : σ.IsInteriorOf J I)
@@ -221,22 +191,6 @@ theorem exists_arc_through {J I M : Set S} (hI : σ.IsInteriorOf J I)
   rcases hγ hx with h | h
   · exact (hτAM h).resolve_left hxAB.1
   · exact (hτBM h).resolve_left hxAB.2
-
-/-- **Theorem 40.** If `A`, `B` are two points of a closed curve `J`, they can be joined by arcs
-`AXB` and `AYB` with the open arc `AXB` within `J` and the open arc `AYB` without `J`.
-*Axioms used: 1–8.* **No proof printed**; supplied: `P` in the interior (exterior) is joined to `A`
-and to `B` by `access`, and the union of the two arcs contains an arc from `A` to `B`.
-**Shape change:** the axioms are made explicit. -/
-theorem fa_theorem40 {J I : Set S} (hJ : σ.IsInteriorOf J I) {A B : S} (hA : A ∈ J) (hB : B ∈ J)
-    (hAB : A ≠ B) :
-    ∃ X Y : Set S, σ.IsArc A B X ∧ σ.IsArc A B Y ∧ openArc A B X ⊆ I ∧
-      openArc A B Y ⊆ σ.ext I := by
-  have h51 := axiom5₁_of_axiom5 h5
-  obtain ⟨X, hX, hXI⟩ := exists_arc_through h1 h2 h3 h4 h5 h6 h7 h8 hJ (Or.inl rfl) hA hB hAB
-  obtain ⟨Y, hY, hYE⟩ := exists_arc_through h1 h2 h3 h4 h5 h6 h7 h8 hJ (Or.inr rfl) hA hB hAB
-  refine ⟨X, Y, (isArc_iff_tarc h1 h3 h4 h51).mpr hX, (isArc_iff_tarc h1 h3 h4 h51).mpr hY,
-    hXI, ?_⟩
-  rw [ext_eq_compl_closure h1]; exact hYE
 
 /-- **Theorem 35.** Every (nonempty) region contains a simple closed curve. *Axioms used: 1–8.*
 Proof (replacing Moore's): an arc in `R` (Theorem 16) and, about one of its interior points,
@@ -257,67 +211,8 @@ theorem fa_theorem35 {R : Set S} (hR : R ∈ σ.region) (hne : R.Nonempty) :
     hPR, hI₁, -⟩ := th31_pocket h1 h2 h3 h4 h5 h6 h7 h8 hf hb0 hb1 hR (hCR (hfr ▸ mem_range_self b))
   exact ⟨F₁ ∪ P, union_subset hF₁R hPR, (isSCC_iff_tscc h1 h3 h4 h51).mpr hI₁.1⟩
 
-/-- **Theorem 35 as printed is not a consequence of Axioms 1–8** (unless they have no model): in
-the space with `∅` added to the regions (batch 137, `withEmpty`), which satisfies Axioms 1–8, the
-region `∅` contains no simple closed curve. -/
-theorem not_fa_theorem35_printed :
-    σ.withEmpty.Axiom1 ∧ σ.withEmpty.Axiom2 ∧ σ.withEmpty.Axiom3 ∧ σ.withEmpty.Axiom4 ∧
-      σ.withEmpty.Axiom5 ∧ σ.withEmpty.Axiom6 ∧ σ.withEmpty.Axiom7 ∧ σ.withEmpty.Axiom8 ∧
-      ¬ ∀ R ∈ σ.withEmpty.region, ∃ J ⊆ R, σ.withEmpty.IsSCC J := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, -⟩ := not_fa_theorem4_printed h1 h2 h3 h4 h5 h6 h7 h8
-  refine ⟨a1, a2, a3, a4, a5, a6, a7, a8, fun h => ?_⟩
-  obtain ⟨J, hJ, A, B, C₁, C₂, hC₁, -, -, rfl⟩ := h ∅ (mem_insert _ _)
-  exact hJ (Or.inl hC₁.left_mem)
-
 end Access
 
 /-! ### The footnote of p. 152 -/
-
-/-- **Footnote to the proof of Theorem 37** (p. 152): two arcs of a closed curve can have no point
-in common unless one of them contains an endpoint of the other one. *Axioms used: 1, 3, 4, 5₁.*
-Proof: `A`, `B` split `C` into `K` and a second arc `D` (p. 140, `fa_scc_two_arcs`); if `K'`
-contained neither `A` nor `B`, the connected set `K'` would lie in `(K − A − B) + (D − A − B)`,
-two separated sets, and meet both (`K` at the common point, `D` at `A'`). -/
-theorem fa_arcs_of_scc_meet (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h4 : σ.Axiom4)
-    (h51 : Space.Axiom5₁ (S := S)) {C : Set S} (hC : σ.IsSCC C) {A B A' B' : S} {K K' : Set S}
-    (hK : σ.IsArc A B K) (hKC : K ⊆ C) (hK' : σ.IsArc A' B' K') (hK'C : K' ⊆ C)
-    (hmeet : (K ∩ K').Nonempty) : A ∈ K' ∨ B ∈ K' ∨ A' ∈ K ∨ B' ∈ K := by
-  letI := σ.topology
-  haveI := t2Space h1
-  by_contra hcon
-  simp only [not_or] at hcon
-  obtain ⟨hAK', hBK', hA'K, -⟩ := hcon
-  obtain ⟨C₁, C₂, hC₁, hC₂, hCi, hCu, huniq⟩ :=
-    fa_scc_two_arcs h1 h3 h4 h51 hC (hKC hK.left_mem) (hKC hK.right_mem) hK.1
-  obtain ⟨D, hD, hKD, hKDu⟩ : ∃ D, σ.IsArc A B D ∧ K ∩ D = {A, B} ∧ K ∪ D = C := by
-    rcases huniq K hKC hK with rfl | rfl
-    · exact ⟨C₂, hC₂, hCi, hCu⟩
-    · exact ⟨C₁, hC₁, by rw [inter_comm, hCi], by rw [union_comm, hCu]⟩
-  have hKc : IsClosed K := ((isArc_iff_topological h1 h4).mp hK).2.1.isClosed
-  have hDc : IsClosed D := ((isArc_iff_topological h1 h4).mp hD).2.1.isClosed
-  have hK'p : IsPreconnected K' := ((isArc_iff_topological h1 h4).mp hK').2.2.1.isPreconnected
-  have hcov : K' ⊆ Dᶜ ∪ Kᶜ := by
-    intro z hz
-    by_contra h
-    simp only [mem_union, mem_compl_iff, not_or, not_not] at h
-    have : z ∈ K ∩ D := ⟨h.2, h.1⟩
-    rw [hKD] at this
-    rcases this with rfl | rfl
-    · exact hAK' hz
-    · exact hBK' hz
-  have hdisj : K' ∩ (Dᶜ ∩ Kᶜ) = ∅ := by
-    ext z
-    simp only [mem_inter_iff, mem_compl_iff, mem_empty_iff_false, iff_false, not_and]
-    intro hz hzD hzK
-    rcases hKDu ▸ hK'C hz with h | h
-    · exact hzK h
-    · exact hzD h
-  rcases isPreconnected_iff_subset_of_disjoint.mp hK'p _ _ hDc.isOpen_compl hKc.isOpen_compl
-      hcov hdisj with h | h
-  · rcases hKDu ▸ hK'C hK'.left_mem with h' | h'
-    · exact hA'K h'
-    · exact h hK'.left_mem h'
-  · obtain ⟨z, hzK, hzK'⟩ := hmeet
-    exact h hzK' hzK
 
 end HPC.Moore

@@ -72,11 +72,6 @@ theorem closure_sccInterior {J : Set (Quotient r)} (hJ : IsSCCElt J) :
   obtain ⟨hIo, -, -, hfI, -⟩ := sccInterior_spec hG hJ
   rw [closure_eq_self_union_frontier, hfI]
 
-theorem closure_sccExterior {J : Set (Quotient r)} (hJ : IsSCCElt J) :
-    closure (sccExterior J) = sccExterior J ∪ J := by
-  obtain ⟨-, -, -, -, -, -, -, hfE, -⟩ := sccInterior_spec hG hJ
-  rw [closure_eq_self_union_frontier, hfE]
-
 /-- The exterior is the complement of the closure of the interior. -/
 theorem compl_closure_sccInterior {J : Set (Quotient r)} (hJ : IsSCCElt J) :
     (closure (sccInterior J))ᶜ = sccExterior J := by
@@ -91,21 +86,6 @@ theorem compl_closure_sccInterior {J : Set (Quotient r)} (hJ : IsSCCElt J) :
   · rintro hx (h | h)
     · exact disjoint_left.1 hdis h hx
     · exact (hu ▸ Or.inr hx : x ∈ Jᶜ) h
-
-/-- The interior is the complement of the closure of the exterior. -/
-theorem compl_closure_sccExterior {J : Set (Quotient r)} (hJ : IsSCCElt J) :
-    (closure (sccExterior J))ᶜ = sccInterior J := by
-  obtain ⟨-, -, -, -, -, -, -, -, hdis, hu⟩ := sccInterior_spec hG hJ
-  rw [closure_sccExterior hG hJ]
-  ext x
-  constructor
-  · intro hx
-    have hxJ : x ∈ Jᶜ := fun h => hx (Or.inr h)
-    rw [← hu] at hxJ
-    exact hxJ.resolve_right fun h => hx (Or.inl h)
-  · rintro hx (h | h)
-    · exact disjoint_left.1 hdis hx h
-    · exact (hu ▸ Or.inl hx : x ∈ Jᶜ) h
 
 theorem t2Space_quot : T2Space (Quotient r) := by
   haveI := quotient_metrizable_plane hG
@@ -144,14 +124,6 @@ theorem isSCCElt_iff_tscc {J : Set (Quotient r)} : IsSCCElt J ↔ TSCC J := by
     exact ⟨p, q, a, b, (isArcElt_iff_tarc hG).1 ha, (isArcElt_iff_tarc hG).1 hb, hab', hab.symm⟩
   · rintro ⟨A, B, C₁, C₂, h₁, h₂, h12, rfl⟩
     exact isSCCElt_union hG ((isArcElt_iff_tarc hG).2 h₁) ((isArcElt_iff_tarc hG).2 h₂) h12
-
-/-- A region in the restricted sense is a region in the original sense (p. 424, proof of Theorem 20:
-"Since `R` is also a region in the original sense"). -/
-theorem mooreRegion_of_restricted {R : Set (Quotient r)} (hR : restrictedRegion R) :
-    mooreRegion R := by
-  obtain ⟨J, hJ, rfl⟩ := hR
-  obtain ⟨hIo, hIc, hIb, hfI, -⟩ := sccInterior_spec hG hJ
-  exact ⟨hIo, hIc, hIb, by rw [hfI]; exact hJ.2.1⟩
 
 /-- **F.A. Theorem 15 for the quotient, topologically**: two distinct elements of a connected open
 set of elements are joined by an arc in it. -/

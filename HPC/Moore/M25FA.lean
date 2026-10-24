@@ -55,34 +55,6 @@ theorem m25_fa_theorem15 {M : Set (Quotient r)} (hM : (spaceOfElts r).IsDomain M
   refine ⟨C, hCM, (isArc_iff_topological h1 h4).mpr ⟨hAB, hCc, ⟨⟨A, hAC⟩, hCp⟩, hAC, hBC,
     fun H hHC hne hAH hBH hH => hne (hirr H hHC hH.isPreconnected hAH hBH)⟩⟩
 
-/-- **Moore's "consequently Theorems 1–15 of that paper all hold true"** (p. 420), by
-representative instances of the batch 137–138 theorems: F.A. Theorem 3 (Axiom 1), Theorem 6
-(Axiom 1), Theorem 13 (Axioms 1, 4), Theorem 14 (Axioms 1, 4; with the nonemptiness hypothesis of
-batch 137) and Theorem 15 (Axioms 1, 2, 4 and metrizability). -/
-theorem m25_FA_1_15 :
-    -- Theorem 3
-    (∀ (P : Quotient r) (M : Set (Quotient r)), M.Finite → P ∉ M →
-      ∃ R ∈ (spaceOfElts r).region, P ∈ R ∧ Disjoint R M) ∧
-    -- Theorem 6
-    (∀ K ∈ (spaceOfElts r).region, ∀ L ∈ (spaceOfElts r).region, ∀ P ∈ K, P ∈ L →
-      ∃ R ∈ (spaceOfElts r).region, P ∈ R ∧ R ⊆ K ∩ L) ∧
-    -- Theorem 13
-    (∀ M : Set (Quotient r), M.Infinite → (spaceOfElts r).IsBoundedM M →
-      ∃ P, (spaceOfElts r).IsLimitPt P M) ∧
-    -- Theorem 14
-    (∀ M : ℕ → Set (Quotient r), (∀ n, (spaceOfElts r).IsBoundedM (M n)) →
-      (∀ n, (spaceOfElts r).cl (M (n + 1)) ⊆ M n) → (∀ n, (M n).Nonempty) →
-      (⋂ n, M n).Nonempty ∧ (spaceOfElts r).IsClosedM (⋂ n, M n)) ∧
-    -- Theorem 15
-    (∀ M : Set (Quotient r), (spaceOfElts r).IsDomain M → ∀ A ∈ M, ∀ B ∈ M, A ≠ B →
-      ∃ C ⊆ M, (spaceOfElts r).IsArc A B C) := by
-  obtain ⟨h1, -, h4, -, -⟩ := m25_axioms1245 hG
-  exact ⟨fun P M hM hPM => fa_theorem3 h1 hM hPM,
-    fun K hK L hL P hPK hPL => fa_theorem6 h1 hK hL hPK hPL,
-    fun M hi hb => fa_theorem13 h1 h4 hi hb,
-    fun M hb hsub hne => fa_theorem14 h1 h4 hb hsub hne,
-    fun M hM A hA B hB hAB => m25_fa_theorem15 hG hM hA hB hAB⟩
-
 end hG
 
 end HPC.Moore

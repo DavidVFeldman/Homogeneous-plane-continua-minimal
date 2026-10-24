@@ -214,14 +214,4 @@ theorem ho16_theorem20_of_thm15_prop19 (h19 : HOProp19) (h15 : HOThm15) : HOThm2
     rw [← connectedComponentIn_eq hx']
   exact (((hH C (f x) (hfG x) rfl).1).continuousAt hmem).congr heq.symm
 
-/-- The classification step of batch 193 from `HOThm15` and `HOProp19`; the skeleton's
-`homeomorph_pseudoArc_of_indec_homogeneous_of_thm15` (`HO16D.lean`) discharges `HOProp19` with
-`hoProp19_holds`. -/
-theorem homeomorph_pseudoArc_of_indec_homogeneous_of_thm15_prop19 (h19 : HOProp19)
-    (h15 : HOThm15) (M : Set Pt) [CompactSpace M] [ConnectedSpace M] (hhom : IsHomogeneous M)
-    (hind : ¬ IsDecomposableSpace M) (hnt : (univ : Set M).Nontrivial) :
-    ∃ M₀ : Set Pt, IsPseudoArc M₀ ∧ Nonempty (M ≃ₜ M₀) :=
-  homeomorph_pseudoArc_of_indec_homogeneous (ho16_theorem20_of_thm15_prop19 h19 h15) M hhom
-    hind hnt
-
 end HPC.HO16

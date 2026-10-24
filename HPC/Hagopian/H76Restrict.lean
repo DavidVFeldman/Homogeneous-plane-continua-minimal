@@ -1,4 +1,15 @@
-import HPC.Hagopian.Hagopian76AA
+import HPC.Hagopian.H76PairSep
+import HPC.Hagopian.H76Translate
+import HPC.Hagopian.H76D1
+import HPC.Hagopian.H75KurMap
+import HPC.Hagopian.H76Crosscut
+import HPC.Hagopian.H76Domain
+import HPC.Hagopian.H76Lemma5End
+import HPC.Hagopian.Hagopian76E
+import HPC.Jones.Basic
+import HPC.Hagopian.H76IFinite
+import HPC.Moore.Borsuk
+import HPC.Plane.Fugate66BMiller
 
 /-!
 # Batch 183, §2.3: the subcontinuum of `L` between two layers (`minimalAdmissible_restrict`)

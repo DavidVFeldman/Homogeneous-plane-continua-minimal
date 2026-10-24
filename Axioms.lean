@@ -3,8 +3,8 @@ import HPC
 /-!
 # Axiom audit
 
-`#print axioms` for the audited theorems of the full repository whose modules this
-repository keeps, grouped by source as there. The expected output is `axioms.txt`;
+`#print axioms` for the audited theorems of the full repository that this repository
+keeps, grouped by source as there. The expected output is `axioms.txt`;
 after `lake build`, `lake env lean Axioms.lean > axioms-ci.txt` regenerates it for
 comparison. Every entry must show `[propext, Classical.choice, Quot.sound]` or a
 subset of it.
@@ -15,28 +15,8 @@ subset of it.
 #print axioms HPC.Chain.isCrookedIn'_of_isConsolidationOf
 -- Theorem 2
 #print axioms HPC.Chain.isCrookedIn'_of_refines
--- Theorem 3
-#print axioms HPC.Fold.theorem3
--- Theorem 3 in Bing's two-link form with his end clause, without the only-clause (batch 123)
-#print axioms HPC.Fold.theorem3_bing
--- Theorem 3 with the end-link clause, three-link form (proved in batch 123)
-#print axioms HPC.Fold.theorem3_end_of_bing
 -- Theorem 4
 #print axioms HPC.Fold.theorem4_pair
--- Theorem 4 in Bing's two-link form, without the only-clauses (batch 123)
-#print axioms HPC.Fold.theorem4_two
-#print axioms HPC.Fold.theorem4_of_two
--- Theorem 4 as printed: refuted in the degenerate case m = 3, r = s (batch 123)
-#print axioms HPC.Fold.not_theorem4Literal
--- Theorem 4 as printed with at least four coarse links: proved (batch 125)
-#print axioms HPC.Fold.Recon123.two_modelZ
-#print axioms HPC.Fold.onlyIn_of_onlyM
-#print axioms HPC.Fold.theorem4_literal_ge4
-#print axioms HPC.Fold.theorem4LiteralGe4_holds
--- Theorem 5
-#print axioms HPC.Description.theorem5
--- Theorem 6
-#print axioms HPC.Description.theorem6
 -- Theorem 10
 #print axioms HPC.Description.theorem10
 -- Theorem 11
@@ -45,210 +25,25 @@ subset of it.
 #print axioms HPC.theorem12
 -- Theorem 12 (description form)
 #print axioms HPC.Description.exists_homeomorph
--- Theorem 13
-#print axioms HPC.Description.theorem13
-#print axioms HPC.Description.exists_description_from
--- Theorem 15 from Theorem 14
-#print axioms HPC.Description.theorem15_of_theorem14
--- existence of a pseudo-arc in the plane
-#print axioms HPC.Plane.pseudoArc_exists
 -- ## Bing 1951 (Duke)
--- Theorem 1
-#print axioms HPC.Plane.theorem1_snake
--- Theorem 4
-#print axioms HPC.Plane.theorem4
--- Theorem 8 (form proved)
-#print axioms HPC.Plane.theorem8_1951'
 -- Theorem 10
-#print axioms HPC.Plane.theorem10_1951
 #print axioms HPC.Plane.isSnakeLike_of_subcontinuum
 -- Theorem 11, necessity
-#print axioms HPC.Plane.isAtriodic_of_isSnakeLike
--- Theorem 11, necessity
 #print axioms HPC.Plane.isHereditarilyUnicoherent_of_isSnakeLike
--- Theorem 11 under two hypotheses (kept, see report)
-#print axioms HPC.Plane.theorem11_1951_of_T10
-#print axioms HPC.Plane.theorem11_1951_iff_of_T10
--- Theorem 11 (Fugate 1969, Theorem 2 Case II)
-#print axioms HPC.Plane.theorem11_1951
-#print axioms HPC.Plane.theorem11_1951_iff
--- Fugate 1969, Lemma 4 (hereditarily decomposable case)
-#print axioms HPC.Plane.exists_terminal_point_of_isTerminalSub
--- Fugate 1969, Lemma 3
-#print axioms HPC.Plane.isTerminalSub_of_union_terminal
--- Fugate 1969, Claim 1
-#print axioms HPC.Plane.claim1_contains_inter
 -- Fugate 1969, amalgamated chain
 #print axioms HPC.Plane.epsCoverable_of_halves
--- Theorem 12, A => B
-#print axioms HPC.Plane.condB_of_condA
--- Theorem 13, necessity
-#print axioms HPC.Plane.condB_of_endPoint
--- Theorem 13, sufficiency
-#print axioms HPC.Plane.endPoint_of_condA
--- Theorem 14
-#print axioms HPC.Plane.theorem14_1951
--- Theorem 12, B => A, and Theorem 12, for any M (Bing's proof via the arcs paper's Theorem 5; batch 108)
-#print axioms HPC.Plane.condA_of_condB_general
-#print axioms HPC.Plane.theorem12_1951_general
--- Theorem 15
-#print axioms HPC.Plane.theorem15_1951
-#print axioms HPC.Plane.isPseudoArc_iff_endPoints
-#print axioms HPC.Plane.exists_two_endElts
 -- ## Bing 1948, Amer. J. Math. (arcs paper; batch 108)
--- irreducible subcontinuum about a set (Zorn)
-#print axioms HPC.Plane.exists_irreducibleAbout
 -- Theorem 5
-#print axioms HPC.Plane.arcs_theorem5
 #print axioms HPC.Plane.arcs_theorem5_point
 -- Corollary 2
 #print axioms HPC.Plane.arcs_corollary2
 -- ## Bing 1951 (Pacific)
 #print axioms HPC.Plane.theorem1_HIC
-#print axioms HPC.Plane.pseudoArc_unique
 #print axioms HPC.Plane.homogeneous_of_isPseudoArc
-#print axioms HPC.Plane.isGδ_pseudoArcs
-#print axioms HPC.Plane.dense_pseudoArcs_of
-#print axioms HPC.Plane.theorem2_HIC_of
-#print axioms HPC.Plane.theorem3_HIC
-#print axioms HPC.Plane.theorem3_HIC_bing
-#print axioms HPC.Plane.theorem4_HIC
 -- ## Fugate 1966
 #print axioms HPC.Plane.fugate_lemma1
-#print axioms HPC.Plane.fugate_lemma2'
-#print axioms HPC.Plane.fugate_lemma4
--- class B rename
-#print axioms HPC.Plane.fugate_theorem1_sufficiency
--- class B rename
-#print axioms HPC.Plane.fugate_theorem1
-#print axioms HPC.Plane.fugate_cor1_iff
--- class B rename
-#print axioms HPC.Plane.fugate_cor2
--- class B rename
-#print axioms HPC.Plane.isTerminalSub_iff_irreducible
 -- ## Nadler
 #print axioms HPC.Plane.exists_two_nonCutPoints
-#print axioms HPC.Plane.not_subset_of_nonCutPoints
-#print axioms HPC.Plane.sorgenfrey
-#print axioms HPC.Plane.irreducible_iff_not_isTriod
--- class B rename
-#print axioms HPC.Plane.exists_irreducibleBetween_of_atriodic
-#print axioms HPC.Plane.isHereditarilyUnicoherent_union
-#print axioms HPC.Plane.isUnicoherent_univ_of_contraction
--- ## Refutations (ledger certificates)
-#print axioms HPC.Fold.theorem4_two_degenerate_false
-#print axioms HPC.Fold.not_theorem4Literal
-#print axioms HPC.Fold.not_theorem4LiteralND
-#print axioms HPC.Fold.not_exitReach
-#print axioms HPC.Fold.not_highExitValleyOpen
-#print axioms HPC.Fold.not_lowExitPeak
-#print axioms HPC.Fold.not_highExitValley
-#print axioms HPC.Fold.not_f2Prime
-#print axioms HPC.Fold.not_exitReachTight
-#print axioms HPC.Fold.not_highExitValleyOpenTight
-#print axioms HPC.Fold.not_lowExitPeakTight
-#print axioms HPC.Fold.not_highExitValleyTight
-#print axioms HPC.Fold.not_f2PrimeTight
-#print axioms HPC.Fold.not_f2PrimeFree
-#print axioms HPC.Description.not_theorem6Pos_shift_unconditional
-#print axioms HPC.Description.not_patternFollowing_unconditional
--- T3: the 1951 notion does not imply the 1948 notion
-#print axioms HPC.Plane.Counter92.Crit.bar_mem
-#print axioms HPC.Plane.Counter92.Crit.hgt_mem
-#print axioms HPC.Plane.Counter92.Crit.inter
-#print axioms HPC.Plane.Counter92.Crit.isPreconnected
-#print axioms HPC.Plane.Counter92.Crit.neg_bar
-#print axioms HPC.Plane.Counter92.Crit.pos_bar
-#print axioms HPC.Plane.Counter92.Crit.zero_mem
-#print axioms HPC.Plane.Counter92.S₀_cases
-#print axioms HPC.Plane.Counter92.S₀_eq
-#print axioms HPC.Plane.Counter92.barL_subset_of_interior
-#print axioms HPC.Plane.Counter92.barR_subset_of_interior
-#print axioms HPC.Plane.Counter92.bar_convex
-#print axioms HPC.Plane.Counter92.bar_mem_closure_C₁
-#print axioms HPC.Plane.Counter92.bar_mem_closure_C₁lo
-#print axioms HPC.Plane.Counter92.bar_mem_interior_C₁lo
-#print axioms HPC.Plane.Counter92.bar_mem_of_neg
-#print axioms HPC.Plane.Counter92.bar_mem_of_pos
-#print axioms HPC.Plane.Counter92.bar_piece
-#print axioms HPC.Plane.Counter92.bingElt_bar
-#print axioms HPC.Plane.Counter92.bingElt_curve
-#print axioms HPC.Plane.Counter92.bingS_S₀
-#print axioms HPC.Plane.Counter92.cA_mem
-#print axioms HPC.Plane.Counter92.closure_C₁_subset
-#print axioms HPC.Plane.Counter92.closure_C₁lo_subset
-#print axioms HPC.Plane.Counter92.conflict
-#print axioms HPC.Plane.Counter92.connectedSpace_S₀
-#print axioms HPC.Plane.Counter92.containsNested_window
-#print axioms HPC.Plane.Counter92.continuousOn_arc1
-#print axioms HPC.Plane.Counter92.continuousOn_arc2
-#print axioms HPC.Plane.Counter92.continuousOn_cA
-#print axioms HPC.Plane.Counter92.continuous_hgt
-#print axioms HPC.Plane.Counter92.continuous_xc
-#print axioms HPC.Plane.Counter92.crit_bar_le
-#print axioms HPC.Plane.Counter92.crit_hgt_le
-#print axioms HPC.Plane.Counter92.crit_le_bar
-#print axioms HPC.Plane.Counter92.crit_le_hgt
-#print axioms HPC.Plane.Counter92.crit_of
-#print axioms HPC.Plane.Counter92.crit_univ
-#print axioms HPC.Plane.Counter92.dist_S₀
-#print axioms HPC.Plane.Counter92.eq_c₁
-#print axioms HPC.Plane.Counter92.eq_c₂
-#print axioms HPC.Plane.Counter92.eq_of_bar
-#print axioms HPC.Plane.Counter92.eq_of_hgt
-#print axioms HPC.Plane.Counter92.exists_cA_eq
-#print axioms HPC.Plane.Counter92.exists_height
-#print axioms HPC.Plane.Counter92.exists_hgt
-#print axioms HPC.Plane.Counter92.exists_ne_zero_between
-#print axioms HPC.Plane.Counter92.gElt_bar
-#print axioms HPC.Plane.Counter92.gElt_not_partition_S₀
-#print axioms HPC.Plane.Counter92.hd_S₀
-#print axioms HPC.Plane.Counter92.hgt_ge
-#print axioms HPC.Plane.Counter92.hgt_le
-#print axioms HPC.Plane.Counter92.hu_S₀
-#print axioms HPC.Plane.Counter92.isArc_of_separatesPairs_false
-#print axioms HPC.Plane.Counter92.isClosed_S₀
-#print axioms HPC.Plane.Counter92.isCompact_S₀
-#print axioms HPC.Plane.Counter92.isConnected_C₁
-#print axioms HPC.Plane.Counter92.isContinuum_closure_C₁
-#print axioms HPC.Plane.Counter92.isContinuum_closure_C₁lo
-#print axioms HPC.Plane.Counter92.isContinuum_window
-#print axioms HPC.Plane.Counter92.isPreconnected_C₁lo
-#print axioms HPC.Plane.Counter92.isPreconnected_tail1
-#print axioms HPC.Plane.Counter92.isPreconnected_tail2
-#print axioms HPC.Plane.Counter92.kind
-#print axioms HPC.Plane.Counter92.mem_closure_of_forall
-#print axioms HPC.Plane.Counter92.mem_of_hgt
-#print axioms HPC.Plane.Counter92.no_down_down
-#print axioms HPC.Plane.Counter92.no_down_right
-#print axioms HPC.Plane.Counter92.no_left_left
-#print axioms HPC.Plane.Counter92.no_pair
-#print axioms HPC.Plane.Counter92.no_right_right
-#print axioms HPC.Plane.Counter92.no_up_left
-#print axioms HPC.Plane.Counter92.no_up_up
-#print axioms HPC.Plane.Counter92.nontrivial_S₀
-#print axioms HPC.Plane.Counter92.not_isTriod
-#print axioms HPC.Plane.Counter92.not_partition_S₀
-#print axioms HPC.Plane.Counter92.one_le_x_of_neg
-#print axioms HPC.Plane.Counter92.open_window_subset_interior
-#print axioms HPC.Plane.Counter92.pre_of_ambient
-#print axioms HPC.Plane.Counter92.p₀_mem_interior
-#print axioms HPC.Plane.Counter92.quotient_not_t2
-#print axioms HPC.Plane.Counter92.q₀_mem_gElt_p₀
-#print axioms HPC.Plane.Counter92.theorem8_1951_false
-#print axioms HPC.Plane.Counter92.theorem8_1951_false_of_bingS
-#print axioms HPC.Plane.Counter92.union_piece
-#print axioms HPC.Plane.Counter92.x_le_one_of_pos
-#print axioms HPC.Plane.Counter92.x_le_two
-#print axioms HPC.Plane.Counter92.x_nonneg
-#print axioms HPC.Plane.Counter92.x₀_mem_gElt_q₀
-#print axioms HPC.Plane.Counter92.x₀_not_mem_gElt_p₀
-#print axioms HPC.Plane.isConnected_diff_of_superset_false
-#print axioms HPC.Plane.isPseudoArc_of_description_false
-#print axioms HPC.Plane.lastLink_of_minimal_skeleton_false
-#print axioms HPC.Plane.miller_1_5_false
-#print axioms HPC.Plane.not_separation_of_accumulates_false
-#print axioms HPC.Plane.theorem12_of_false
 -- ## Bing 1951 (Duke) §3, Theorems 6–7 — relative forms (batch 117)
 -- (`PlaneFacts` proved in batch 131 (`planeFacts_holds`); the relative forms below are
 -- instantiated in `Enc2.lean`. Since batch 129 `theorem6_1951_rel` and `theorem7_weak_rel` are
@@ -261,23 +56,13 @@ subset of it.
 #print axioms HPC.Plane.diam_notched_le
 #print axioms HPC.Plane.inter_gridSq_subset_notched
 #print axioms HPC.Plane.notched_no_triple
-#print axioms HPC.Plane.exists_notched_cover
-#print axioms HPC.Plane.isOpen_connectedComponentIn_of_isOpen
 #print axioms HPC.Plane.isCoherent_of_minimal_cover
--- skeleton refutations (commission slips, not the sources'): batch 117
-#print axioms HPC.Plane.janiszewski_closed_false
-#print axioms HPC.Plane.inter_gridSq_subset_notched_false
 -- ## Bing 1951 (Duke) §3, Theorem 6 — relative forms (batch 118)
 #print axioms HPC.Plane.exists_polyPath_of_isConnected
 #print axioms HPC.Plane.exists_simplePolyArc_of_polyPath
 #print axioms HPC.Plane.IsSimplePolyArc.isContinuum
 #print axioms HPC.Plane.IsSimplePolyArc.split
-#print axioms HPC.Plane.IsSimplePolyArc.exists_first_mem
-#print axioms HPC.Plane.IsThreaded.isSimpleClosedPolygon
-#print axioms HPC.Plane.exists_threaded
 #print axioms HPC.Plane.polyInterior_disjoint_of_unbounded
-#print axioms HPC.Plane.PlaneFacts.local_side
-#print axioms HPC.Plane.PlaneFacts.sides
 #print axioms HPC.Plane.PlaneFacts.exists_theta_point
 #print axioms HPC.Plane.compFamily_no_triple
 #print axioms HPC.Plane.compFamily_no_circular
@@ -289,14 +74,7 @@ subset of it.
 #print axioms HPC.Plane.exists_notched_cover_param
 #print axioms HPC.Plane.isBounded_notched
 #print axioms HPC.Plane.isConnected_notched
-#print axioms HPC.Plane.isConnected_compl_notched
-#print axioms HPC.Plane.regular_notched
-#print axioms HPC.Plane.PlaneFacts.polyInterior_regular
-#print axioms HPC.Plane.compFamily_isBounded
-#print axioms HPC.Plane.compFamily_regular
-#print axioms HPC.Plane.compFamily_compl_connected
 #print axioms HPC.Plane.treeChain_of_cover
-#print axioms HPC.Plane.theorem7_weak_rel
 -- item 2: the 20-gon (unconditional)
 #print axioms HPC.Plane.isSimpleClosedPolygon_notchedPoly
 #print axioms HPC.Plane.frontier_notched
@@ -311,7 +89,6 @@ subset of it.
 #print axioms HPC.Plane.PlaneFacts.exists_gp_cover
 -- item 4: cross-cuts
 #print axioms HPC.Plane.IsSimpleClosedPolygon.split_two
-#print axioms HPC.Plane.isSimpleClosedPolygon_of_arcs
 #print axioms HPC.Plane.IsSimplePolyArc.isConnected_diff_ends
 #print axioms HPC.Plane.PlaneFacts.crosscut
 -- ## Bing 1951 (Duke) §3, Theorem 7 — relative forms (batch 120)
@@ -331,86 +108,13 @@ subset of it.
 #print axioms HPC.Plane.PlaneFacts.connectedComponentIn_inter_eq
 #print axioms HPC.Plane.PlaneFacts.component_inter_eq_polyInterior
 -- item 5: Theorem 7
-#print axioms HPC.Plane.isSimpleVertices_notchedVertices
 #print axioms HPC.Plane.finite_inter_notchedPoly_of_gp
 #print axioms HPC.Plane.theorem7_1951_rel
--- ## Reconnaissance, batch 121 (Bing 1948, Theorem 3 as printed; `theorem3_end`)
--- Q1: the statements and their implications
-#print axioms HPC.Fold.Recon121.theorem3EndTwo_of_literal
-#print axioms HPC.Fold.Recon121.theorem3LiteralOr_of_literal
-#print axioms HPC.Fold.Recon121.theorem3EndStmt_of_literalOr
-#print axioms HPC.Fold.Recon121.theorem3EndStmt_of_endTwo
-#print axioms HPC.Fold.Recon121.theorem3Stmt_of_endStmt
-#print axioms HPC.Fold.Recon121.theorem3Stmt_holds
-#print axioms HPC.Fold.Recon121.endClause_or_iff
--- Q1(a): the respective reading of the end clause fails for three coarse links; the only-clause
-#print axioms HPC.Fold.Recon121.not_theorem3Literal
-#print axioms HPC.Fold.Recon121.k3_unforced_meeting
-#print axioms HPC.Fold.Recon121.only_clause_not_automatic
-#print axioms HPC.Fold.Recon121.linkChain_only
--- Q2: general chains and the model
-#print axioms HPC.Fold.Recon121.exists_chain_iff_isCrookedIvF
-#print axioms HPC.Fold.Recon121.meets_of_forced
-#print axioms HPC.Fold.Recon121.chain_of_modelEndP
-#print axioms HPC.Fold.Recon121.theorem3_end_of_model
--- Q4: Bing's special case executed literally (defect in the proof)
-#print axioms HPC.Fold.Recon121.seamD_special
-#print axioms HPC.Fold.Recon121.seamD_hk
-#print axioms HPC.Fold.Recon121.seamD_minIdx_maxIdx
-#print axioms HPC.Fold.Recon121.seam_every_H_fails
-#print axioms HPC.Fold.Recon121.seamC_crooked
-#print axioms HPC.Fold.Recon121.seamIH_H0
-#print axioms HPC.Fold.Recon121.seamIH_H1
-#print axioms HPC.Fold.Recon121.seam_Cbot_fails
--- ## Reconnaissance, batch 122 (Bing's induction for Theorem 3, closed)
--- Q3: Bing's Theorem 3 in the model, by Bing's induction with the seams closed
-#print axioms HPC.Fold.Recon122.special_five
-#print axioms HPC.Fold.Recon122.special_case
-#print axioms HPC.Fold.Recon122.general_case
-#print axioms HPC.Fold.Recon122.bing_main
--- Q3: transfer to chains and the statements
-#print axioms HPC.Fold.Recon122.bHyp_of_crooked
-#print axioms HPC.Fold.Recon122.chain_of_bconcl
-#print axioms HPC.Fold.Recon122.theorem3Block_holds
--- ## Batch 123 (Theorem 4 in Bing's two-link form; the only-clauses)
--- Theorem 4 in the model
-#print axioms HPC.Fold.Recon123.seg3
-#print axioms HPC.Fold.Recon123.two_small
-#print axioms HPC.Fold.Recon123.two_core
-#print axioms HPC.Fold.Recon123.two_model
-#print axioms HPC.Fold.chain_of_twoConcl
--- the degenerate example
-#print axioms HPC.Fold.degFine_crooked
-#print axioms HPC.Fold.degFine_not_two
--- the only-clauses: reductions
-#print axioms HPC.Fold.onlyIn_of_neighbour
-#print axioms HPC.Fold.onlyIn_of_not_covered
--- ## Batch 124 (the pair form of Theorem 3; the only-clauses; Fugate's Corollary 1)
--- the pair form in the model
-#print axioms HPC.Fold.Recon122.zbase
-#print axioms HPC.Fold.Recon122.special_fiveZ
-#print axioms HPC.Fold.Recon122.pair_main
--- the pair form for chains; Theorem 3 as printed
-#print axioms HPC.Fold.Recon122.chain_of_bconclZ
-#print axioms HPC.Fold.theorem3_pair
-#print axioms HPC.Fold.theorem3Pair_holds
-#print axioms HPC.Fold.onlyIn_of_no_common
-#print axioms HPC.Fold.theorem3_literal
-#print axioms HPC.Fold.Recon121.theorem3LiteralOr_holds
--- Theorem 4 as printed: refuted with three coarse links
-#print axioms HPC.Fold.onlyFine_crooked
-#print axioms HPC.Fold.not_theorem4LiteralND
--- Fugate's Corollary 1: (U) is exactly the missing step
-#print axioms HPC.Plane.fugateU_iff_cor1Sufficiency
-#print axioms HPC.Plane.fugate_cor1_of_fugateU
 -- ## Jordan curve theorem for polygons (batch 125)
 -- part I: the crossing parity
 #print axioms HPC.Plane.crossesEast_comm
-#print axioms HPC.Plane.not_crossesEast_of_mem
-#print axioms HPC.Plane.crossesEast_locallyConstant_of_ne
 #print axioms HPC.Plane.crossesEast_jump
 #print axioms HPC.Plane.sum_vJump_telescope
-#print axioms HPC.Plane.parity_locallyConstant
 #print axioms HPC.Plane.parity_eq_of_isPreconnected
 #print axioms HPC.Plane.parity_far
 #print axioms HPC.Plane.parity_eq_zero_of_far
@@ -419,39 +123,29 @@ subset of it.
 #print axioms HPC.Plane.polygon_separates
 -- ## Jordan curve theorem for polygons (batch 126)
 -- part II: the two sides are connected; the field `jct` discharged
-#print axioms HPC.Plane.polygon_local_chord
 #print axioms HPC.Plane.halfDisk_convex
 #print axioms HPC.Plane.halfDisk_nonempty
-#print axioms HPC.Plane.ball_diff_chord
 #print axioms HPC.Plane.parity_flip_at
 #print axioms HPC.Plane.parity_flip_vertical
-#print axioms HPC.Plane.parity_flip_edge
 #print axioms HPC.Plane.mem_closure_parity_set
-#print axioms HPC.Plane.vertex_two_pieces
 #print axioms HPC.Plane.exists_first_hit
-#print axioms HPC.Plane.exists_segment_to_boundary
 #print axioms HPC.Plane.sideNbhd_subset
 #print axioms HPC.Plane.sideNbhd_isConnected
-#print axioms HPC.Plane.sideNbhd_near
 #print axioms HPC.Plane.exists_segment_to_sideNbhd
 #print axioms HPC.Plane.isConnected_parity_set
 #print axioms HPC.Plane.frontier_parity_set
 #print axioms HPC.Plane.jct_polygon
-#print axioms HPC.Plane.planeFacts_of_enclose_janiszewski
 -- ## Polygonal Janiszewski (batch 127)
 -- part I: straight-line graphs, mod-2 cycles, parity, Mayer–Vietoris
 #print axioms HPC.Plane.exists_proper_subdivision
 #print axioms HPC.Plane.IsProper.subset
 #print axioms HPC.Plane.isClosed_graphSet
 #print axioms HPC.Plane.cycParity_symmDiff
-#print axioms HPC.Plane.not_sum_vJump_even_skeleton
 #print axioms HPC.Plane.sum_vJump_even
-#print axioms HPC.Plane.cycParity_locallyConstant
 #print axioms HPC.Plane.cycParity_eq_of_isPreconnected
 #print axioms HPC.Plane.cycParity_far
 #print axioms HPC.Plane.separatesPts_of_cycParity_ne
 #print axioms HPC.Plane.cycParity_flip
-#print axioms HPC.Plane.graph_connected_of_isConnected
 #print axioms HPC.Plane.exists_cycle_decomposition
 #print axioms HPC.Plane.janiszewskiPoly_of_oddCycle
 -- ## Polygonal Janiszewski (batch 128)
@@ -460,7 +154,6 @@ subset of it.
 #print axioms HPC.Plane.circPt_mem_segment_iff
 #print axioms HPC.Plane.edge_local
 #print axioms HPC.Plane.sideStrip_subset_compl
-#print axioms HPC.Plane.sideStrip_nonempty
 #print axioms HPC.Plane.sideStrip_isPreconnected
 #print axioms HPC.Plane.subset_or_disjoint_component
 #print axioms HPC.Plane.oddSet_subset
@@ -478,15 +171,12 @@ subset of it.
 -- part III: polygonal sets, the field change (`janiszewski` for polygonal sets), the two uses;
 -- `PlaneFacts` down to one undischarged field (`enclose`)
 -- item 1: polygonal sets (`HPC/Plane/Polygonal.lean`, `HPC/Plane/PolygonalPoly.lean`)
-#print axioms HPC.Plane.IsPolygonal.isCompact
 #print axioms HPC.Plane.IsPolygonal.union
-#print axioms HPC.Plane.IsPolygonal.inter
 #print axioms HPC.Plane.isPolygonal_empty
 #print axioms HPC.Plane.isPolygonal_segment
 #print axioms HPC.Plane.isPolygonal_singleton
 #print axioms HPC.Plane.isPolygonal_biUnion
 #print axioms HPC.Plane.IsSimpleClosedPolygon.isPolygonal
-#print axioms HPC.Plane.isPolygonal_iff_graphSet
 -- item 2: isolated points; Janiszewski for polygonal sets
 #print axioms HPC.Plane.isPreconnected_ball_diff_singleton
 #print axioms HPC.Plane.isConnected_diff_singleton_of_isOpen
@@ -495,19 +185,12 @@ subset of it.
 #print axioms HPC.Plane.IsPolygonal.exists_split
 #print axioms HPC.Plane.inter_split_connected
 #print axioms HPC.Plane.janiszewski_polygonal
--- item 3: the local half-disk of a polygon interior
-#print axioms HPC.Plane.polyInterior_local_halfDisk
 -- item 4: polygonality of `Γ₁ ∩ closure (h₁ ∩ h₂)`
-#print axioms HPC.Plane.isPolygonal_segment_inter_segment
-#print axioms HPC.Plane.isPolygonal_segment_inter_polygon
-#print axioms HPC.Plane.exists_open_pieces_of_saturated
-#print axioms HPC.Plane.exists_open_pieces
 #print axioms HPC.Plane.eventually_mem_closure_of_not_special
 #print axioms HPC.Plane.isPolygonal_segment_inter_closure
 #print axioms HPC.Plane.isPolygonal_inter_closure_inter
 #print axioms HPC.Plane.isSaturated_polyInterior
 #print axioms HPC.Plane.isPolygonal_inter_closure_polyInterior₃
-#print axioms HPC.Plane.isPolygonal_frontier_inter_closure
 -- the edits: the two uses, Theorems 6 and 7, the interface
 #print axioms HPC.Plane.PlaneFacts.crosscut'
 #print axioms HPC.Plane.PlaneFacts.exists_theta_point
@@ -515,15 +198,12 @@ subset of it.
 #print axioms HPC.Plane.treeChain_of_cover
 #print axioms HPC.Plane.theorem7_1951_rel
 #print axioms HPC.Plane.theorem6_1951_rel
-#print axioms HPC.Plane.theorem7_weak_rel
-#print axioms HPC.Plane.planeFacts_of_enclose_janiszewski
 #print axioms HPC.Plane.planeFacts_of_enclose
 -- ## Enclosing polygon (batch 130)
 -- `enclose`, part I: the grid union, its boundary graph, simple cycles, the enclosing polygon
 -- item 1: the interior as the odd set (`HPC/Plane/Enc1Cyc.lean`)
 #print axioms HPC.Plane.polyInterior_eq_oddSet
 #print axioms HPC.Plane.cycParity_polyEdges
-#print axioms HPC.Plane.graphSet_polyEdges
 -- item 2: simple cycles
 #print axioms HPC.Plane.exists_cycle_vertices
 #print axioms HPC.Plane.simpleCycle_of_vertices
@@ -540,7 +220,6 @@ subset of it.
 #print axioms HPC.Plane.isCompact_gridUnion
 #print axioms HPC.Plane.disjoint_frontier_gridUnion
 #print axioms HPC.Plane.subset_interior_gridUnion
-#print axioms HPC.Plane.mem_bdryGraph_iff_card
 #print axioms HPC.Plane.isProper_bdryGraph
 #print axioms HPC.Plane.frontier_gridUnion
 #print axioms HPC.Plane.graphSet_bdryGraph_subset
@@ -570,73 +249,22 @@ subset of it.
 #print axioms HPC.Plane.exists_mesh_compl_subset
 #print axioms HPC.Plane.enclose_holds
 #print axioms HPC.Plane.planeFacts_holds
-#print axioms HPC.Plane.theorem7_1951
 #print axioms HPC.Plane.theorem6_1951
-#print axioms HPC.Plane.theorem7_weak
 -- ## Fugate's Corollary 1: Part I (Corollary 1 under (∗)); Part II (Ingram 1968; (∗));
--- `fugate_cor1` proved (batch 132)
--- Part I: Corollary 1 under (∗) (`HPC/Plane/Fugate66Cor1Proof.lean`)
-#print axioms HPC.Plane.ingramStarWeak_of_ingramStar
-#print axioms HPC.Plane.exists_split_of_not_isConnected
-#print axioms HPC.Plane.not_isPreconnected_of_split
-#print axioms HPC.Plane.not_isUnicoherent_of_split
-#print axioms HPC.Plane.subset_of_unicoherent_absorb'
-#print axioms HPC.Plane.subset_of_unicoherent_absorb
-#print axioms HPC.Plane.mem_chainUnion
-#print axioms HPC.Plane.subset_chainUnion
-#print axioms HPC.Plane.chainUnion_mono
-#print axioms HPC.Plane.chainUnion_self
-#print axioms HPC.Plane.chainUnion_split
-#print axioms HPC.Plane.chainUnion_succ
-#print axioms HPC.Plane.inter_chainUnion_nonempty
-#print axioms HPC.Plane.isContinuum_chainUnion
-#print axioms HPC.Plane.isSnakeLike_chainUnion_of_hu
-#print axioms HPC.Plane.isHereditarilyUnicoherent_chainUnion
-#print axioms HPC.Plane.isSnakeLike_chainUnion_of_ingramStarWeak
-#print axioms HPC.Plane.finChainExt_snake
-#print axioms HPC.Plane.finChainExt_meet
-#print axioms HPC.Plane.finChainExt_partial
-#print axioms HPC.Plane.finChainExt_union
-#print axioms HPC.Plane.isHereditarilyUnicoherent_partial
-#print axioms HPC.Plane.fugateCor1Sufficiency_of_ingramStarWeak
-#print axioms HPC.Plane.fugateCor1Sufficiency_of_ingramStar
-#print axioms HPC.Plane.fugate_cor1_of_ingramStar
-#print axioms HPC.Plane.fugateU_of_ingramStar
 -- Part II: Ingram 1968, Lemmas 1–2 and (∗∗) (`HPC/Plane/Ingram68Core.lean`)
 #print axioms HPC.Plane.isTriod_of_core
 #print axioms HPC.Plane.not_core_of_isAtriodic
-#print axioms HPC.Plane.exists_open_closure_disjoint
-#print axioms HPC.Plane.exists_arm
-#print axioms HPC.Plane.not_isAtriodic_of_three
-#print axioms HPC.Plane.ingram_lemma1
-#print axioms HPC.Plane.eq_of_subset_of_split
-#print axioms HPC.Plane.ingram_lemma2
-#print axioms HPC.Plane.ingramStarWeak_holds
 -- Part II: (∗) (`HPC/Plane/Ingram68Star.lean`)
 #print axioms HPC.Plane.exists_split_of_no_continuum
-#print axioms HPC.Plane.isUnicoherent_of_subsingleton
-#print axioms HPC.Plane.isUnicoherent_of_subset_hu
-#print axioms HPC.Plane.subset_satUnion
-#print axioms HPC.Plane.satUnion_subset
-#print axioms HPC.Plane.isContinuum_satUnion
-#print axioms HPC.Plane.isUnicoherent_of_not_mem_diff
-#print axioms HPC.Plane.isUnicoherent_of_not_mem_piece
-#print axioms HPC.Plane.ingramStar_holds
 -- Part II: Nadler 12.51; `fugate_cor1` proved (`HPC/Plane/Ingram68.lean`)
 #print axioms HPC.Plane.isSnakeLike_of_subset_circleLike
-#print axioms HPC.Plane.fugate_cor1
-#print axioms HPC.Plane.fugateU_holds
 -- ## Tree-like continua do not separate; Duke Theorem 7 as printed; `IsTreeLike` repaired (batch 133)
--- The old definition of `IsTreeLike` (links not required bounded) is trivial
-#print axioms HPC.Plane.isTreeLikeOld_of_isContinuum
 -- Theorem 6, re-checked under the repaired definition
 #print axioms HPC.Plane.theorem6_1951_rel
 #print axioms HPC.Plane.theorem6_1951
 -- A logarithm on a fine tree cover (`HPC/Plane/TreeLikeNS.lean`, `TreeLikeNSGraph.lean`)
 #print axioms HPC.Plane.no_two_nbrs
-#print axioms HPC.Plane.exists_log_on_ball
 #print axioms HPC.Plane.exists_leaf
-#print axioms HPC.Plane.exists_log_on_treeChain
 -- No logarithm on a polygon around `p` (`TreeLikeNSLog.lean`)
 #print axioms HPC.Plane.log_diff_edge
 #print axioms HPC.Plane.edge_jump
@@ -647,79 +275,37 @@ subset of it.
 -- Assembly
 #print axioms HPC.Plane.exists_bounded_component_of_separates
 #print axioms HPC.Plane.isTreeChain_filter_meet
-#print axioms HPC.Plane.treeLike_nonseparating
-#print axioms HPC.Plane.theorem7_1951_treeLike
-#print axioms HPC.Plane.isTreeLike_iff_nonseparating
 -- ## Effros theorem (batch 134)
 -- van Mill 2004, Lemma 2.1 and Proposition 2.2 (`HPC/Effros/Fat.lean`)
-#print axioms HPC.Effros.IsFat.mono
-#print axioms HPC.Effros.IsFat.diff_meagre
 #print axioms HPC.Effros.nonempty_interior_closure_of_not_meagre
 #print axioms HPC.Effros.inter_nonempty_of_nowhereMeagre
-#print axioms HPC.Effros.inter_nonempty_of_isFat
--- Proposition 2.2 needs a nonempty space (refutation candidate confirmed)
-#print axioms HPC.Effros.isFat_empty_of_isEmpty
 -- The open mapping principle, van Mill §3 (`HPC/Effros/OpenMapping.lean`)
 #print axioms HPC.Effros.exists_vanMill_basis
 #print axioms HPC.Effros.vanMill_3_1
 #print axioms HPC.Effros.vanMill_3_2
 #print axioms HPC.Effros.vanMill_3_3
 #print axioms HPC.Effros.vanMill_3_4
-#print axioms HPC.Effros.vanMill_3_4_dense
 #print axioms HPC.Effros.vanMill_3_5
 #print axioms HPC.Effros.effros_open_mapping
-#print axioms HPC.Effros.isOpenMap_smul_left
-#print axioms HPC.Effros.isOpen_orbitPart
 -- The homeomorphism group of a compact metric space (`HPC/Effros/HomeoGroup.lean`)
 #print axioms HPC.Effros.homeo_isTopologicalGroup
 #print axioms HPC.Effros.homeo_polishSpace
 #print axioms HPC.Effros.homeo_continuousSMul
 #print axioms HPC.Effros.supMove_symm
-#print axioms HPC.Effros.supMove_symm_trans_le
 #print axioms HPC.Effros.hasBasis_supMove
 #print axioms HPC.Effros.supMove_ball_mem_nhds
 -- Ungar's corollary (`HPC/Effros/Effros.lean`)
 #print axioms HPC.Effros.effros_homogeneous
-#print axioms HPC.Effros.effros_homogeneous_set
 -- ## Jones 1948, 1951 (batch 135)
 -- Equivalences with the repository's definitions (`HPC/Jones/Basic.lean`)
 #print axioms HPC.Jones.isDecomposableSpace_iff_not_isIndecomposable
-#print axioms HPC.Jones.composant_eq_composant_univ
 -- Jones 1948, §1 (`HPC/Jones/Basic.lean`, `HPC/Jones/Theorem6.lean`)
 #print axioms HPC.Jones.theorem0
-#print axioms HPC.Jones.theorem1
-#print axioms HPC.Jones.theorem2
 #print axioms HPC.Jones.theorem3
-#print axioms HPC.Jones.theorem4
-#print axioms HPC.Jones.theorem5
-#print axioms HPC.Jones.theorem6
 -- Theorem 6 as printed (`D` may be empty) is false
-#print axioms HPC.Jones.not_theorem6_printed
-#print axioms HPC.Jones.theorem7
 #print axioms HPC.Jones.theorem8
-#print axioms HPC.Jones.theorem9
--- Theorem 10, corrected (`D` nonempty)
-#print axioms HPC.Jones.theorem10
--- Theorem 10 as printed is false: it says exactly that `X` is indecomposable; an arc refutes it
-#print axioms HPC.Jones.theorem10_printed_iff
-#print axioms HPC.Jones.isDecomposableSpace_unitInterval
-#print axioms HPC.Jones.not_theorem10_printed_unitInterval
--- Jones 1948, §§3–5 (`HPC/Jones/Theorem13.lean`, `HPC/Jones/CutPoints.lean`)
-#print axioms HPC.Jones.theorem11
-#print axioms HPC.Jones.theorem12
-#print axioms HPC.Jones.totallyNonApos_exists_weakCutPoint
-#print axioms HPC.Jones.theorem13
-#print axioms HPC.Jones.theorem14
-#print axioms HPC.Jones.theorem15
-#print axioms HPC.Jones.theorem15_cor
-#print axioms HPC.Jones.theorem16
-#print axioms HPC.Jones.theorem17
-#print axioms HPC.Jones.theorem17_cor
-#print axioms HPC.Jones.theorem18
-#print axioms HPC.Jones.theorem19
 -- Jones 1951 (`HPC/Jones/Jones51.lean`); Theorem 1 was open here, proved in batch 136 (listed below)
 #print axioms HPC.Jones.isOpen_aposSet
-#print axioms HPC.Jones.isHomogeneous_iff_isPretransitive
 #print axioms HPC.Jones.exists_lsc_strictMono_aposSet
 #print axioms HPC.Jones.jones51_lemma
 -- ## Jones 1955, decompositions (batch 136)
@@ -728,7 +314,6 @@ subset of it.
 #print axioms HPC.Jones.t2Space_quotient
 #print axioms HPC.Jones.secondCountable_quotient
 #print axioms HPC.Jones.metrizableSpace_quotient
-#print axioms HPC.Jones.isContinuum_preimage
 #print axioms HPC.Jones.exists_homeomorph_quotient
 #print axioms HPC.Jones.residual_lscAt
 #print axioms HPC.Jones.exists_lscAt
@@ -736,38 +321,14 @@ subset of it.
 -- Jones 1941 Theorem 4; Whyburn 1939 (6.1), (6.2), (6.21) (`HPC/Jones/Whyburn.lean`)
 #print axioms HPC.Jones.semiLocConn_of_isAposyndetic
 #print axioms HPC.Jones.isAposyndetic_of_semiLocConn
-#print axioms HPC.Jones.whyburn_6_1
 #print axioms HPC.Jones.whyburn_6_2
-#print axioms HPC.Jones.whyburn_6_21
 -- Jones 1955, claims (1)-(12), (a)-(f) (`HPC/Jones/Jones55Core.lean`)
 #print axioms HPC.Jones.aposAt_of_isContinuum_interior
 #print axioms HPC.Jones.isContinuum_Lset
 #print axioms HPC.Jones.mem_Lset_iff_Lset_eq
 #print axioms HPC.Jones.Lset_subset_of_meets
-#print axioms HPC.Jones.jones55_claim1
-#print axioms HPC.Jones.jones55_claim2
-#print axioms HPC.Jones.jones55_claim3
-#print axioms HPC.Jones.jones55_claim4
-#print axioms HPC.Jones.jones55_claim5
-#print axioms HPC.Jones.jones55_claim6
-#print axioms HPC.Jones.jones55_claim7
-#print axioms HPC.Jones.jones55_claim8
-#print axioms HPC.Jones.jones55_claim9
-#print axioms HPC.Jones.jones55_claim10
-#print axioms HPC.Jones.jones55_claim11
-#print axioms HPC.Jones.jones55_claim12
-#print axioms HPC.Jones.Nset_eq_Lset
-#print axioms HPC.Jones.Nset_characterization
-#print axioms HPC.Jones.jones55_prop_a
-#print axioms HPC.Jones.jones55_prop_b
-#print axioms HPC.Jones.jones55_prop_c
-#print axioms HPC.Jones.jones55_prop_d
 #print axioms HPC.Jones.jones55_prop_e
-#print axioms HPC.Jones.jones55_prop_f
--- Jones 1951 Theorem 1 (`HPC/Jones/Jones51Thm1.lean`)
-#print axioms HPC.Jones.jones51_theorem1
 -- Jones 1955 Theorem 1 (`HPC/Jones/Jones55.lean`)
-#print axioms HPC.Jones.jones55_isContinuum
 #print axioms HPC.Jones.jones55_b
 #print axioms HPC.Jones.jones55_c
 #print axioms HPC.Jones.jones55_usc
@@ -776,19 +337,12 @@ subset of it.
 #print axioms HPC.Jones.jones55_elements
 -- ## Moore F.A. §§2–5 (batch 137)
 -- Theorems 1–9, `M'` closed (`HPC/Moore/Basic.lean`)
-#print axioms HPC.Moore.fa_theorem1
 #print axioms HPC.Moore.fa_theorem2
 #print axioms HPC.Moore.fa_theorem3
 #print axioms HPC.Moore.fa_theorem4
-#print axioms HPC.Moore.fa_theorem5
 #print axioms HPC.Moore.fa_theorem6
-#print axioms HPC.Moore.fa_theorem7
-#print axioms HPC.Moore.fa_theorem8
-#print axioms HPC.Moore.fa_theorem9
-#print axioms HPC.Moore.fa_cl_isClosed
 -- Theorem 10 (`HPC/Moore/Chains.lean`)
 #print axioms HPC.Moore.exists_simpleChain_sublist
-#print axioms HPC.Moore.fa_theorem10
 -- The bridge (`HPC/Moore/Bridge.lean`)
 #print axioms HPC.Moore.heineBorel_iff
 #print axioms HPC.Moore.isTopologicalBasis_region
@@ -807,18 +361,13 @@ subset of it.
 #print axioms HPC.Moore.isBoundedM_of_isCompact
 -- Theorems 11–14, 17–19 (`HPC/Moore/Sec4.lean`); Theorem 14 as printed is false
 #print axioms HPC.Moore.axiom5₁_of_axiom5
-#print axioms HPC.Moore.fa_theorem11
 #print axioms HPC.Moore.fa_theorem12
 #print axioms HPC.Moore.fa_theorem13
-#print axioms HPC.Moore.fa_theorem14
-#print axioms HPC.Moore.not_fa_theorem14_printed
 #print axioms HPC.Moore.fa_theorem17
-#print axioms HPC.Moore.fa_theorem18
 #print axioms HPC.Moore.fa_theorem19
 -- Theorems 15, 16: Moore's nested simple chains (`HPC/Moore/Thm15.lean`)
 #print axioms HPC.Moore.exists_irreducible
 #print axioms HPC.Moore.isArc_iff_topological
-#print axioms HPC.Moore.fa_theorem15
 #print axioms HPC.Moore.fa_theorem16
 -- The arc characterization (`HPC/Moore/ArcChar.lean`)
 #print axioms HPC.Moore.ac_homeomorph
@@ -827,16 +376,7 @@ subset of it.
 #print axioms HPC.Moore.isArc_iff
 #print axioms HPC.Moore.Space.IsArc.union
 #print axioms HPC.Moore.fa_sec5_arc_split
-#print axioms HPC.Moore.fa_sec5_interval_unique
-#print axioms HPC.Moore.fa_sec5_first_point
-#print axioms HPC.Moore.fa_sec5_last_point
-#print axioms HPC.Moore.fa_sec5_limitPt_iff
-#print axioms HPC.Moore.not_fa_sec5_limitPt_printed
 #print axioms HPC.Moore.fa_scc_two_arcs
--- `∅` as a region: printed Theorems 4 and 19 are not consequences of Axioms 1–8 (`HPC/Moore/Refute.lean`)
-#print axioms HPC.Moore.isConn_univ
-#print axioms HPC.Moore.not_fa_theorem4_printed
-#print axioms HPC.Moore.not_fa_theorem19_printed
 -- ## Moore F.A. §6 (batch 138)
 -- The bridge for §6 (`HPC/Moore/Sec6A.lean`)
 #print axioms HPC.Moore.bdry_eq_frontier
@@ -849,57 +389,38 @@ subset of it.
 -- Theorems 20–23 and the interior of a closed curve (`HPC/Moore/Sec6A.lean`); Theorem 23 as printed is false
 #print axioms HPC.Moore.fa_theorem20
 #print axioms HPC.Moore.fa_theorem21
-#print axioms HPC.Moore.fa_theorem22
 #print axioms HPC.Moore.existsUnique_interior
-#print axioms HPC.Moore.fa_theorem23
-#print axioms HPC.Moore.not_fa_theorem23_printed
 -- Theorems 24–27 (`HPC/Moore/Sec6B.lean`, topological forms in `Sec6Th24.lean` … `Sec6Th27.lean`)
 #print axioms HPC.Moore.fa_theorem24
 #print axioms HPC.Moore.fa_theorem25
-#print axioms HPC.Moore.fa_theorem26
 #print axioms HPC.Moore.fa_theorem27
 #print axioms HPC.Moore.Gen.th25
 #print axioms HPC.Moore.Gen.th26
 #print axioms HPC.Moore.Gen.th27
 -- Theorems 28–31 (`HPC/Moore/Sec6Th28.lean`, `Sec6Th29.lean`, `Sec6Th31.lean`)
 #print axioms HPC.Moore.fa_theorem28
-#print axioms HPC.Moore.fa_theorem29
-#print axioms HPC.Moore.fa_theorem30
 #print axioms HPC.Moore.th31_pocket
-#print axioms HPC.Moore.fa_theorem31
 -- Limit arcs and Theorem 32 (`HPC/Moore/Sec6Lim.lean`, `Sec6Th32.lean`); a hypothesis added to Theorem 32
 #print axioms HPC.Moore.Gen.tarc_of_seq
 #print axioms HPC.Moore.Gen.exists_tarc_of_seq
 #print axioms HPC.Moore.accessible
-#print axioms HPC.Moore.fa_theorem32
 -- Theorems 33, 34 by Kline's proof (`HPC/Moore/Sec6Th33.lean`)
 #print axioms HPC.Moore.fa_theorem33
 #print axioms HPC.Moore.fa_theorem34_region
-#print axioms HPC.Moore.fa_theorem34
 -- ## Moore F.A. §7 (batch 139)
 -- Jordan structure; Theorems 35, 39, 40; footnote p. 152 (`HPC/Moore/Sec7A.lean`); Theorem 35 as printed is false
 #print axioms HPC.Moore.jordan
 #print axioms HPC.Moore.access
 #print axioms HPC.Moore.fa_theorem35
-#print axioms HPC.Moore.not_fa_theorem35_printed
-#print axioms HPC.Moore.fa_theorem39
-#print axioms HPC.Moore.fa_theorem40
-#print axioms HPC.Moore.fa_arcs_of_scc_meet
 -- Theorem 36, and its interior inside `R` (`HPC/Moore/Sec7B.lean`)
 #print axioms HPC.Moore.fa_theorem36
 #print axioms HPC.Moore.fa_theorem36_interior_subset
--- Chords; Theorems 37, 38 (`HPC/Moore/Sec7Chord.lean`, `Sec7Th37.lean`, `Sec7Th38.lean`)
-#print axioms HPC.Moore.param_chords_finite
-#print axioms HPC.Moore.exists_maximal_chord
-#print axioms HPC.Moore.fa_theorem38
 -- Theorem 41: Case I and the first sub-case of Case II (`HPC/Moore/Sec7Th41.lean`); Case II in batch 140 below
 #print axioms HPC.Moore.fa_theorem41_caseI_nested
 #print axioms HPC.Moore.fa_theorem41_caseI
 #print axioms HPC.Moore.fa_theorem41_of_subset
 -- Theorem 42 from Theorem 41; Theorem 43 as printed is false (`HPC/Moore/Sec7Th42.lean`)
-#print axioms HPC.Moore.isSCC_eq_of_subset
 #print axioms HPC.Moore.fa_theorem42_of_41
-#print axioms HPC.Moore.not_fa_theorem43_printed
 -- ## Moore F.A. 41–43, 1919 A–B (batch 140)
 -- Moore 1919, Theorem A (`HPC/Moore/M19A.lean`)
 #print axioms HPC.Moore.Gen.crossing
@@ -920,12 +441,10 @@ subset of it.
 #print axioms HPC.Moore.fa_theorem42
 -- Moore 1919, Theorem B and its step; the arc of footnote * of p. 174 (`HPC/Moore/M19Bstep.lean`, `M19B.lean`, `M19D.lean`)
 #print axioms HPC.Moore.hair_isPreconnected
-#print axioms HPC.Moore.m19_D_arc
 -- ## Moore 1919 C–D (batch 141)
 -- Double rulings: the subdivision lemma (`HPC/Moore/M19CDTile.lean`, `M19CDCells.lean`)
 #print axioms HPC.Moore.Space.Tiling.add_arc
 #print axioms HPC.Moore.Space.DoubleRuling.tiling
-#print axioms HPC.Moore.doubleRuling_cell
 #print axioms HPC.Moore.doubleRuling_cells_ncard
 -- Splitting a quadrilateral; rulings by sets of arcs; cuts (`HPC/Moore/M19CDSplit.lean`, `M19CDRuling.lean`, `M19CDCut.lean`, `M19CDGlue.lean`)
 #print axioms HPC.Moore.Space.Quad.splitX
@@ -940,15 +459,10 @@ subset of it.
 #print axioms HPC.Moore.Space.ArcRuling.sortX
 #print axioms HPC.Moore.Space.DoubleRuling.toArcRuling
 #print axioms HPC.Moore.Space.ArcRuling.toDoubleRuling
-#print axioms HPC.Moore.doubleRuling_pad
 #print axioms HPC.Moore.doubleRuling_refine
 -- Theorem D: the curve form gives the region form (`HPC/Moore/M19CDRegion.lean`; Theorem D proved in batch 142, below)
 #print axioms HPC.Moore.m19_theoremD_regions_of_curves
 -- ## Moore 1919 C corrected, D (batch 142)
--- Theorem C corrected, three forms (`HPC/Moore/M19CD2.lean`)
-#print axioms HPC.Moore.m19_theoremC_crosscuts
-#print axioms HPC.Moore.m19_theoremC_within
-#print axioms HPC.Moore.m19_theoremC_corrected
 -- A ruling missing finitely many disjoint chords; a closed curve within; the chords of a curve (`M19DChords.lean`, `M19DInside.lean`, `M19DExtract.lean`)
 #print axioms HPC.Moore.chords_rulable
 #print axioms HPC.Moore.inside_rulable
@@ -964,7 +478,6 @@ subset of it.
 -- ## Moore 1919 E–F (batch 143)
 -- The nested double rulings `β₁, β₂, …` ("This process may be continued") (`HPC/Moore/M19ESeq.lean`)
 #print axioms HPC.Moore.nested_rulings
-#print axioms HPC.Moore.nested_rulings_fund
 -- A compact set with a grid of vanishing mesh is a square; boxes of a finite subgrid (`HPC/Moore/GridSquare.lean`, `HPC/Moore/GridMesh.lean`)
 #print axioms HPC.Sq.Grid.exists_square
 #print axioms HPC.Sq.PreGrid.box_sub_component
@@ -996,21 +509,9 @@ subset of it.
 #print axioms HPC.Moore.annulus_decomp
 -- The annulus is a collar; the plane (`M19GCollar.lean`, `M19GPlane.lean`)
 #print axioms HPC.Moore.exists_collar
-#print axioms HPC.Moore.annulus_square
 #print axioms HPC.Moore.m19_plane_proof
--- Corollaries (`M19GCor.lean`)
-#print axioms HPC.Moore.isOpenCurveFA_of_isClosedEmbedding
-#print axioms HPC.Moore.isSeqLimit_iff_tendsto
-#print axioms HPC.Moore.theoremG_of_homeomorph
-#print axioms HPC.Moore.final_of_homeomorph
 -- The skeleton (`HPC/Moore/M19G.lean`)
-#print axioms HPC.Moore.m19_schoenflies_boundary
-#print axioms HPC.Moore.m19_annulus
-#print axioms HPC.Moore.m19_annulus_square
 #print axioms HPC.Moore.m19_plane
-#print axioms HPC.Moore.m19_theoremG
-#print axioms HPC.Moore.m19_openCurve
-#print axioms HPC.Moore.m19_final
 -- ## Moore 1925 §I, Theorems 1–4 (batch 145)
 -- Plane facts: Brouwer's boundary theorem, Janiszewski for compact sets (`HPC/Moore/M25Plane.lean`)
 #print axioms HPC.Moore.plane_unicoherent
@@ -1024,19 +525,15 @@ subset of it.
 #print axioms HPC.Moore.quotient_metrizable_plane
 #print axioms HPC.Moore.isProperMap_mk
 #print axioms HPC.Moore.isLimitElt_iff
-#print axioms HPC.Moore.m25_domain_iff
 #print axioms HPC.Moore.ptsOf_connectedComponentIn
 #print axioms HPC.Moore.locallyConnectedSpace_quot
 #print axioms HPC.Moore.quot_brouwer
-#print axioms HPC.Moore.m25_theorem1
 -- Theorems 3 and 4; the region topology; the unbounded complementary domain (`HPC/Moore/M25Thm.lean`)
 #print axioms HPC.Moore.exists_region_in_tube
-#print axioms HPC.Moore.m25_theorem3
 #print axioms HPC.Moore.isTopologicalBasis_mooreRegion
 #print axioms HPC.Moore.spaceOfElts_topology
 #print axioms HPC.Moore.m25_theorem4
 #print axioms HPC.Moore.cl_eq_closure_quot
-#print axioms HPC.Moore.m25_boundary_iff
 #print axioms HPC.Moore.m25_unbounded_unique
 -- Theorem 2 (`HPC/Moore/M25Thm2.lean`)
 #print axioms HPC.Moore.m25_theorem2
@@ -1046,15 +543,12 @@ subset of it.
 #print axioms HPC.Moore.m25_axiom4
 #print axioms HPC.Moore.m25_axiom5
 #print axioms HPC.Moore.m25_region_infinite
-#print axioms HPC.Moore.m25_axioms1245
 -- F.A. Theorems for the space of elements (`HPC/Moore/M25FA.lean`)
 #print axioms HPC.Moore.m25_fa_theorem15
-#print axioms HPC.Moore.m25_FA_1_15
 -- ## Moore 1925 §I, Theorems 5–12 (batch 146)
 -- Cut-point arcs; the circle characterization, Moore 1920 Theorem 4 (`HPC/Moore/CutArc.lean`)
 #print axioms HPC.Moore.IsCutArc.exists_embedding
 #print axioms HPC.Moore.isCutArc_image_Icc
-#print axioms HPC.Moore.IsCutArc.isConnected_diff_ends
 #print axioms HPC.Moore.circle_char
 -- Borsuk's theorem for the plane (`HPC/Moore/Borsuk.lean`)
 #print axioms HPC.Moore.borsuk_exists_log
@@ -1065,10 +559,7 @@ subset of it.
 #print axioms HPC.Moore.mullikin_theorem5
 -- Theorems 5–8 (`HPC/Moore/M25B5.lean`)
 #print axioms HPC.Moore.not_separatesPlane_ptsOf
-#print axioms HPC.Moore.m25_theorem5
 #print axioms HPC.Moore.m25_theorem6
-#print axioms HPC.Moore.m25_theorem7
-#print axioms HPC.Moore.m25_theorem8
 -- Theorems 9, 10, 12 (`HPC/Moore/M25B9.lean`)
 #print axioms HPC.Moore.m25_theorem9
 #print axioms HPC.Moore.m25_theorem10
@@ -1085,7 +576,6 @@ subset of it.
 -- Interiors; arcs and closed curves of elements (`HPC/Moore/M25CInt.lean`)
 #print axioms HPC.Moore.sccInterior_spec
 #print axioms HPC.Moore.isSCCElt_union
-#print axioms HPC.Moore.mooreRegion_of_restricted
 #print axioms HPC.Moore.isArcElt_iff_tarc
 #print axioms HPC.Moore.isSCCElt_iff_tscc
 #print axioms HPC.Moore.th21Prop_restricted
@@ -1097,8 +587,6 @@ subset of it.
 #print axioms HPC.Moore.m25_theorem14
 -- Theorems 15–18 (`HPC/Moore/M25C15.lean`)
 #print axioms HPC.Moore.m25_theorem15
-#print axioms HPC.Moore.m25_theorem16
-#print axioms HPC.Moore.m25_theorem17
 #print axioms HPC.Moore.m25_theorem18
 -- Theorem 19 (`HPC/Moore/M25C19.lean`)
 #print axioms HPC.Moore.m25_theorem19
@@ -1113,7 +601,6 @@ subset of it.
 #print axioms HPC.Moore.isArc_restricted_iff
 #print axioms HPC.Moore.isSCC_restricted_iff
 #print axioms HPC.Moore.m25r_axiom8
-#print axioms HPC.Moore.m25_axioms6'7'
 -- Axioms 6, 7 for the restricted regions, proved directly (`HPC/Moore/M25C6.lean`)
 #print axioms HPC.Moore.exists_crosscut
 #print axioms HPC.Moore.m25r_axiom6
@@ -1121,11 +608,9 @@ subset of it.
 -- Theorems 21, 22: the space of elements is a plane (`HPC/Moore/M25C.lean`)
 #print axioms HPC.Moore.m25_theorem21
 #print axioms HPC.Moore.m25_theorem22
-#print axioms HPC.Moore.m25_theorem22_moore
 -- ## Jones 1955 Theorem 2 (batch 148)
 -- Jones 1949 Theorem 1 as printed fails for a point; the Jordan curve theorem from Moore 1925
 -- Theorem 11; Borsuk invariance; countability (`HPC/Jones/Jones55T2A.lean`)
-#print axioms HPC.Jones.not_jones49_theorem1_point
 #print axioms HPC.Jones.tscc_circle
 #print axioms HPC.Jones.jordan_curve_theorem
 #print axioms HPC.Jones.separatesPlane_of_homeomorph
@@ -1133,7 +618,6 @@ subset of it.
 -- Part (2); the decomposition `G′` of the plane (`HPC/Jones/Jones55T2D.lean`)
 #print axioms HPC.Jones.uncountable_quotient
 #print axioms HPC.Jones.jones55_compl_connected
-#print axioms HPC.Jones.jones55_compl_continuumwise
 #print axioms HPC.Jones.jones55_elt_not_separates
 #print axioms HPC.Jones.gPrimeRel_equivalence
 #print axioms HPC.Jones.isClosedMap_mk_gPrime
@@ -1148,7 +632,6 @@ subset of it.
 #print axioms HPC.Jones.jones55_theorem2
 #print axioms HPC.Jones.jones55_two_domains
 #print axioms HPC.Jones.jones55_elements_indecomposable
-#print axioms HPC.Jones.jones55_three_domains
 -- ## Jones 1949: order, Menger, Whyburn 9.2 (batch 149)
 -- Order of a point; invariance; subspaces; triods; local connectedness (`HPC/Jones/Jones49Order.lean`)
 #print axioms HPC.Jones.hasOrder_homeomorph
@@ -1193,49 +676,26 @@ subset of it.
 #print axioms HPC.Jones.countable_sepPoint_not_hasOrder_two
 -- Whyburn (3.2), (8.4), (8.41), (9.2); `jones49_some_order_two` (`HPC/Jones/Jones49B.lean`)
 #print axioms HPC.Jones.whyburn_3_2
-#print axioms HPC.Jones.whyburn_8_4
-#print axioms HPC.Jones.whyburn_8_41
 #print axioms HPC.Jones.whyburn_9_2
 #print axioms HPC.Jones.jones49_some_order_two
--- Moore 1922, Theorems 1–3 (`HPC/Jones/Moore22.lean`)
-#print axioms HPC.Jones.moore22_theorem1
-#print axioms HPC.Jones.moore22_theorem2
-#print axioms HPC.Jones.moore22_theorem3
 -- Moore 1922, Theorem 4: the parts proved in batch 150 (Theorem 4 itself: batch 151 below)
 -- (`HPC/Jones/Moore22T4.lean`)
-#print axioms HPC.Jones.isPreconnected_compl_of_mooreSimplyConnected
-#print axioms HPC.Jones.isConnected_frontier_of_mooreSimplyConnected
 #print axioms HPC.Jones.locallyConnectedSpace_of_cikAt
-#print axioms HPC.Jones.exists_crossing_continua
 -- ## Crossing continua; Moore 1922 Theorem 4; complementary domains (batch 151)
 -- The sector theorem and the cyclic order (`HPC/Jones/Jones49C.lean`, from
 -- `HPC/Jones/Jones49CStrip.lean`, `Jones49COrder.lean`, `Jones49CAnn.lean`)
-#print axioms HPC.Jones.sector_theorem
-#print axioms HPC.Jones.sector_cyclic_order
-#print axioms HPC.Jones.Sector.sector_two
 #print axioms HPC.Jones.Sector.sector_cyclic
 #print axioms HPC.Jones.Sector.lc_disjoint_rc
 #print axioms HPC.Jones.Sector.exists_lift
 -- Moore's sufficiency in local form; Moore 1922 Theorem 4 (`HPC/Jones/Jones49C.lean`,
 -- `HPC/Jones/Jones49CMoore.lean`)
-#print axioms HPC.Jones.moore22_sufficiency_local
-#print axioms HPC.Jones.moore22_theorem4
-#print axioms HPC.Jones.Sector.sufficiency_local
-#print axioms HPC.Jones.Sector.propertyS_of_locallyConnected
-#print axioms HPC.Jones.Sector.hloc_of_propertyS
 #print axioms HPC.Jones.Sector.exists_crossing_continua_closed
-#print axioms HPC.Jones.Sector.exists_cross_sub
-#print axioms HPC.Jones.Sector.cikAt_of_locallyConnectedSpace
-#print axioms HPC.Jones.Sector.sphere_walk
 -- Complementary domains of plane continua (`HPC/Jones/Jones49C.lean`)
 #print axioms HPC.Jones.isConnected_frontier_complDomain
-#print axioms HPC.Jones.mooreSimplyConnected_complDomain
-#print axioms HPC.Jones.isPreconnected_compl_connectedComponentIn_compl
 -- Whyburn 1939 (6.22), §14 form (`HPC/Jones/Jones49C.lean`)
 #print axioms HPC.Jones.whyburn39_6_22_sec14
 -- ## Whyburn 1939 Theorem 14 (batch 152)
 -- Items A–D (`HPC/Jones/Jones49D.lean`)
-#print axioms HPC.Jones.whyburn39_moore_curve
 #print axioms HPC.Jones.whyburn39_curve_from_order_two
 #print axioms HPC.Jones.whyburn39_local_noncut
 #print axioms HPC.Jones.whyburn39_theorem14
@@ -1248,7 +708,6 @@ subset of it.
 -- ## Whyburn 1939 Corollary 1 (batch 153)
 -- Items A–F (`HPC/Jones/Jones49E.lean`)
 #print axioms HPC.Jones.tarc_of_isSimplePolyArc
-#print axioms HPC.Jones.exists_tarc_of_locallyConnected
 #print axioms HPC.Jones.accessible_of_cyclic
 #print axioms HPC.Jones.frontier_cyclic
 #print axioms HPC.Jones.theta_of_cyclic_peano
@@ -1265,16 +724,11 @@ subset of it.
 -- ## Jones 1949 Theorems 1–2; Jones 1955 Theorem 2 unconditional (batch 154)
 -- Items A–F (`HPC/Jones/Jones49F.lean`)
 #print axioms HPC.Jones.jones49_setting
-#print axioms HPC.Jones.jones49_simple_domains
 #print axioms HPC.Jones.jones49_case1
 #print axioms HPC.Jones.jones49_case2
 #print axioms HPC.Jones.jones49_theorem1
-#print axioms HPC.Jones.jones49_theorem2
-#print axioms HPC.Jones.not_jones49_theorem2_point
 #print axioms HPC.Jones.jones55_theorem2'
-#print axioms HPC.Jones.jones55_two_domains'
 #print axioms HPC.Jones.jones55_elements_indecomposable'
-#print axioms HPC.Jones.jones55_three_domains'
 -- Supporting results (`Jones49FTheta.lean`, `Jones49FLocal.lean`, `Jones49FCase1.lean`,
 -- `Jones49FCase2.lean`)
 #print axioms HPC.Jones.mem_cc_of_not_mem_domain
@@ -1293,30 +747,15 @@ subset of it.
 #print axioms HPC.Jones.jones49_case2_core
 -- ## Hagopian 1975 (batch 155)
 -- Items A–K (`HPC/Hagopian/Hagopian75.lean`)
-#print axioms HPC.Hagopian.admissible_quotient_homeomorph
 #print axioms HPC.Hagopian.composant_dense
 #print axioms HPC.Hagopian.composant_eq_or_disjoint
-#print axioms HPC.Hagopian.composant_isMeagre
 #print axioms HPC.Hagopian.uncountable_composants
-#print axioms HPC.Hagopian.moore_triod_theorem
 #print axioms HPC.Hagopian.hagopian75_lemma1
 #print axioms HPC.Hagopian.hagopian75_lemma1_hu
-#print axioms HPC.Hagopian.hagopian75_lemma2
 #print axioms HPC.Hagopian.admissible_end_sets'
-#print axioms HPC.Hagopian.layer_subset_of_meets
-#print axioms HPC.Hagopian.hagopian75_lemma3
 #print axioms HPC.Hagopian.hagopian75_lemma3_unique
 #print axioms HPC.Hagopian.hagopian75_lemma4
-#print axioms HPC.Hagopian.hagopian75_no_indecomposable_interior
 #print axioms HPC.Hagopian.hagopian75_exists_typeA'
-#print axioms HPC.Hagopian.hagopian75_layer_invariant
-#print axioms HPC.Hagopian.hagopian75_layer_homogeneous
-#print axioms HPC.Hagopian.indecomposable_of_unicoherent_homogeneous
-#print axioms HPC.Hagopian.hagopian75_theorem1_of_layer
--- Refutations and corrected forms (`H75Counter.lean`)
-#print axioms HPC.Hagopian.not_admissible_end_sets
-#print axioms HPC.Hagopian.arc_of_degenerate_layers'
-#print axioms HPC.Hagopian.exists_arc_of_degenerate_layers
 -- Moore's triod theorem (`H75MooreA.lean`, `H75MooreB.lean`, `H75Triod.lean`)
 #print axioms HPC.Hagopian.interlace
 #print axioms HPC.Hagopian.exists_loop_param
@@ -1335,7 +774,6 @@ subset of it.
 #print axioms HPC.Hagopian.hereditarilyUnicoherent_of_homogeneous_indecomposable
 #print axioms HPC.Hagopian.atriodic_of_homogeneous_indecomposable
 #print axioms HPC.Hagopian.separatesPlane_of_not_isPreconnected_inter
-#print axioms HPC.Hagopian.not_isIndecomposable_of_typeA'
 #print axioms HPC.Hagopian.end_layers
 #print axioms HPC.Hagopian.eq_of_meets_ends
 #print axioms HPC.Hagopian.layer_subset_of_meets'
@@ -1348,31 +786,16 @@ subset of it.
 #print axioms HPC.Hagopian.scaleMap_spec
 #print axioms HPC.Hagopian.exists_typeA'_map
 #print axioms HPC.Hagopian.isTypeA'_of_decomposable
-#print axioms HPC.Hagopian.indecomposable_of_unicoherent_homogeneous_aux
 #print axioms HPC.Hagopian.no_indecomposable_interior_aux
 #print axioms HPC.Hagopian.exists_typeA'_aux
-#print axioms HPC.Hagopian.hagopian75_layer_invariant_aux
-#print axioms HPC.Hagopian.layer_homogeneous_aux
-#print axioms HPC.Hagopian.theorem1_of_layer_aux
 -- ## Hagopian 1976 §2 (batch 156)
 -- Items B–D, H, I (`HPC/Hagopian/Hagopian76A.lean`); items D (first paragraph as printed, no
 -- maximal element, sequence), E, F, G are open and commented out (OPEN.md)
 #print axioms HPC.Hagopian.hagopian76_lemma2
-#print axioms HPC.Hagopian.hagopian76_end_sets
 #print axioms HPC.Hagopian.hagopian76_lemma3
-#print axioms HPC.Hagopian.hagopian76_lemma4_layers'
 #print axioms HPC.Hagopian.hagopian76_lemma4_chain
-#print axioms HPC.Hagopian.hagopian76_lemma4_seq_of_noMax
-#print axioms HPC.Hagopian.hagopian76_lemma4_of_branch
-#print axioms HPC.Hagopian.hagopian76_lemma4_seq_of_branch
 #print axioms HPC.Hagopian.hagopian76_lemma4
 #print axioms HPC.Hagopian.hagopian76_lemma4_seq
-#print axioms HPC.Hagopian.hagopian76_lemma8
-#print axioms HPC.Hagopian.hagopian76_theorem2
-#print axioms HPC.Hagopian.hagopian75_corollary
-#print axioms HPC.Hagopian.hagopian75_theorem1
-#print axioms HPC.Hagopian.hagopian75_theorem2
-#print axioms HPC.Hagopian.bing60_plane
 -- Supporting results (`HPC/Hagopian/H76*.lean`)
 #print axioms HPC.Hagopian.lemma2_aux
 #print axioms HPC.Hagopian.end_sets_aux
@@ -1383,22 +806,10 @@ subset of it.
 #print axioms HPC.Hagopian.ext_chain
 #print axioms HPC.Hagopian.exists_strictMono_seq_of_chain
 #print axioms HPC.Hagopian.lemma4_layers_aux
-#print axioms HPC.Hagopian.connected_meets_links
-#print axioms HPC.Hagopian.component_of_caps
-#print axioms HPC.Hagopian.lemma8_aux
-#print axioms HPC.Hagopian.isIndecomposable_of_h1_sub
-#print axioms HPC.Hagopian.hagopian76_theorem2_aux
-#print axioms HPC.Hagopian.hagopian75_corollary_aux
-#print axioms HPC.Hagopian.isDecomposableSpace_of_sub
-#print axioms HPC.Hagopian.hagopian75_theorem2_aux
-#print axioms HPC.Hagopian.isHereditarilyDecomposable_of_arc
-#print axioms HPC.Hagopian.bing60_plane_aux
 #print axioms HPC.Hagopian.isAdmissibleMap_symm
 #print axioms HPC.Hagopian.interior_symm_fibre
 #print axioms HPC.Hagopian.meets_inter_of_cover
 #print axioms HPC.Hagopian.ext_of_branch
-#print axioms HPC.Hagopian.lemma4_of_branch
-#print axioms HPC.Hagopian.lemma4_seq_of_branch
 #print axioms HPC.Hagopian.layer_one_subset_closure
 #print axioms HPC.Hagopian.tail_subset
 #print axioms HPC.Hagopian.false_of_layer_open
@@ -1413,15 +824,7 @@ subset of it.
 #print axioms HPC.Hagopian.lemma4_seq_aux
 -- ## Hagopian 1976 §2 continued (batch 157)
 -- Skeleton theorems (`HPC/Hagopian/Hagopian76B.lean`)
-#print axioms HPC.Hagopian.hagopian76_lemma4_layers_of_no_swallowed
-#print axioms HPC.Hagopian.hagopian76_no_swallowed_of_lemma4_layers
-#print axioms HPC.Hagopian.hagopian76_lemma5_interior
-#print axioms HPC.Hagopian.hagopian76_lemma5_usc
-#print axioms HPC.Hagopian.hagopian76_lemma5_of_ends
 #print axioms HPC.Hagopian.no_proper_subcontinuum_separates
-#print axioms HPC.Hagopian.layerSetoid_mooreDecomp
-#print axioms HPC.Hagopian.exists_quotient_plane
-#print axioms HPC.Hagopian.exists_accessible_typeA'
 -- Supporting theorems (`H76SepInv`, `H76NoSep`, `H76D1`, `H76Lemma5`, `H76Setup`)
 #print axioms HPC.Hagopian.no_log_of_separates
 #print axioms HPC.Hagopian.log_mul_near_one
@@ -1439,33 +842,12 @@ subset of it.
 #print axioms HPC.Hagopian.IsMinimalAdmissible.isCompact
 #print axioms HPC.Hagopian.layer_param_eq
 #print axioms HPC.Hagopian.layer_nonempty
-#print axioms HPC.Hagopian.lemma4_layers_of_no_swallowed
-#print axioms HPC.Hagopian.no_swallowed_of_lemma4_layers
 #print axioms HPC.Hagopian.lemma5_interior_aux
 #print axioms HPC.Hagopian.isUSCDecomp_ker
 #print axioms HPC.Hagopian.lemma5_of_ends_aux
-#print axioms HPC.Hagopian.layerKey_of_mem
-#print axioms HPC.Hagopian.layerKey_of_notMem
-#print axioms HPC.Hagopian.mem_toPt_iff
-#print axioms HPC.Hagopian.toPt_layer_eq
-#print axioms HPC.Hagopian.elt_layerSetoid_of_mem
-#print axioms HPC.Hagopian.elt_layerSetoid_of_notMem
-#print axioms HPC.Hagopian.layer_usc
-#print axioms HPC.Hagopian.isCompact_toPt
-#print axioms HPC.Hagopian.layer_ne_univ
-#print axioms HPC.Hagopian.isContinuum_layer_min
-#print axioms HPC.Hagopian.layerSetoid_mooreDecomp_aux
-#print axioms HPC.Hagopian.exists_quotient_plane_aux
-#print axioms HPC.Hagopian.exists_accessible_point
-#print axioms HPC.Hagopian.exists_accessible_typeA'_aux
 -- ## Hagopian 1976 III (batch 158)
-#print axioms HPC.Hagopian.hagopian76_far_layer
 #print axioms HPC.Hagopian.hagopian76_initial_segment
-#print axioms HPC.Hagopian.hagopian76_lemma4_layers
-#print axioms HPC.Hagopian.hagopian76_no_swallowed_layer
 #print axioms HPC.Hagopian.hagopian76_lemma5
-#print axioms HPC.Hagopian.moore62_theorem28
-#print axioms HPC.Hagopian.exists_quotient_plane'
 -- Supporting theorems (`H76Far`, `H76Lemma5End`, `H76Moore28`, `H76Quot`, `H76Sub`)
 #print axioms HPC.Hagopian.lemma4_layers_far
 #print axioms HPC.Hagopian.closure_inter_of_preconnected
@@ -1484,18 +866,13 @@ subset of it.
 #print axioms HPC.Hagopian.tscc_aposyndetic
 #print axioms HPC.Hagopian.tscc_cyclic
 #print axioms HPC.Hagopian.exists_side_arc
-#print axioms HPC.Hagopian.moore28_core
-#print axioms HPC.Hagopian.moore62_theorem28_aux
-#print axioms HPC.Hagopian.exists_quotient_plane'_aux
 #print axioms HPC.Hagopian.layerSet_Ioo_subset
 #print axioms HPC.Hagopian.layer_subset_closure_Ioo
 #print axioms HPC.Hagopian.layer_subset_closure_Ioo'
 #print axioms HPC.Hagopian.eq_layerSet_of_subcontinuum
 #print axioms HPC.Hagopian.isTypeA'_of_subcontinuum
 -- ## Hagopian 1976 IV (batch 159)
-#print axioms HPC.Hagopian.plane_schoenflies
 #print axioms HPC.Hagopian.exists_collar
-#print axioms HPC.Hagopian.hagopian76_lemma8_caps
 -- Supporting theorems (`H76Schoen`, `H76Invert`, `H76Collar`, `H76Lemma8Caps`)
 #print axioms HPC.Hagopian.quad_split_pt
 #print axioms HPC.Hagopian.eq_or_eq_of_frontier
@@ -1533,20 +910,10 @@ subset of it.
 #print axioms HPC.Hagopian.TArc.isConnected_compl_end
 #print axioms HPC.Hagopian.TArc.exists_closing_arc
 #print axioms HPC.Hagopian.exists_collar_aux
-#print axioms HPC.Hagopian.lemma8_caps_aux
 -- ## Hagopian 1976 V (batch 160)
 -- skeleton theorems (`HPC/Hagopian/Hagopian76E.lean`)
 #print axioms HPC.Hagopian.hagopian76_lemma6_X
-#print axioms HPC.Hagopian.hagopian76_closure_extUnion
-#print axioms HPC.Hagopian.hagopian76_lemma6
-#print axioms HPC.Hagopian.hagopian76_Rset_composant
-#print axioms HPC.Hagopian.hagopian76_essential_typeA'
-#print axioms HPC.Hagopian.layer_nbhd_small
-#print axioms HPC.Hagopian.plane_schoenflies₂
 -- supporting (`H76USC`, `H76Schoen2`, `H76Absorb`, `H76Lemma6`, `H76Step8`, `H76Composant`, `H76Essential`)
-#print axioms HPC.Hagopian.layer_nbhd_small_aux
-#print axioms HPC.Hagopian.quad_split_two_pt
-#print axioms HPC.Hagopian.plane_schoenflies₂_aux
 #print axioms HPC.Hagopian.ext_of_irreducible_union_eq
 #print axioms HPC.Hagopian.absorb_point
 #print axioms HPC.Hagopian.subset_extUnion_of_meets
@@ -1565,807 +932,54 @@ subset of it.
 #print axioms HPC.Hagopian.lemma6_step3
 #print axioms HPC.Hagopian.lemma6_main
 #print axioms HPC.Hagopian.lemma6_X_aux
-#print axioms HPC.Hagopian.mem_layerSet_val
-#print axioms HPC.Hagopian.mem_layer_val
-#print axioms HPC.Hagopian.false_of_indec_subset_layers
-#print axioms HPC.Hagopian.extUnion_one_subset
-#print axioms HPC.Hagopian.closure_extUnion_aux
-#print axioms HPC.Hagopian.lemma6_aux
-#print axioms HPC.Hagopian.not_indec_of_minimalAdmissible
-#print axioms HPC.Hagopian.closure_extUnion_one
-#print axioms HPC.Hagopian.not_isClosed_extUnion
-#print axioms HPC.Hagopian.subset_union_of_escape
-#print axioms HPC.Hagopian.exists_ext_of_subset
-#print axioms HPC.Hagopian.ext_inter_subset
-#print axioms HPC.Hagopian.Rset_composant_aux
 #print axioms HPC.Hagopian.lsc_of_minimalAdmissible
-#print axioms HPC.Hagopian.Rset_symm_comp
-#print axioms HPC.Hagopian.IsEssential.symm_comp
-#print axioms HPC.Hagopian.end_layer_param
-#print axioms HPC.Hagopian.essential_typeA'_of_subset
-#print axioms HPC.Hagopian.not_isClosed_Rset
-#print axioms HPC.Hagopian.exists_ext_cover
-#print axioms HPC.Hagopian.essential_typeA'_two_sided
-#print axioms HPC.Hagopian.essential_typeA'_aux
--- ## Hagopian 1976 VI (batch 161)
--- skeleton theorems (`HPC/Hagopian/Hagopian76F.lean`)
-#print axioms HPC.Hagopian.hagopian76_eps1
-#print axioms HPC.Hagopian.hagopian76_eps1_chain
-#print axioms HPC.Hagopian.exists_Gset
-#print axioms HPC.Hagopian.hagopian76_chain11
-#print axioms HPC.Hagopian.hagopian76_property1
-#print axioms HPC.Hagopian.hagopian76_T9
-#print axioms HPC.Hagopian.hagopian76_property3_shift
-#print axioms HPC.Hagopian.hagopian76_lemma7_triod
-#print axioms HPC.Hagopian.hagopian76_lemma7_of_F
--- supporting theorems (`H76Eps1`, `H76Lemma8Sep`, `H76Prop1`, `H76T9`, `H76Lemma7`, `H76Prop3`)
-#print axioms HPC.Hagopian.isClosed_interval_set
-#print axioms HPC.Hagopian.isCompact_layerSet_interval
-#print axioms HPC.Hagopian.exists_pos_forall_finset
-#print axioms HPC.Hagopian.piece_disjoint
-#print axioms HPC.Hagopian.ends_middle_disjoint
-#print axioms HPC.Hagopian.exists_isEps1
-#print axioms HPC.Hagopian.isEps1_thickening_disjoint
-#print axioms HPC.Hagopian.lemma8_caps_sep
-#print axioms HPC.Hagopian.isOpen_Gset
-#print axioms HPC.Hagopian.Gset_subset_ball
-#print axioms HPC.Hagopian.inter_Gset_subset
-#print axioms HPC.Hagopian.toPt_Wset_eq
-#print axioms HPC.Hagopian.mem_Gset_of_homeo
-#print axioms HPC.Hagopian.exists_Gset_aux
-#print axioms HPC.Hagopian.piece_succ
-#print axioms HPC.Hagopian.exists_elev
-#print axioms HPC.Hagopian.exists_elev_between
-#print axioms HPC.Hagopian.layer_subset_layerSet
-#print axioms HPC.Hagopian.follows_of_elev
-#print axioms HPC.Hagopian.isOpen_chainG
-#print axioms HPC.Hagopian.chainG_subset_thickening
-#print axioms HPC.Hagopian.image_piece_subset_chainG
-#print axioms HPC.Hagopian.piece_subset_chainG
-#print axioms HPC.Hagopian.elev_inter_nonempty
-#print axioms HPC.Hagopian.isPlaneChain_of_pieces
-#print axioms HPC.Hagopian.chainG_isPlaneChain
-#print axioms HPC.Hagopian.toPt_layerSet_elev
-#print axioms HPC.Hagopian.chainG_follows
-#print axioms HPC.Hagopian.chainG_follows_self
-#print axioms HPC.Hagopian.thickChain_follows
-#print axioms HPC.Hagopian.piece_subset_middle
-#print axioms HPC.Hagopian.middle_subset_pieces
-#print axioms HPC.Hagopian.isPreconnected_middle
-#print axioms HPC.Hagopian.property1_aux
-#print axioms HPC.Hagopian.subset_Rset
-#print axioms HPC.Hagopian.T9_aux
-#print axioms HPC.Hagopian.lemma7_triod
-#print axioms HPC.Hagopian.mem_closure_of_near
-#print axioms HPC.Hagopian.lemma7_of_F
-#print axioms HPC.Hagopian.exists_F_of_not_mem_composant
-#print axioms HPC.Hagopian.lemma7_of_F_composant
-#print axioms HPC.Hagopian.layer_shift
 -- ## Hagopian 1976 VII (batch 162)
--- skeleton `HPC/Hagopian/Hagopian76G.lean`
-#print axioms HPC.Hagopian.halfray_dense
-#print axioms HPC.Hagopian.halfray_inter
-#print axioms HPC.Hagopian.hagopian76_lemma7
-#print axioms HPC.Hagopian.hagopian76_property2
 -- supporting: `H76HalfRay.lean`, `H76Lemma7Ray.lean`
 #print axioms HPC.Hagopian.piece_end_layers
 #print axioms HPC.Hagopian.piece_map
-#print axioms HPC.Hagopian.Rset_eq_of_maps
-#print axioms HPC.Hagopian.extUnion_eq_of_subset
-#print axioms HPC.Hagopian.closure_Rset_eq_of_subset
-#print axioms HPC.Hagopian.closure_Rset_piece
-#print axioms HPC.Hagopian.closure_Rset_of_common
-#print axioms HPC.Hagopian.closure_Rset_essential
-#print axioms HPC.Hagopian.halfray_inter_subset
-#print axioms HPC.Hagopian.halfray_dense_aux
-#print axioms HPC.Hagopian.exists_F_halfray
-#print axioms HPC.Hagopian.lemma7_aux
 -- ## Hagopian 1976 VIII (batch 163)
--- skeleton `HPC/Hagopian/Hagopian76H.lean`
-#print axioms HPC.Hagopian.exists_collar_adapted
-#print axioms HPC.Hagopian.no_M_below
-#print axioms HPC.Hagopian.hagopian76_lemma9
-#print axioms HPC.Hagopian.hagopian76_T6
-#print axioms HPC.Hagopian.hagopian76_T3
 -- supporting: `H76Adapt.lean`
 #print axioms HPC.Hagopian.tarc_hseg
 #print axioms HPC.Hagopian.tarc_vseg
 #print axioms HPC.Hagopian.IsCollar.flip
-#print axioms HPC.Hagopian.IsCollar.exists_continuous
-#print axioms HPC.Hagopian.exists_drop_arc
--- supporting: `H76Rect.lean`
-#print axioms HPC.Hagopian.rect_frontier
-#print axioms HPC.Hagopian.rect_tarc₁
-#print axioms HPC.Hagopian.rect_tarc₂
-#print axioms HPC.Hagopian.rect_inter
-#print axioms HPC.Hagopian.rectC₁_axis
-#print axioms HPC.Hagopian.rectC₂_axis
--- supporting: `H76Glue.lean`
-#print axioms HPC.Hagopian.clampI_val
-#print axioms HPC.Hagopian.clampI_zero
-#print axioms HPC.Hagopian.clampI_coe
-#print axioms HPC.Hagopian.clampI_inj
-#print axioms HPC.Hagopian.glue_memL
-#print axioms HPC.Hagopian.glue_memR
-#print axioms HPC.Hagopian.glueMap_L
-#print axioms HPC.Hagopian.glueMap_R
-#print axioms HPC.Hagopian.glueMap_vert
-#print axioms HPC.Hagopian.glueMap_continuous
-#print axioms HPC.Hagopian.glueMap_top
-#print axioms HPC.Hagopian.glueMap_injOn
-#print axioms HPC.Hagopian.glueMap_mapsTo
-#print axioms HPC.Hagopian.glueMap_snd
-#print axioms HPC.Hagopian.glueMap_image_sub
-#print axioms HPC.Hagopian.glueMap_image_sup
--- supporting: `H76AdaptHalf.lean`
-#print axioms HPC.Hagopian.halfcollar_side
-#print axioms HPC.Hagopian.exists_lower_halfcollar
--- supporting: `H76AdaptMain.lean`
-#print axioms HPC.Hagopian.collar_adapted_core
-#print axioms HPC.Hagopian.exists_collar_adapted_aux
--- supporting: `H76NoBelow.lean`
-#print axioms HPC.Hagopian.mem_layer_of_pi_eq
-#print axioms HPC.Hagopian.disjoint_toPt_layerSet
-#print axioms HPC.Hagopian.layer_close_of_pi_close
-#print axioms HPC.Hagopian.IsCollar.isOpen_image
-#print axioms HPC.Hagopian.IsCollar.uniform_height
-#print axioms HPC.Hagopian.exists_closedBall_disjoint
-#print axioms HPC.Hagopian.chain3_follows
--- supporting: `H76NoBelowCore.lean`
-#print axioms HPC.Hagopian.no_M_below_core
--- supporting: `H76NoBelowMain.lean`
-#print axioms HPC.Hagopian.no_M_below_left
-#print axioms HPC.Hagopian.IsMinimalAdmissible.symm'
-#print axioms HPC.Hagopian.layer_symm
-#print axioms HPC.Hagopian.layerSetoid_symm
-#print axioms HPC.Hagopian.IsCollar.reverse
-#print axioms HPC.Hagopian.no_M_below_aux
-#print axioms HPC.Hagopian.exists_collar_vertical
 -- ## Names matching `*_false` that are helper lemmas, not refutations (listed for completeness)
 #print axioms HPC.Plane.PA51.limit_false
-#print axioms HPC.Plane.preconnected_closed_split_false
--- ## Hagopian 1976 IX (batch 164)
--- skeleton `HPC/Hagopian/Hagopian76I.lean`
-#print axioms HPC.Hagopian.hagopian76_reparam
-#print axioms HPC.Hagopian.hagopian76_T6_placed
-#print axioms HPC.Hagopian.hagopian76_I1
-#print axioms HPC.Hagopian.hagopian76_T7_accessible
-#print axioms HPC.Hagopian.hagopian76_eps2_pos
--- supporting: `H76Reparam.lean`
-#print axioms HPC.Hagopian.IsMinimalAdmissible.homeo
-#print axioms HPC.Hagopian.layer_homeo
-#print axioms HPC.Hagopian.layer_homeo_apply
-#print axioms HPC.Hagopian.layerSetoid_homeo
-#print axioms HPC.Hagopian.setup_homeo
-#print axioms HPC.Hagopian.plr_of_le
-#print axioms HPC.Hagopian.plr_of_lt
-#print axioms HPC.Hagopian.plr_zero
-#print axioms HPC.Hagopian.plr_one
-#print axioms HPC.Hagopian.plr_self
-#print axioms HPC.Hagopian.continuous_plr
-#print axioms HPC.Hagopian.plr_le_iff
-#print axioms HPC.Hagopian.plr_plr
-#print axioms HPC.Hagopian.plr_strictMono
-#print axioms HPC.Hagopian.plr_mem_Icc
-#print axioms HPC.Hagopian.plr_mem_Ioo
-#print axioms HPC.Hagopian.plrI_coe
-#print axioms HPC.Hagopian.plrI_symm_coe
-#print axioms HPC.Hagopian.image_plr_rect
-#print axioms HPC.Hagopian.IsCollar.plrTransport
--- supporting: `H76Above.lean`
-#print axioms HPC.Hagopian.eq_of_pi_eq_off
-#print axioms HPC.Hagopian.pi_mem_range_of_mem
-#print axioms HPC.Hagopian.pi_isOpen_image_off
-#print axioms HPC.Hagopian.M_meets_above
-#print axioms HPC.Hagopian.exists_notMem_piM
--- supporting: `H76AboveAcc.lean`
-#print axioms HPC.Hagopian.IsCollar.disjoint_range_above
-#print axioms HPC.Hagopian.exists_accessible_above
-#print axioms HPC.Hagopian.exists_pos_dist_preimage
 -- ## Hagopian 1976 X (batch 165)
--- skeleton `HPC/Hagopian/Hagopian76J.lean`
-#print axioms HPC.Hagopian.rect_crossing
-#print axioms HPC.Hagopian.hagopian76_no_hair
-#print axioms HPC.Hagopian.preimage_pi_isContinuum
-#print axioms HPC.Hagopian.hagopian76_T7
-#print axioms HPC.Hagopian.exists_isEps1_endCtl
-#print axioms HPC.Hagopian.hagopian76_link_control
-#print axioms HPC.Hagopian.hagopian76_T8
-#print axioms HPC.Hagopian.hagopian76_T9_full
-#print axioms HPC.Hagopian.hagopian76_T11
--- supporting: `H76Crossing.lean`
-#print axioms HPC.Hagopian.rect_split
-#print axioms HPC.Hagopian.staple_isPreconnected
-#print axioms HPC.Hagopian.frame_arc
-#print axioms HPC.Hagopian.arc_cut
-#print axioms HPC.Hagopian.rect_crossing_aux
--- supporting: `H76NoHair.lean`
-#print axioms HPC.Hagopian.isPreconnected_preimage_of_fibres
-#print axioms HPC.Hagopian.no_hair_aux
-#print axioms HPC.Hagopian.isConnected_pi_fibre
-#print axioms HPC.Hagopian.preimage_pi_isContinuum_aux
 -- supporting: `H76T7.lean`
-#print axioms HPC.Hagopian.isOpen_pi_image
 #print axioms HPC.Hagopian.exists_height_below
-#print axioms HPC.Hagopian.hagopian76_T7_aux
--- supporting: `H76Thin.lean`
-#print axioms HPC.Hagopian.exists_pos_lt_on_compact
-#print axioms HPC.Hagopian.mem_layer_of_pi_eq_gamma
-#print axioms HPC.Hagopian.pi_thin_near_layer
-#print axioms HPC.Hagopian.exists_isEps1_endCtl_aux
-#print axioms HPC.Hagopian.mem_piece_ceil
-#print axioms HPC.Hagopian.link_control_aux
--- supporting: `H76T9Full.lean`
-#print axioms HPC.Hagopian.strip_in_links
-#print axioms HPC.Hagopian.closure_disjoint_E_of_above
-#print axioms HPC.Hagopian.T11_aux
 -- ## Hagopian 1976 XI (batch 166)
--- skeleton `HPC/Hagopian/Hagopian76K.lean`
-#print axioms HPC.Hagopian.rect_domain
-#print axioms HPC.Hagopian.hagopian76_D
-#print axioms HPC.Hagopian.hagopian76_K0
-#print axioms HPC.Hagopian.hagopian76_K0_crosscut
 -- supporting: `H76Domain.lean`
 #print axioms HPC.Hagopian.isConnected_compl_rect
 #print axioms HPC.Hagopian.tarc_frame
 #print axioms HPC.Hagopian.rect_domain_aux
 #print axioms HPC.Hagopian.rect_domain_low
-#print axioms HPC.Hagopian.rect_domain_vert
--- supporting: `H76DCollar.lean`
-#print axioms HPC.Hagopian.pi_isClosedMap
-#print axioms HPC.Hagopian.pi_preimage_isPreconnected
-#print axioms HPC.Hagopian.tarc_pullback
-#print axioms HPC.Hagopian.hagopian76_D_aux
-#print axioms HPC.Hagopian.mem_toPt_layer_of_pi_eq
-#print axioms HPC.Hagopian.K0_aux
 -- supporting: `H76Crosscut.lean`
 #print axioms HPC.Hagopian.rect_domain_crosscut
-#print axioms HPC.Hagopian.K0_crosscut_aux
 -- ## Hagopian 1976 XII (batch 167)
--- skeleton `HPC/Hagopian/Hagopian76L.lean`
-#print axioms HPC.Hagopian.crossing_translate
-#print axioms HPC.Hagopian.K0_dense_low
-#print axioms HPC.Hagopian.crossing_essential
-#print axioms HPC.Hagopian.hagopian76_T12_parts12
 -- supporting: `H76Translate.lean`
-#print axioms HPC.Hagopian.exists_mem_closure_component_notMem
-#print axioms HPC.Hagopian.isPreconnected_interval_set
 #print axioms HPC.Hagopian.collar_injOn
 #print axioms HPC.Hagopian.openRect_subset_rect
 #print axioms HPC.Hagopian.isOpen_collar_image
-#print axioms HPC.Hagopian.collar_uniform
-#print axioms HPC.Hagopian.pi_near_collar
--- supporting: `H76TranslateMain.lean`
-#print axioms HPC.Hagopian.dist_prod_lt
-#print axioms HPC.Hagopian.crossing_translate_aux
--- supporting: `H76K0Dense.lean`
-#print axioms HPC.Hagopian.K0_low_point_aux
-#print axioms HPC.Hagopian.K0_dense_low_aux
-#print axioms HPC.Hagopian.T12_crossing_aux
--- supporting: `H76CrossEss.lean`
-#print axioms HPC.Hagopian.crossing_essential_aux
-#print axioms HPC.Hagopian.T12_parts12_aux
 -- ## Hagopian 1976 XIII (batch 168)
--- supporting: `H76TranslateIn.lean`
-#print axioms HPC.Hagopian.crossing_translate_in_aux
--- supporting: `H76RPiece.lean`
-#print axioms HPC.Hagopian.mem_closure_extUnion_diff
-#print axioms HPC.Hagopian.crossing_piece_of_R_aux
 -- supporting: `H76PairSep.lean`
-#print axioms HPC.Hagopian.rect_domain_crosscut_arc
 #print axioms HPC.Hagopian.seg_subset_rect_domain
-#print axioms HPC.Hagopian.mem_vsegment
-#print axioms HPC.Hagopian.rect_domain_crossing_separates
--- supporting: `H76CrossSep.lean`
-#print axioms HPC.Hagopian.injOn_pi_preimage
-#print axioms HPC.Hagopian.crossing_separates_aux
--- ## Hagopian 1976 XIV (batch 169)
--- skeleton `HPC/Hagopian/Hagopian76N.lean`
-#print axioms HPC.Hagopian.isMeagre_Rset
-#print axioms HPC.Hagopian.crossing_sides
-#print axioms HPC.Hagopian.exists_generic_pq
-#print axioms HPC.Hagopian.hagopian76_T12_of_dichotomy
-#print axioms HPC.Hagopian.Rset_homeo_dichotomy_of_closure
-#print axioms HPC.Hagopian.iInter_chain_extension
-#print axioms HPC.Hagopian.hagopian76_T13
--- supporting: `H76Meagre.lean`
-#print axioms HPC.Hagopian.extension_proper
-#print axioms HPC.Hagopian.Rset_subset_composant
-#print axioms HPC.Hagopian.isMeagre_Rset_aux
-#print axioms HPC.Hagopian.exists_notMem_Rset
--- supporting: `H76Sides.lean`
-#print axioms HPC.Hagopian.isOpen_joined
-#print axioms HPC.Hagopian.belowSet_isOpen
-#print axioms HPC.Hagopian.aboveSet_isOpen
-#print axioms HPC.Hagopian.mem_belowSet
-#print axioms HPC.Hagopian.mem_aboveSet
-#print axioms HPC.Hagopian.belowSet_of_preconnected
-#print axioms HPC.Hagopian.aboveSet_of_preconnected
-#print axioms HPC.Hagopian.crossing_sides_aux
--- supporting: `H76T12Sides.lean`
-#print axioms HPC.Hagopian.T12_sides_aux
--- supporting: `H76Generic.lean`
-#print axioms HPC.Hagopian.SepIn.mono
-#print axioms HPC.Hagopian.subset_Rset_self
-#print axioms HPC.Hagopian.val_mem_toPt_iff
-#print axioms HPC.Hagopian.exists_generic_pq_aux
--- supporting: `H76Dichot.lean`
-#print axioms HPC.Hagopian.image_composant
-#print axioms HPC.Hagopian.disjoint_image_Rset
-#print axioms HPC.Hagopian.Rset_dichotomy_of_closure_aux
--- supporting: `H76ChainSep.lean`
-#print axioms HPC.Hagopian.sepIn_iInter_of_directed
-#print axioms HPC.Hagopian.directed_supset_of_isChain
-#print axioms HPC.Hagopian.toPt_sInter
-#print axioms HPC.Hagopian.sepIn_sInter_chain
-#print axioms HPC.Hagopian.iInter_chain_isContinuum
-#print axioms HPC.Hagopian.T13_of_chainInter
--- ## Hagopian 1976 XV (batch 170)
--- skeleton `HPC/Hagopian/Hagopian76O.lean`
-#print axioms HPC.Hagopian.extChainInter_in
-#print axioms HPC.Hagopian.extChainInter
-#print axioms HPC.Hagopian.hagopian76_T13_uncond
-#print axioms HPC.Hagopian.crossing_sides_cover_frontier
-#print axioms HPC.Hagopian.follows_crossing
-#print axioms HPC.Hagopian.hagopian76_first_crossing_param
--- supporting: `H76ChainInter.lean`
-#print axioms HPC.Hagopian.mem_layerSet_Icc_zero
-#print axioms HPC.Hagopian.extChainInter_in_aux
-#print axioms HPC.Hagopian.extChainInter_aux
--- supporting: `H76Follows.lean`
-#print axioms HPC.Hagopian.T9_pieces_aux
-#print axioms HPC.Hagopian.follows_crossing_aux
--- supporting: `H76Cover.lean`
-#print axioms HPC.Hagopian.component_frontier_meets
-#print axioms HPC.Hagopian.component_frontier_meets_of_subcontinuum
-#print axioms HPC.Hagopian.component_reaches_frontier_D
--- supporting: `H76CrossClosed.lean`
-#print axioms HPC.Hagopian.limsup_mem_of_tendsto
-#print axioms HPC.Hagopian.limsup_subset_of_eventually
-#print axioms HPC.Hagopian.limsup_isPreconnected
-#print axioms HPC.Hagopian.isClosed_crossing_params
-#print axioms HPC.Hagopian.crossing_set_closed
--- ## Hagopian 1976 XVI (batch 171)
--- skeleton `HPC/Hagopian/Hagopian76P.lean`
-#print axioms HPC.Hagopian.layer_meets_translate_end
-#print axioms HPC.Hagopian.hagopian76_property3_reduced
-#print axioms HPC.Hagopian.crossing_bottom_below
-#print axioms HPC.Hagopian.hagopian76_T12_uncond
--- supporting: `H76Prop3L3.lean`
-#print axioms HPC.Hagopian.layer_meets_translate_end_aux
-#print axioms HPC.Hagopian.translate_params_ordConnected
-#print axioms HPC.Hagopian.layer_meets_translate_initial
--- supporting: `H76Bottom.lean`
-#print axioms HPC.Hagopian.isPreconnected_preimage_off
-#print axioms HPC.Hagopian.bottom_component_below_aux
--- supporting: `H76GenericComp.lean`
-#print axioms HPC.Hagopian.translate_Rset_disjoint
-#print axioms HPC.Hagopian.exists_generic_pq_comp_aux
--- ## Hagopian 1976 XVII (batch 172)
--- skeleton `HPC/Hagopian/Hagopian76Q.lean`
-#print axioms HPC.Hagopian.hagopian76_property3_translate
-#print axioms HPC.Hagopian.hagopian76_property3_of_end
-#print axioms HPC.Hagopian.closure_Rset_subset_of_translate
-#print axioms HPC.Hagopian.property3End_of_closure_Rset
-#print axioms HPC.Hagopian.property3End_of_dichotomy
-#print axioms HPC.Hagopian.hagopian76_property3_of_closure
-#print axioms HPC.Hagopian.crossing_sides_cover_schoenflies
--- supporting: `H76Swallow.lean`
-#print axioms HPC.Hagopian.layerSet_eq_inter_open
-#print axioms HPC.Hagopian.mem_layer_self
-#print axioms HPC.Hagopian.param_of_mem_layer
-#print axioms HPC.Hagopian.swallow_core
-#print axioms HPC.Hagopian.continuum_subset_layer_of_open
-#print axioms HPC.Hagopian.translate_subset_layer
-#print axioms HPC.Hagopian.translate_extension_subset_layer
-#print axioms HPC.Hagopian.layer_disjoint_of_not_subset
--- supporting: `H76InnerCollar.lean`
-#print axioms HPC.Hagopian.jordan_inner_collar
-#print axioms HPC.Hagopian.rect_frontier_domain
-#print axioms HPC.Hagopian.top_component_above_aux
 -- ## Hagopian 1976 XVIII (batch 173)
--- skeleton `HPC/Hagopian/Hagopian76R.lean`
-#print axioms HPC.Hagopian.crossing_from_layer_translate
-#print axioms HPC.Hagopian.crossing_descends
-#print axioms HPC.Hagopian.isCrossRegion_of_D
-#print axioms HPC.Hagopian.hagopian76_property3_domain
-#print axioms HPC.Hagopian.hagopian76_property3
-#print axioms HPC.Hagopian.crossing_length_pos
 -- supporting: `H76Descent.lean`
-#print axioms HPC.Hagopian.exists_eleventh_le
-#print axioms HPC.Hagopian.exists_eleventh_ge
-#print axioms HPC.Hagopian.IsEps1.sep_of_gap
-#print axioms HPC.Hagopian.isCompact_collar_image
-#print axioms HPC.Hagopian.rect_sub
-#print axioms HPC.Hagopian.layer_mem_E_same
 #print axioms HPC.Hagopian.isClosed_layer
-#print axioms HPC.Hagopian.isClosed_layerCrossing
-#print axioms HPC.Hagopian.mem_E_of_axis
-#print axioms HPC.Hagopian.pi_E_eq
-#print axioms HPC.Hagopian.layerCrossing_disjoint
-#print axioms HPC.Hagopian.crossing_from_layer_translate_aux
-#print axioms HPC.Hagopian.crossing_descends_aux
-#print axioms HPC.Hagopian.property3_layer_aux
-#print axioms HPC.Hagopian.crossing_length_pos_aux
 -- ## Hagopian 1976 XIX (batch 174)
--- skeleton `HPC/Hagopian/Hagopian76S.lean`
-#print axioms HPC.Hagopian.hagopian76_property3_end_element
-#print axioms HPC.Hagopian.hagopian76_property3_components
-#print axioms HPC.Hagopian.hagopian76_I_finite
-#print axioms HPC.Hagopian.hagopian76_J_xs
-#print axioms HPC.Hagopian.hagopian76_property4_base
--- supporting: `H76EndElement.lean`
-#print axioms HPC.Hagopian.layerCrossing_congr
-#print axioms HPC.Hagopian.exists_end_extension
-#print axioms HPC.Hagopian.property3_layer_all
-#print axioms HPC.Hagopian.property3_end_element_aux
-#print axioms HPC.Hagopian.crossing_length_pos_of_forall
-#print axioms HPC.Hagopian.crossing_length_pos_all
 -- supporting: `H76IFinite.lean`
-#print axioms HPC.Hagopian.IsIrreducibleInterval.unique
 #print axioms HPC.Hagopian.isClosed_layerSet_Icc
-#print axioms HPC.Hagopian.exists_irreducibleInterval
-#print axioms HPC.Hagopian.IsIrreducibleInterval.closure_meets
-#print axioms HPC.Hagopian.IsIrreducibleInterval.layerSet_Ioo_subset_closure
-#print axioms HPC.Hagopian.mem_component_of_mem_closure_in
-#print axioms HPC.Hagopian.IsCrossingComponent.isConnected
-#print axioms HPC.Hagopian.IsCrossingComponent.subset
-#print axioms HPC.Hagopian.IsCrossingComponent.eq_of_mem_closure
-#print axioms HPC.Hagopian.crossingIntervals_disjoint
-#print axioms HPC.Hagopian.finite_of_disjoint_Ioo
-#print axioms HPC.Hagopian.I_finite_aux
-#print axioms HPC.Hagopian.property3_components_aux
--- supporting: `H76JXs.lean`
-#print axioms HPC.Hagopian.crossSet_disjoint_E
-#print axioms HPC.Hagopian.J_xs_aux
-#print axioms HPC.Hagopian.property4_base_aux
--- ## Hagopian 1976 XX (batch 175)
--- skeleton `HPC/Hagopian/Hagopian76T.lean`
-#print axioms HPC.Hagopian.translate_through_point_in_F
-#print axioms HPC.Hagopian.component_over_middle_crossing
-#print axioms HPC.Hagopian.component_over_middle_crossing_of_end
-#print axioms HPC.Hagopian.cover_pocket_middle
-#print axioms HPC.Hagopian.hagopian76_tail_middle
-#print axioms HPC.Hagopian.hagopian76_x2n_eq_one_of_cut
--- supporting: `H76Pocket.lean`
-#print axioms HPC.Hagopian.bump_in_extension
-#print axioms HPC.Hagopian.component_over_middle_aux
-#print axioms HPC.Hagopian.cover_pocket_middle_aux
-#print axioms HPC.Hagopian.component_over_middle_crossing_aux
-#print axioms HPC.Hagopian.tail_middle_reaches_end_aux
-#print axioms HPC.Hagopian.translate_through_middle_aux
--- supporting: `H76X2n.lean`
-#print axioms HPC.Hagopian.x2n_eq_one_of_cut
--- ## Hagopian 1976 XXI (batch 176)
--- skeleton `HPC/Hagopian/Hagopian76U.lean`
-#print axioms HPC.Hagopian.eps3_positions_middle
-#print axioms HPC.Hagopian.eps3_image_middle
-#print axioms HPC.Hagopian.sep_by_crossing_cut
-#print axioms HPC.Hagopian.hagopian76_x2n_eq_one
-#print axioms HPC.Hagopian.hagopian76_property4_top
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond
--- supporting: `H76Eps3.lean`
-#print axioms HPC.Hagopian.collar_abscissa_sep
-#print axioms HPC.Hagopian.pi_abscissa_close
-#print axioms HPC.Hagopian.Property2At.mono
--- supporting: `H76Cut.lean`
-#print axioms HPC.Hagopian.sepIn_union_cases
-#print axioms HPC.Hagopian.layerSet_subset
-#print axioms HPC.Hagopian.layerSet_mono
-#print axioms HPC.Hagopian.closure_crossing_subset_interval
-#print axioms HPC.Hagopian.iUnion_crossing_subset
-#print axioms HPC.Hagopian.tailCutKeepsSep_of_sepByCrossing
-#print axioms HPC.Hagopian.isCompact_toPt_layerSet
-#print axioms HPC.Hagopian.sepIn_above_gap
--- supporting: `H76Prop4.lean`
-#print axioms HPC.Hagopian.T12Data.f_small
-#print axioms HPC.Hagopian.not_property4_E
-#print axioms HPC.Hagopian.false_of_property4_chain
-#print axioms HPC.Hagopian.property4_top_of_sepByCrossing
--- ## Hagopian 1976 XXII (batch 177)
-#print axioms HPC.Hagopian.exists_param_sep
-#print axioms HPC.Hagopian.strand_fine_translate
-#print axioms HPC.Hagopian.strand_lemma
-#print axioms HPC.Hagopian.strand_fine_positions
-#print axioms HPC.Hagopian.typeA'_inner_strands
-#print axioms HPC.Hagopian.exists_T12Data
-#print axioms HPC.Hagopian.pi_preimage_frontier_D
--- supporting: `H76Strand.lean`
-#print axioms HPC.Hagopian.exists_param_sep_aux
-#print axioms HPC.Hagopian.strand_fine_translate_aux
-#print axioms HPC.Hagopian.strand_off_ends
-#print axioms HPC.Hagopian.strand_closure_subset
-#print axioms HPC.Hagopian.strand_crossing
--- supporting: `H76StrandUse.lean`
-#print axioms HPC.Hagopian.crossSet_univ_eq
-#print axioms HPC.Hagopian.val_preimage_connectedComponentIn
-#print axioms HPC.Hagopian.val_preimage_closure_connectedComponentIn
-#print axioms HPC.Hagopian.strand_inner_middle
-#print axioms HPC.Hagopian.strand_fine_positions_aux
-#print axioms HPC.Hagopian.typeA'_strand_aux
-#print axioms HPC.Hagopian.typeA'_inner_crossing
-#print axioms HPC.Hagopian.strand_essential
--- supporting: `H76T12Exists.lean`
-#print axioms HPC.Hagopian.pi_fibre
-#print axioms HPC.Hagopian.pi_preimage_continuum
-#print axioms HPC.Hagopian.frontier_D_continuum
-#print axioms HPC.Hagopian.pi_preimage_frontier_D_aux
-#print axioms HPC.Hagopian.exists_T12Data_aux
-#print axioms HPC.Hagopian.T15_T17_cond_hyps_inconsistent
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond_fix
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond2
--- ## Hagopian 1976 XXIII (batch 178)
-#print axioms HPC.Hagopian.separatesPlane_union_of_inter_disconnected
-#print axioms HPC.Hagopian.sepIn_iff_separatesPts_union
-#print axioms HPC.Hagopian.crossing_piece_meets_sigma
-#print axioms HPC.Hagopian.crossing_piece_sides
-#print axioms HPC.Hagopian.crossing_piece_below_iff
-#print axioms HPC.Hagopian.crossing_piece_below_trans
-#print axioms HPC.Hagopian.crossing_piece_no_pocket
-#print axioms HPC.Hagopian.strand_separation
-#print axioms HPC.Hagopian.strand_separation_converse
-#print axioms HPC.Hagopian.sepByCrossing_of_inner_crossing
-#print axioms HPC.Hagopian.T12Data.end_layer_not_subset
-#print axioms HPC.Hagopian.strand_misses_F_of_composant
-#print axioms HPC.Hagopian.sep_by_crossing
-#print axioms HPC.Hagopian.exists_blocks
--- supporting: `H76Unicoh.lean`
-#print axioms HPC.Hagopian.separatesPlane_union_of_inter_disconnected_aux
-#print axioms HPC.Hagopian.subset_of_preconnected_of_frontier
-#print axioms HPC.Hagopian.sepIn_iff_separatesPts_union_aux
--- supporting: `H76Order.lean`
-#print axioms HPC.Hagopian.VFrame.below_subset
-#print axioms HPC.Hagopian.VFrame.above_subset
-#print axioms HPC.Hagopian.VFrame.subset_below
-#print axioms HPC.Hagopian.VFrame.subset_above
-#print axioms HPC.Hagopian.VFrame.subset_below_of_lev
-#print axioms HPC.Hagopian.VFrame.subset_above_of_lev
-#print axioms HPC.Hagopian.VFrame.notMem_closure_of_lev
-#print axioms HPC.Hagopian.VFrame.mem_below_of_lev
-#print axioms HPC.Hagopian.VFrame.mem_above_of_lev
-#print axioms HPC.Hagopian.VFrame.seg_subset_O
-#print axioms HPC.Hagopian.VFrame.isOpen_below
-#print axioms HPC.Hagopian.VFrame.isOpen_above
-#print axioms HPC.Hagopian.VFrame.mem_below_of_mem_closure
-#print axioms HPC.Hagopian.VFrame.mem_above_of_mem_closure
-#print axioms HPC.Hagopian.VFrame.IsPiece.hts_pos
-#print axioms HPC.Hagopian.VFrame.IsPiece.lo_mem
-#print axioms HPC.Hagopian.VFrame.IsPiece.hi_mem
-#print axioms HPC.Hagopian.VFrame.IsPiece.lo_le
-#print axioms HPC.Hagopian.VFrame.IsPiece.le_hi
-#print axioms HPC.Hagopian.VFrame.IsPiece.mem_of_lev
-#print axioms HPC.Hagopian.VFrame.IsPiece.nonempty
-#print axioms HPC.Hagopian.VFrame.IsPiece.disjoint_closure
-#print axioms HPC.Hagopian.VFrame.IsPiece.subset_diff_closure
-#print axioms HPC.Hagopian.VFrame.IsPiece.hts_disjoint
-#print axioms HPC.Hagopian.VFrame.IsPiece.exists_lo
-#print axioms HPC.Hagopian.VFrame.IsPiece.exists_hi
-#print axioms HPC.Hagopian.VFrame.piece_sides
-#print axioms HPC.Hagopian.VFrame.above_subset_above
-#print axioms HPC.Hagopian.VFrame.below_subset_below
-#print axioms HPC.Hagopian.VFrame.clopen_contra
-#print axioms HPC.Hagopian.VFrame.not_below_below
-#print axioms HPC.Hagopian.VFrame.not_above_above
-#print axioms HPC.Hagopian.VFrame.below_iff_above
-#print axioms HPC.Hagopian.VFrame.below_trans
-#print axioms HPC.Hagopian.VFrame.no_pocket
-#print axioms HPC.Hagopian.VFrame.sepIn_of_between
-#print axioms HPC.Hagopian.VFrame.exists_sep_point
-#print axioms HPC.Hagopian.VFrame.between_of_mem
-#print axioms HPC.Hagopian.VFrame.strand_separation
-#print axioms HPC.Hagopian.VFrame.sepByCrossing_of_inner_crossing
--- supporting: `H76OrderConcrete.lean`
-#print axioms HPC.Hagopian.lowFrame_hyps
-#print axioms HPC.Hagopian.isPiece_of_isCrossingPiece
--- supporting: `H76EndLayer.lean`
-#print axioms HPC.Hagopian.separatesPlane_of_separatesPts
-#print axioms HPC.Hagopian.T12Data.end_layer_not_subset_aux
--- supporting: `H76SepCross.lean`
-#print axioms HPC.Hagopian.image_val_connectedComponentIn
-#print axioms HPC.Hagopian.toPt_crossSet
-#print axioms HPC.Hagopian.sepByCrossing_of_sigma_pieces
--- supporting: `H76Blocks.lean`
-#print axioms HPC.Hagopian.blocks_of_finset
-#print axioms HPC.Hagopian.blocks_of_finite
-#print axioms HPC.Hagopian.exists_blocks_aux
--- supporting: `H76Comp.lean`
-#print axioms HPC.Hagopian.strand_misses_of_composant
-#print axioms HPC.Hagopian.hagopian76_T12_comp
-#print axioms HPC.Hagopian.exists_T12Data_comp
-#print axioms HPC.Hagopian.exists_T12Data_strands
--- ## Hagopian 1976 XXIV (batch 179)
-#print axioms HPC.Hagopian.crossing_components_finite
-#print axioms HPC.Hagopian.p_on_crossing_piece
-#print axioms HPC.Hagopian.sep_by_crossing_uncond
-#print axioms HPC.Hagopian.hagopian76_x2n_eq_one_final
-#print axioms HPC.Hagopian.hagopian76_property4_top_final
-#print axioms HPC.Hagopian.exists_blocks_uncond
-#print axioms HPC.Hagopian.crossingIntervals_nondegenerate
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond3
-#print axioms HPC.Hagopian.exists_thm1Setup
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_step
--- supporting: `H76Nondeg.lean`
-#print axioms HPC.Hagopian.layerSet_Icc_self
-#print axioms HPC.Hagopian.crossingIntervals_nondegenerate_of
-#print axioms HPC.Hagopian.IsCrossingComponent.eq_of_irreducible
-#print axioms HPC.Hagopian.crossingComponents_finite_of
--- supporting: `H76Uniform.lean`, `H76Uniform2.lean`, `H76Uniform3.lean` (§4, uniform heights)
-#print axioms HPC.Hagopian.property3_reduced_unif
-#print axioms HPC.Hagopian.property3_translate_unif
-#print axioms HPC.Hagopian.crossing_from_layer_translate_unif
-#print axioms HPC.Hagopian.crossing_descends_unif
-#print axioms HPC.Hagopian.property3_layer_unif
-#print axioms HPC.Hagopian.property3_layer_all_unif
-#print axioms HPC.Hagopian.crossing_length_pos_all_unif
-#print axioms HPC.Hagopian.hagopian76_I_finite_unif
-#print axioms HPC.Hagopian.hagopian76_property3_components_unif
-#print axioms HPC.Hagopian.hagopian76_x2n_eq_one_unif
-#print axioms HPC.Hagopian.hagopian76_property3_unif
--- supporting: `H76PieceB.lean`
-#print axioms HPC.Hagopian.isClosed_M_of_compact
-#print axioms HPC.Hagopian.closure_toPt
-#print axioms HPC.Hagopian.side_point_open
-#print axioms HPC.Hagopian.isCrossingPiece_of_crossingComponent
-#print axioms HPC.Hagopian.closure_ne_univ_of_crossSet
--- ## Hagopian 1976 XXV (batch 180)
--- (`exists_thm1Setup` and `hagopian76_theorem1_of_step`, listed under batch 179, are restated in
--- place for the repaired set-up.)
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond4
-#print axioms HPC.Hagopian.tip_meets_end_layer
-#print axioms HPC.Hagopian.tip_meets_end_layer_mirror
-#print axioms HPC.Hagopian.tip_end_layer_continuum
-#print axioms HPC.Hagopian.tip_triod
-#print axioms HPC.Hagopian.tip_triod_mirror
-#print axioms HPC.Hagopian.tip_triod_on_tip_layer
-#print axioms HPC.Hagopian.degenerate_chunk_iii
--- supporting: `H76Cond4.lean`
-#print axioms HPC.Hagopian.p_on_crossing_piece_comp
-#print axioms HPC.Hagopian.sep_by_crossing_uncond_comp
--- supporting: `H76Thm1Setup.lean`
-#print axioms HPC.Hagopian.Thm1Setup.h_small_θ
-#print axioms HPC.Hagopian.Thm1Setup.h₁_small_θ
-#print axioms HPC.Hagopian.isCompact_I₂_aux
--- supporting: `H76Tip.lean`
-#print axioms HPC.Hagopian.tip_param_low
-#print axioms HPC.Hagopian.tip_param_high
-#print axioms HPC.Hagopian.isContinuum_of_minimalAdmissible
-#print axioms HPC.Hagopian.tip_Z_continuum
--- ## Hagopian 1976 XXVI (batch 181)
--- (`exists_thm1Setup`, listed under batch 179, is restated in place with the fields `hε₃O`, `hε₃S`.)
-#print axioms HPC.Hagopian.two_div_le_of_forty
-#print axioms HPC.Hagopian.closure_midSet_sub
-#print axioms HPC.Hagopian.isCompact_closure_midSet
-#print axioms HPC.Hagopian.mid_not_side
-#print axioms HPC.Hagopian.exists_eps_mid_sides
-#print axioms HPC.Hagopian.exists_eps_mid_O
-#print axioms HPC.Hagopian.Thm1Setup.r₂_le
-#print axioms HPC.Hagopian.Thm1Setup.s₂_le
-#print axioms HPC.Hagopian.Thm1Setup.isCrossingComponent_of_piece
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.block_eq
-#print axioms HPC.Hagopian.Thm1Setup.inner_component_in_block
-#print axioms HPC.Hagopian.Thm1Setup.inner_point_in_block
-#print axioms HPC.Hagopian.block_components_cross
-#print axioms HPC.Hagopian.VFrame.notMem_closure_above_of_below
-#print axioms HPC.Hagopian.VFrame.exists_mem_closure_of_preconnected
-#print axioms HPC.Hagopian.VFrame.exists_mem_closure_of_segment
-#print axioms HPC.Hagopian.VFrame.dist_le_of_mem_segment
-#print axioms HPC.Hagopian.VFrame.infDist_le_of_segment
-#print axioms HPC.Hagopian.VFrame.notMem_closure_below_of_above
-#print axioms HPC.Hagopian.VFrame.exists_mem_closure_of_preconnected_mirror
-#print axioms HPC.Hagopian.VFrame.infDist_le_of_segment_mirror
-#print axioms HPC.Hagopian.VFrame.sepIn_of_below_below
-#print axioms HPC.Hagopian.VFrame.property4_step_unless
-#print axioms HPC.Hagopian.VFrame.joined_of_below
-#print axioms HPC.Hagopian.VFrame.joined_of_above
-#print axioms HPC.Hagopian.VFrame.opposite_of_sepIn
-#print axioms HPC.Hagopian.above_closure_misses_bottom
-#print axioms HPC.Hagopian.Thm1Setup.c₁_le_one
-#print axioms HPC.Hagopian.Thm1Setup.c₁_pos
-#print axioms HPC.Hagopian.Thm1Setup.disjoint_O_E
-#print axioms HPC.Hagopian.Thm1Setup.D'_sub_rect
-#print axioms HPC.Hagopian.Thm1Setup.lowFrame_hyps
-#print axioms HPC.Hagopian.Thm1Setup.injOn_O
-#print axioms HPC.Hagopian.Thm1Setup.V_O
-#print axioms HPC.Hagopian.Thm1Setup.exists_low
-#print axioms HPC.Hagopian.Thm1Setup.K_subset_mid
-#print axioms HPC.Hagopian.Thm1Setup.h₁_Rset_notMem_G
-#print axioms HPC.Hagopian.f_mem_O_of_mem_K
-#print axioms HPC.Hagopian.f_notMem_G_of_Rset
-#print axioms HPC.Hagopian.cross_strand_near
-#print axioms HPC.Hagopian.cross_strand_near_mirror
-#print axioms HPC.Hagopian.tip_meets_end_layer_mirror_rel
-#print axioms HPC.Hagopian.tip_triod_mirror_rel
-#print axioms HPC.Hagopian.chunk_edge_case_mirror
-#print axioms HPC.Hagopian.SepIn.symm
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.mem_O
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.mem_comp
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.rset
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.notMem_G
-#print axioms HPC.Hagopian.Thm1Setup.isClosed_toPt_layerSet
-#print axioms HPC.Hagopian.property4_of_strand_sep
-#print axioms HPC.Hagopian.Thm1Setup.isPiece_of_crossing
-#print axioms HPC.Hagopian.Thm1Setup.comp_eq_or_disjoint
-#print axioms HPC.Hagopian.property4_strand
-#print axioms HPC.Hagopian.property4_step_unless_setup
-#print axioms HPC.Hagopian.case1_ending
-#print axioms HPC.Hagopian.case1_or_case2
-#print axioms HPC.Hagopian.case1
-#print axioms HPC.Hagopian.case2_ending
-#print axioms HPC.Hagopian.case2
-#print axioms HPC.Hagopian.hagopian76_property4_step_cond
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_cases
--- ## Hagopian 1976 XXVII (batch 182)
-#print axioms HPC.Hagopian.layerSet_Icc_zero_inj
-#print axioms HPC.Hagopian.Thm1Setup.d_surjective
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.x2_lt_one
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.G_ne_E
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.layer_x2_eq
-#print axioms HPC.Hagopian.Thm1Setup.not_layerMeetsSide_of_layer_eq_one
-#print axioms HPC.Hagopian.blockLayersMeetSides_false
-#print axioms HPC.Hagopian.Thm1Setup.segment_misses_closure_above
-#print axioms HPC.Hagopian.cross_strand_near_above
-#print axioms HPC.Hagopian.closure_G_diff_E
-#print axioms HPC.Hagopian.Thm1Setup.dn_up_disjoint
-#print axioms HPC.Hagopian.cross_strand_near_o
-#print axioms HPC.Hagopian.property4_of_strand_sep_o
-#print axioms HPC.Hagopian.Thm1Setup.up_subset_up
-#print axioms HPC.Hagopian.Thm1Setup.piece_sides_o
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.disjoint_strand
-#print axioms HPC.Hagopian.Thm1Setup.GoodPoint.mem_mid
-#print axioms HPC.Hagopian.Thm1Setup.dist_f_lt
-#print axioms HPC.Hagopian.property4_step_unless_o
-#print axioms HPC.Hagopian.case1_ending_oriented
-#print axioms HPC.Hagopian.Case1WitnessO.property4
-#print axioms HPC.Hagopian.case2_ending_oriented
-#print axioms HPC.Hagopian.last_step_ending
-#print axioms HPC.Hagopian.not_property4_x3x4
-#print axioms HPC.Hagopian.hagopian76_property4_step_cond2
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.layer_x2_meets_right
-#print axioms HPC.Hagopian.Thm1Setup.kminus_isContinuum
-#print axioms HPC.Hagopian.Thm1Setup.kplus_isContinuum
-#print axioms HPC.Hagopian.Thm1Setup.half_bump
-#print axioms HPC.Hagopian.Thm1Setup.mem_toPt_E_of_pi_eq
-#print axioms HPC.Hagopian.Thm1Setup.half_bump_side
-#print axioms HPC.Hagopian.Thm1Setup.continuum_misses_G_of_h_Rset
-#print axioms HPC.Hagopian.Thm1Setup.closure_comp_continuum
-#print axioms HPC.Hagopian.Thm1Setup.comp_disjoint_G
-#print axioms HPC.Hagopian.Thm1Setup.comp_disjoint_G_of_ess
-#print axioms HPC.Hagopian.Thm1Setup.comp_f_disjoint_G
-#print axioms HPC.Hagopian.minimalAdmissible_ne_univ
-#print axioms HPC.Hagopian.Thm1Setup.admissible_misses_G_of_h_Rset
-#print axioms HPC.Hagopian.Thm1Setup.extension_misses_G
-#print axioms HPC.Hagopian.hagopian76_T15_T17_cond5
-#print axioms HPC.Hagopian.exists_thm1Setup_tight
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_step_tight
-#print axioms HPC.Hagopian.Thm1Setup.half_mem_sat
-#print axioms HPC.Hagopian.stepStrands_of_frame
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_cases2
 -- ## Hagopian 1976 XXVIII (batch 183)
 #print axioms HPC.Hagopian.restrictParam_mem
 #print axioms HPC.Hagopian.restrictParam_zero
 #print axioms HPC.Hagopian.restrictParam_one
 #print axioms HPC.Hagopian.minimalAdmissible_restrict_of_lsc
 #print axioms HPC.Hagopian.minimalAdmissible_restrict
-#print axioms HPC.Hagopian.Thm1Setup.cap_point_o
-#print axioms HPC.Hagopian.Thm1Setup.near_strand_cross_o
-#print axioms HPC.Hagopian.Thm1Setup.piece_nonempty
-#print axioms HPC.Hagopian.e24_pair_between
-#print axioms HPC.Hagopian.e24_pair_below
-#print axioms HPC.Hagopian.Thm1Setup.exists_Rset_over
 #print axioms HPC.Hagopian.exists_restrictParam_eq
-#print axioms HPC.Hagopian.property2_violation
-#print axioms HPC.Hagopian.E24Claims.false
-#print axioms HPC.Hagopian.e24_between_false
-#print axioms HPC.Hagopian.e24_below_far
-#print axioms HPC.Hagopian.E24Data.far
-#print axioms HPC.Hagopian.Case1ClaimsE24.claims'
-#print axioms HPC.Hagopian.Case2ClaimsE24.claims'
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_cases3
 -- ## Hagopian 1984 I (batch 184)
 #print axioms HPC.Hagopian.exists_plane_quotient_of_monotone
 #print axioms HPC.Hagopian.indecomposable_of_monotone_image
 #print axioms HPC.Hagopian.hagopian76_theorem1_of_jones
-#print axioms HPC.Hagopian.hagopian75_theorem1_of_noArc
 #print axioms HPC.Hagopian.hagopian84_lemma1
 #print axioms HPC.Hagopian.hagopian84_lemma6
 #print axioms HPC.Hagopian.hagopian84_lemma11
@@ -2391,7 +1005,6 @@ subset of it.
 #print axioms HPC.Hagopian.layerGlueFun_of_memA
 #print axioms HPC.Hagopian.layerGlueFun_of_memB
 #print axioms HPC.Hagopian.layerGlueA_injective
-#print axioms HPC.Hagopian.layerGlueB_injective
 #print axioms HPC.Hagopian.layer_glue_A
 #print axioms HPC.Hagopian.layer_glue_B
 #print axioms HPC.Hagopian.layerGlue_cases
@@ -2407,41 +1020,7 @@ subset of it.
 #print axioms HPC.Hagopian.layer_common_of_essential
 #print axioms HPC.Hagopian.hagopian84_lemma7_aux
 #print axioms HPC.Hagopian.layers_agree_aux
-#print axioms HPC.Hagopian.translate_run_left_aux
-#print axioms HPC.Hagopian.translate_run_right_aux
-#print axioms HPC.Hagopian.Thm1Setup.fine_over_D
-#print axioms HPC.Hagopian.Thm1Setup.two_div_n_le
-#print axioms HPC.Hagopian.Thm1Setup.kminus_not_subset_O
-#print axioms HPC.Hagopian.Thm1Setup.kplus_not_subset_O
-#print axioms HPC.Hagopian.Thm1Setup.closure_crossSet_mem_E
-#print axioms HPC.Hagopian.Thm1Setup.F_ne_F10
-#print axioms HPC.Hagopian.Thm1Setup.isCrossingPiece_of_crossingComponent_G
-#print axioms HPC.Hagopian.Thm1Setup.crossing_of_halves
-#print axioms HPC.Hagopian.Thm1Setup.innerComponentsCross_aux
-#print axioms HPC.Hagopian.layer_nhds_subset_open
-#print axioms HPC.Hagopian.left_layer_not_subset
-#print axioms HPC.Hagopian.right_layer_not_subset
-#print axioms HPC.Hagopian.Thm1Setup.isOpen_O
-#print axioms HPC.Hagopian.Thm1Setup.layerMeetsSide_of_end
-#print axioms HPC.Hagopian.Thm1Setup.IsBlocks.layer_disjoint_E
-#print axioms HPC.Hagopian.Thm1Setup.IsTightBlocks.left_end_crossing
-#print axioms HPC.Hagopian.Thm1Setup.IsTightBlocks.right_end_crossing
-#print axioms HPC.Hagopian.Thm1Setup.leftEndLayerMeetsSide
-#print axioms HPC.Hagopian.Thm1Setup.layer_x3_meets_side
-#print axioms HPC.Hagopian.Thm1Setup.blockLayersMeetSides3_aux
-#print axioms HPC.Hagopian.wset84_eq_wset
-#print axioms HPC.Hagopian.hagopian84_two_sided
-#print axioms HPC.Hagopian.hagopian84_lemma7
-#print axioms HPC.Hagopian.hagopian84Lemma7_holds
 #print axioms HPC.Hagopian.layers_agree
-#print axioms HPC.Hagopian.translate_run
-#print axioms HPC.Hagopian.translate_run_right
-#print axioms HPC.Hagopian.noncrossing_half_in_O_steps45
-#print axioms HPC.Hagopian.half_in_O_false
-#print axioms HPC.Hagopian.innerComponentsCross_hagopian
-#print axioms HPC.Hagopian.blockLayersMeetSides3
-#print axioms HPC.Hagopian.layer_x3_meets_side
-#print axioms HPC.Hagopian.hagopian76_theorem1_of_cases4
 -- ## Hagopian 1984 III (batch 186)
 #print axioms HPC.Hagopian.FoldAux.left_end
 #print axioms HPC.Hagopian.FoldAux.right_end
@@ -2499,8 +1078,6 @@ subset of it.
 #print axioms HPC.Hagopian.closure_P2_subset
 #print axioms HPC.Hagopian.not_strand_subset_extension_layer_aux
 #print axioms HPC.Hagopian.strand_layer_of_extension_aux
-#print axioms HPC.Hagopian.strand_end_layer_not_mid
-#print axioms HPC.Hagopian.hagopian84_lemma16_aux
 #print axioms HPC.Hagopian.layer_subset_closure_link
 #print axioms HPC.Hagopian.omega_not_delta_side_aux
 #print axioms HPC.Hagopian.meets_P2_of_connects
@@ -2558,17 +1135,11 @@ subset of it.
 #print axioms HPC.Hagopian.layer_subset_layerSet84
 #print axioms HPC.Hagopian.strand_of_runsStraight84
 #print axioms HPC.Hagopian.exists_chain84_core
-#print axioms HPC.Hagopian.chainLinks84_runsStraight_aux
 #print axioms HPC.Hagopian.chainLinks84_regular_aux
 #print axioms HPC.Hagopian.hagopian84_lemma13_aux
-#print axioms HPC.Hagopian.chainLinks84_chain
-#print axioms HPC.Hagopian.chainLinks84_runsStraight
-#print axioms HPC.Hagopian.chainLinks84_regular
 #print axioms HPC.Hagopian.hagopian84_lemma13
 #print axioms HPC.Hagopian.strand_layer_mem_delta
-#print axioms HPC.Hagopian.not_strand_subset_extension_layer
 #print axioms HPC.Hagopian.strand_layer_of_extension
-#print axioms HPC.Hagopian.hagopian84_lemma16
 #print axioms HPC.Hagopian.omega_not_delta_side
 #print axioms HPC.Hagopian.exists_bridge84
 #print axioms HPC.Hagopian.mem_delta_of_bridge_chain
@@ -2595,7 +1166,6 @@ subset of it.
 #print axioms HPC.Hagopian.exists_pos_forall_finset84
 #print axioms HPC.Hagopian.CoverData84.invariant
 #print axioms HPC.Hagopian.CoverData84.isJonesDecomp
-#print axioms HPC.Hagopian.sUnion_cover84_eq_univ
 #print axioms HPC.Hagopian.hagopian84_decomp
 #print axioms HPC.Hagopian.hagopian76_theorem1_jones
 -- ## Jones 1975 I (batch 189)
@@ -2648,7 +1218,6 @@ subset of it.
 #print axioms HPC.Hagopian.IsLine.range_eq
 #print axioms HPC.Hagopian.IsLine.comp_homeo
 #print axioms HPC.Hagopian.IsLine.shift
-#print axioms HPC.Hagopian.IsLine.neg
 #print axioms HPC.Hagopian.JonesSetting.homeo_on_line_gen
 #print axioms HPC.Hagopian.JonesSetting.homeo_on_line
 #print axioms HPC.Hagopian.JonesSetting.no_reversal_arc
@@ -2656,14 +1225,11 @@ subset of it.
 #print axioms HPC.Hagopian.JonesSetting.exists_no_reversal
 #print axioms HPC.Hagopian.JonesSetting.orientation
 #print axioms HPC.Hagopian.uniform_near_compact
-#print axioms HPC.Hagopian.JonesSetting.no_backtrack
-#print axioms HPC.Hagopian.no_backtrack_in_collar
 #print axioms HPC.Hagopian.mem_omegaLim_iff
 #print axioms HPC.Hagopian.JonesSetting.omegaLim_saturated
 #print axioms HPC.Hagopian.JonesSetting.zero_mem_omegaLim
 #print axioms HPC.Hagopian.omegaLim_shift
 #print axioms HPC.Hagopian.JonesSetting.line_recurrent
-#print axioms HPC.Hagopian.JonesSetting.jones75_d
 -- ## Jones 1975 II (batch 190)
 #print axioms HPC.Hagopian.IsCollar.injOn
 #print axioms HPC.Hagopian.IsCollar.contOn
@@ -2731,25 +1297,15 @@ subset of it.
 #print axioms HPC.Hagopian.jones75_contra
 #print axioms HPC.Hagopian.jones75_noArc
 #print axioms HPC.Hagopian.hagopian76_theorem1
-#print axioms HPC.Hagopian.bing60_plane_uncond
-#print axioms HPC.Hagopian.hagopian76_theorem2_uncond
-#print axioms HPC.Hagopian.hagopian75_corollary_uncond
-#print axioms HPC.Hagopian.hagopian75_theorem2_uncond
-#print axioms HPC.Hagopian.hagopian75_theorem1_of_noArc_uncond
 -- ## Theorem C I (batch 191)
 -- §2 span (HPC/Span/Defs.lean)
 #print axioms HPC.Span.exists_pos_le_dist
-#print axioms HPC.Span.otSemiSpanPos_iff
-#print axioms HPC.Span.otSpanPos_iff
-#print axioms HPC.Span.SurjSpanPos.surjSemiSpanPos
 #print axioms HPC.Span.SurjSpanPos.image
-#print axioms HPC.Span.SurjSemiSpanPos.image
 #print axioms HPC.Span.isContinuum_swap
 #print axioms HPC.Span.offDiag_swap
 #print axioms HPC.Span.fst_image_swap
 #print axioms HPC.Span.snd_image_swap
 #print axioms HPC.Span.semiSpanZero_iff_hoSpanZero
-#print axioms HPC.Span.hoSpanZero_iff_maps
 -- §3 Cook 1967 Theorem 4, §4 Brouwer reduction and Davis 1.1 (HPC/Span/Cook.lean)
 #print axioms HPC.Span.nested_of_hi
 #print axioms HPC.Span.hi_mono
@@ -2761,7 +1317,6 @@ subset of it.
 #print axioms HPC.Span.brouwer_reduction
 #print axioms HPC.Span.isClosed_connectedComponentIn_of_isClosed'
 #print axioms HPC.Span.exists_surjSpanPos_of_surjSemiSpanPos
-#print axioms HPC.Span.semiSpanZero_of_spanZero
 -- §5 Theorem 3.6 from Corollary 3.5 (HPC/Span/Thm36.lean)
 #print axioms HPC.Span.union_proper_of_indec
 #print axioms HPC.Span.exists_dense_proper_subcontinuum
@@ -2918,7 +1473,6 @@ subset of it.
 -- §7 the assembly (HPC/HO16/HO16A.lean; `HOThm20` is a hypothesis, not an axiom)
 #print axioms HPC.HO16.ho16_theorem1_plane
 #print axioms HPC.HO16.isPseudoArc_of_indec_homogeneous
-#print axioms HPC.HO16.homeomorph_pseudoArc_of_indec_homogeneous
 -- ## H–O Theorem 1, II (batch 194)
 -- §2 definitions (HPC/HO16/FoldDefs.lean): no theorems
 -- §3.1 common subdivision (HPC/HO16/Subdiv.lean)
@@ -2951,7 +1505,6 @@ subset of it.
 #print axioms HPC.HO16.segment_subset_closure_diff
 #print axioms HPC.HO16.closure_diff_eq_of_refined
 #print axioms HPC.HO16.IsPLGraph.union
-#print axioms HPC.HO16.IsPLGraph.closure_diff
 #print axioms HPC.HO16.relFrontier_subset_vertices
 #print axioms HPC.HO16.finite_vertices
 #print axioms HPC.HO16.IsPLGraph.relFrontier_finite
@@ -2963,10 +1516,8 @@ subset of it.
 #print axioms HPC.HO16.IsPLGraph.mem_closure_diff_finite
 -- §5 Lemma 6 (HPC/HO16/Lemma6.lean)
 #print axioms HPC.HO16.fold_diff_left
-#print axioms HPC.HO16.fold_diff_right
 #print axioms HPC.HO16.fold_diff_mid
 #print axioms HPC.HO16.fold_diff_diff_left
-#print axioms HPC.HO16.fold_diff_diff_right
 #print axioms HPC.HO16.relFrontier_left_eq
 #print axioms HPC.HO16.relFrontier_right_eq
 #print axioms HPC.HO16.relFrontier_mid_eq
@@ -3028,12 +1579,6 @@ subset of it.
 #print axioms HPC.HO16.left_diff_subset_Z
 #print axioms HPC.HO16.frontier_clause
 #print axioms HPC.HO16.ho16_prop7
--- non-vacuity of `IsFoldTriple` / `IsSimpleFoldOf` (HPC/HO16/FoldExample.lean)
-#print axioms HPC.HO16.isPLGraph_Icc
-#print axioms HPC.HO16.isFoldTriple_example
-#print axioms HPC.HO16.relFrontier_example_left
-#print axioms HPC.HO16.relFrontier_example_right
-#print axioms HPC.HO16.exists_simpleFold_example
 -- ## H–O Theorem 1, III (batch 195)
 -- §1 definitions (HPC/HO16/StairDefs.lean): no theorems
 -- §2 library additions: components of complements, ordinary points, intersections (HPC/HO16/PLLib2.lean)
@@ -3045,16 +1590,13 @@ subset of it.
 #print axioms HPC.HO16.IsPLGraph.exists_pieces
 #print axioms HPC.HO16.IsPLGraph.connectedComponentIn_inter_mem_nhdsWithin
 #print axioms HPC.HO16.IsPLGraph.finite_components_diff
-#print axioms HPC.HO16.IsPLGraph.comp_diff_mem_nhdsWithin
 #print axioms HPC.HO16.IsPLGraph.closure_comp_diff
-#print axioms HPC.HO16.IsPLGraph.relFrontier_comp_diff
 #print axioms HPC.HO16.isOrdinaryPt_of_mem_openSegment
 #print axioms HPC.HO16.posPar_of_mem_segment
 #print axioms HPC.HO16.exists_common_of_posPar
 #print axioms HPC.HO16.exists_small_step
 #print axioms HPC.HO16.smul_rescale
 #print axioms HPC.HO16.isOrdinaryPt_iff_order
-#print axioms HPC.HO16.IsPLGraph.finite_not_ordinary
 #print axioms HPC.HO16.IsPLGraph.inter_eq_union_finite
 #print axioms HPC.HO16.isPLGraph_segment
 #print axioms HPC.HO16.image_fst_segment
@@ -3091,7 +1633,6 @@ subset of it.
 #print axioms HPC.HO16.IsPLGraph.sideOf_char_aux
 -- §3 Definition 9 observations, Propositions 10 and 11 (HPC/HO16/Sides.lean)
 #print axioms HPC.HO16.ho16_obs9_emptyB
-#print axioms HPC.HO16.ho16_obs9_emptyA
 #print axioms HPC.HO16.ho16_obs9_nhds
 #print axioms HPC.HO16.ho16_obs9_char
 #print axioms HPC.HO16.ho16_obs9_unique
@@ -3099,7 +1640,6 @@ subset of it.
 #print axioms HPC.HO16.ho16_prop10
 #print axioms HPC.HO16.ho16_prop11
 #print axioms HPC.HO16.ho16_prop11_frontier
-#print axioms HPC.HO16.ho16_prop11_remark
 -- §§4–6 tools for straight sets and stairwell structures (HPC/HO16/StairLib.lean)
 #print axioms HPC.HO16.IsStraight.isCompact
 #print axioms HPC.HO16.IsStraight.image_subset
@@ -3124,14 +1664,12 @@ subset of it.
 #print axioms HPC.HO16.IsGeneric.sublist
 #print axioms HPC.HO16.parity_count
 -- §§4–8 observation 12, observations 13/16 relative to a component, Claim 14.1, odd image, height one, Proposition 17, remarks after 17, the fold of Proposition 19 (HPC/HO16/Stairwell.lean)
-#print axioms HPC.HO16.ho16_obs12
 #print axioms HPC.HO16.ho16_obs13_comp
 #print axioms HPC.HO16.ho16_claim14_1
 #print axioms HPC.HO16.ho16_odd_image
 #print axioms HPC.HO16.ho16_height_one
 #print axioms HPC.HO16.ho16_obs16_comp
 #print axioms HPC.HO16.ho16_prop17
-#print axioms HPC.HO16.ho16_prop17_exists
 #print axioms HPC.HO16.ho16_rem17_gamma
 #print axioms HPC.HO16.ho16_rem17_P1
 #print axioms HPC.HO16.ho16_prop19_fold
@@ -3183,23 +1721,18 @@ subset of it.
 #print axioms HPC.HO16.P19.endSet_T
 #print axioms HPC.HO16.P19.endSet_Ti₀
 #print axioms HPC.HO16.P19.disj_αα
-#print axioms HPC.HO16.P19.disj_αγ
 #print axioms HPC.HO16.P19.disj_α'γ
 #print axioms HPC.HO16.P19.α_finite
 #print axioms HPC.HO16.P19.γ_finite
 #print axioms HPC.HO16.P19.α_one
 #print axioms HPC.HO16.P19.α_last
 #print axioms HPC.HO16.P19.endSet_P₂
-#print axioms HPC.HO16.P19.disj_Eγ
 #print axioms HPC.HO16.P19.S3
 #print axioms HPC.HO16.P19.S3W
 #print axioms HPC.HO16.P19.S4
 #print axioms HPC.HO16.P19.S4γ
 #print axioms HPC.HO16.P19.gen
 #print axioms HPC.HO16.P19.S6
-#print axioms HPC.HO16.P19.S3V
-#print axioms HPC.HO16.P19.S4P₂E
-#print axioms HPC.HO16.P19.S4P₂γ
 #print axioms HPC.HO16.P19.fold
 #print axioms HPC.HO16.P19.FPL
 #print axioms HPC.HO16.P19.Fclosed
@@ -3232,7 +1765,6 @@ subset of it.
 #print axioms HPC.HO16.P19.ordinary_frontier
 #print axioms HPC.HO16.P19.pre_E
 #print axioms HPC.HO16.P19.pre_γ₃
-#print axioms HPC.HO16.P19.pre_γ₂
 #print axioms HPC.HO16.P19.pre_γ_sub
 #print axioms HPC.HO16.P19.pre_γ_disj₁₂
 #print axioms HPC.HO16.P19.pre_αi₀
@@ -3271,7 +1803,6 @@ subset of it.
 #print axioms HPC.HO16.P19.α_subG
 #print axioms HPC.HO16.P19.γ_subG
 #print axioms HPC.HO16.P19.i₀1_mem
-#print axioms HPC.HO16.P19.i₀_mem
 #print axioms HPC.HO16.P19.img_T'
 #print axioms HPC.HO16.P19.img_α
 #print axioms HPC.HO16.P19.img_γ
@@ -3298,7 +1829,6 @@ subset of it.
 #print axioms HPC.HO16.P19.gen'_broken
 -- §3 Proposition 19, (S4') (HPC/HO16/Prop19D.lean)
 #print axioms HPC.HO16.relFrontier_over
-#print axioms HPC.HO16.hasConsCompl_congr
 #print axioms HPC.HO16.P19.F₁₂closed
 #print axioms HPC.HO16.P19.F₃closed
 #print axioms HPC.HO16.P19.imgF_sub
@@ -3344,11 +1874,8 @@ subset of it.
 #print axioms HPC.HO16.ho16_lift_aux
 #print axioms HPC.HO16.ho16_lift_stairwell_of_prop19
 #print axioms HPC.HO16.ho16_theorem20_of_thm15_prop19
-#print axioms HPC.HO16.homeomorph_pseudoArc_of_indec_homogeneous_of_thm15_prop19
 -- §5 Theorem 20 from Theorem 15, skeleton form (HPC/HO16/HO16D.lean)
-#print axioms HPC.HO16.ho16_lift_stairwell
 #print axioms HPC.HO16.ho16_theorem20_of_thm15
-#print axioms HPC.HO16.homeomorph_pseudoArc_of_indec_homogeneous_of_thm15
 -- ## H–O Theorem 1, V (batch 197)
 -- §2 ladder definitions, parameter calculus (HPC/HO16/LadderParam.lean)
 #print axioms HPC.HO16.zU_pos
@@ -3382,13 +1909,10 @@ subset of it.
 #print axioms HPC.HO16.e_QB_P
 #print axioms HPC.HO16.e_QA_QB
 #print axioms HPC.HO16.e_A_sub
-#print axioms HPC.HO16.e_A_finite
 #print axioms HPC.HO16.e_ends
 #print axioms HPC.HO16.e_gap
 #print axioms HPC.HO16.e_S3
 #print axioms HPC.HO16.e_A_disj
-#print axioms HPC.HO16.e_A_one
-#print axioms HPC.HO16.e_A_top
 #print axioms HPC.HO16.e_P_sub
 -- §3 the pieces over one edge (HPC/HO16/LadderPiece.lean)
 #print axioms HPC.HO16.zzLine_eq
@@ -3397,7 +1921,6 @@ subset of it.
 #print axioms HPC.HO16.eI_sub_eP
 #print axioms HPC.HO16.eP_eq_iUnion
 #print axioms HPC.HO16.ladderPiece_eq
-#print axioms HPC.HO16.eI_sub_Icc
 #print axioms HPC.HO16.eI_disj
 #print axioms HPC.HO16.eI_zero
 #print axioms HPC.HO16.eI_one
@@ -3424,7 +1947,6 @@ subset of it.
 #print axioms HPC.HO16.isCompact_ite_Icc
 #print axioms HPC.HO16.isCompact_eQA
 #print axioms HPC.HO16.isCompact_eQB
-#print axioms HPC.HO16.isCompact_eP
 #print axioms HPC.HO16.isCompact_ite_segment
 #print axioms HPC.HO16.isCompact_ladderPiece
 -- §3 the decomposition, (S1), gaps (HPC/HO16/LadderStair.lean)
@@ -3461,7 +1983,6 @@ subset of it.
 #print axioms HPC.HO16.isClosed_gapA
 #print axioms HPC.HO16.isClosed_gapB
 #print axioms HPC.HO16.gapA_subset
-#print axioms HPC.HO16.gapB_subset
 #print axioms HPC.HO16.subset_sheet_union_gaps
 #print axioms HPC.HO16.vertex_of_two
 #print axioms HPC.HO16.vertex_label
@@ -3554,21 +2075,13 @@ subset of it.
 #print axioms HPC.HO16.exists_ladder
 #print axioms HPC.HO16.ho16_theorem15
 #print axioms HPC.HO16.ho16_theorem20
-#print axioms HPC.HO16.ho16_indec_homogeneous_pseudoArc
 #print axioms HPC.HO16.isIndecomposable_univ_of_isIndecomposable
 #print axioms HPC.HO16.not_isDecomposableSpace_of_isIndecomposable_univ
 #print axioms HPC.HO16.ho16_pseudoArc_indec_homogeneous
 #print axioms HPC.HO16.ho16_indec_homogeneous_iff
-#print axioms HPC.HO16.exists_indec_homogeneous_plane
-#print axioms HPC.HO16.ladder_example
-#print axioms HPC.HO16.ladder_example_height
-#print axioms HPC.HO16.ladder_example_stairwell
 -- ## Bing–Jones 1959, I (batch 198)
 -- order of links along an arc of continua, Theorem 2 (HPC/BJ59/Order.lean)
 #print axioms HPC.BJ59.exists_sep_of_disjoint
-#print axioms HPC.BJ59.not_meets_both
-#print axioms HPC.BJ59.not_meets_adjacent
-#print axioms HPC.BJ59.order_core
 -- chain operations (HPC/BJ59/ChainOps.lean)
 #print axioms HPC.BJ59.chainMergeLast_link_last
 #print axioms HPC.BJ59.chainMergeLast_link_of_ne
@@ -3582,7 +2095,6 @@ subset of it.
 #print axioms HPC.BJ59.isPreconnected_preimage_of_monotone'
 #print axioms HPC.BJ59.isPreconnected_preimage_Icc
 #print axioms HPC.BJ59.isCompact_preimage_Icc
-#print axioms HPC.BJ59.theorem2_arc
 #print axioms HPC.BJ59.theorem4_explicit
 #print axioms HPC.BJ59.theorem4_of_chain
 -- gluing, commission §4 steps 2–3 (HPC/BJ59/Glue.lean)
@@ -3628,7 +2140,6 @@ subset of it.
 #print axioms HPC.BJ59.isHereditarilyIndecomposable_of_homeomorph
 #print axioms HPC.BJ59.isPseudoArc_of_homeomorph
 #print axioms HPC.BJ59.isPseudoArc_subtype_of_image
-#print axioms HPC.BJ59.isPseudoArc_image_of_subtype
 #print axioms HPC.BJ59.isSnakeLike_univ_of_isSnakeLike
 -- homogeneity and uniqueness from BJThm10 (HPC/BJ59/Homog.lean)
 #print axioms HPC.BJ59.isHomogeneous_circle'
@@ -3663,10 +2174,6 @@ subset of it.
 #print axioms HPC.BJ59.isContArcPA_halfMap
 #print axioms HPC.BJ59.isSnakeLike_halfSet
 -- helpers for Theorems 5 and 6 (HPC/BJ59/Thm56.lean)
-#print axioms HPC.BJ59.sign_persist
-#print axioms HPC.BJ59.isIndecomposable_singleton
-#print axioms HPC.BJ59.isArcOfContinua_id
-#print axioms HPC.BJ59.isSnakeLike_univ_unitInterval
 #print axioms HPC.BJ59.circle_exp_pi_ne_one
 -- Theorem 5, repaired (HPC/BJ59/Thm5.lean)
 #print axioms HPC.BJ59.chainedAt_union_point
@@ -3678,24 +2185,16 @@ subset of it.
 #print axioms HPC.BJ59.isHomogeneous_of_isCircleOfPA
 #print axioms HPC.BJ59.homeomorph_of_isCircleOfPA
 #print axioms HPC.BJ59.isHomogeneous_circle
-#print axioms HPC.BJ59.isPseudoArc_Lset
 #print axioms HPC.BJ59.circle_or_circleOfPA_of_decomposable
 #print axioms HPC.BJ59.ho16_classification
 #print axioms HPC.BJ59.ho16_classification_plane
-#print axioms HPC.BJ59.bj_theorem2
-#print axioms HPC.BJ59.bj_theorem3
 #print axioms HPC.BJ59.bj_theorem4
-#print axioms HPC.BJ59.bj_theorem5
-#print axioms HPC.BJ59.bj_theorem5_printed_false
-#print axioms HPC.BJ59.bj_theorem6
 -- reused shape-changed Theorem 1 (HPC/Plane/Theorem11.lean)
 #print axioms HPC.Plane.isUnicoherent_of_isSnakeLike
 -- ## Bing–Jones 1959, II (batch 199)
 -- atomic maps; atomic arcs are snake-like, skeleton §§2–3 (HPC/BJ59/Atomic.lean)
 #print axioms HPC.BJ59.subset_fibre_or_saturated
 #print axioms HPC.BJ59.fibre_subset_of_saturated
-#print axioms HPC.BJ59.isAtomicMap_id
-#print axioms HPC.BJ59.not_isAtomicMap_snd
 #print axioms HPC.BJ59.nested_of_common_bound
 #print axioms HPC.BJ59.condB_preimage_Icc
 #print axioms HPC.BJ59.isPreconnected_preimage_of_fibres
@@ -3703,7 +2202,6 @@ subset of it.
 #print axioms HPC.BJ59.isContinuum_univ_of_fibres
 #print axioms HPC.BJ59.isSnakeLike_of_atomic'
 #print axioms HPC.BJ59.isSnakeLike_of_atomic
-#print axioms HPC.BJ59.nonvac_isSnakeLike_of_atomic'
 -- the circle is circle-like (HPC/BJ59/CircleLike.lean)
 #print axioms HPC.BJ59.dist_circle_exp_le
 #print axioms HPC.BJ59.circle_exp_surjective
@@ -3722,13 +2220,10 @@ subset of it.
 #print axioms HPC.BJ59.isSnakeLike_halfSet_of_atomic
 #print axioms HPC.BJ59.IsCircPAMap.isSnakeHalvesMap
 #print axioms HPC.BJ59.IsAtomicCircPAMap.isSnakeHalvesMap
-#print axioms HPC.BJ59.IsAtomicCircPAMap.mul_left
 #print axioms HPC.BJ59.exists_half_homeomorph'
 #print axioms HPC.BJ59.exists_homeomorph_glue'
 #print axioms HPC.BJ59.homeomorph_of_isSnakeHalvesMap
 #print axioms HPC.BJ59.dp22_theorem61
-#print axioms HPC.BJ59.homeomorph_of_atomic
-#print axioms HPC.BJ59.isHomogeneous_of_atomic
 #print axioms HPC.BJ59.isCircleOfPA_of_atomic
 -- chains in Bing–Jones's sense (HPC/BJ59/BJChains.lean)
 #print axioms HPC.BJ59.adjacent_meet_of_cover
@@ -3745,7 +2240,6 @@ subset of it.
 #print axioms HPC.BJ59.unfoldFin_adj
 #print axioms HPC.BJ59.unfoldFin_main
 #print axioms HPC.BJ59.unfoldMain_adj
-#print axioms HPC.BJ59.isPattern_unfold
 -- Theorem 7 in a compact pseudo-arc (HPC/BJ59/Thm7Core.lean)
 #print axioms HPC.BJ59.composant_univ_eq_jones
 #print axioms HPC.BJ59.exists_ne_mem_of_isOpen
@@ -3756,10 +2250,6 @@ subset of it.
 #print axioms HPC.BJ59.exists_not_mem_composant_of_isOpen
 #print axioms HPC.BJ59.exists_chain_isFrom
 #print axioms HPC.BJ59.exists_follow_pattern
-#print axioms HPC.BJ59.bj7_compact_of_le
-#print axioms HPC.BJ59.bj7_compact
--- Theorem 7, first sentence (HPC/BJ59/Thm7.lean)
-#print axioms HPC.BJ59.bj_theorem7'
 -- Theorem 7, second sentence: the collar chain (HPC/BJ59/Thm7Ends.lean)
 #print axioms HPC.Chain.linkN_of_lt
 #print axioms HPC.Chain.linkN_disj
@@ -3792,15 +2282,8 @@ subset of it.
 -- skeleton §§5–6 statements (HPC/BJ59/BJ59B.lean)
 #print axioms HPC.BJ59.circle_or_atomic_of_decomposable
 #print axioms HPC.BJ59.hoCircleLike
-#print axioms HPC.BJ59.ho16_classification_atomic
 #print axioms HPC.BJ59.ho16_classification₂
 #print axioms HPC.BJ59.ho16_classification_plane₂
-#print axioms HPC.BJ59.nonvac_atomic
-#print axioms HPC.BJ59.bj_theorem7
-#print axioms HPC.BJ59.bj_theorem7_ends
-#print axioms HPC.BJ59.bj_theorem7_ends_printed_false
-#print axioms HPC.BJ59.exists_bjChain_three
-#print axioms HPC.BJ59.nonvac_bj_chains
 -- batch-198 @[simp] lemmas omitted from the batch-198 audit (commission 199 §0)
 #print axioms HPC.BJ59.chainRestrict_link
 #print axioms HPC.BJ59.halfFibreEquiv_apply
@@ -3815,17 +2298,14 @@ subset of it.
 #print axioms HPC.BJ59.dist_lt_of_adjacent
 #print axioms HPC.BJ59.starImage_dist_le
 #print axioms HPC.BJ59.starImage_succ_subset
-#print axioms HPC.BJ59.starImage_antitone
 #print axioms HPC.BJ59.le_zero_of_le_mul_tendsto
 #print axioms HPC.BJ59.zigzag_homeomorph
 #print axioms HPC.BJ59.zigzag_fibre
 -- private points; the certificate for BJ.19 (e), skeleton §§3, 6 (HPC/BJ59/Private.lean)
-#print axioms HPC.BJ59.exists_privatePoint_interior
 #print axioms HPC.BJ59.exists_mem_inter_notMem_finite
 #print axioms HPC.BJ59.exists_injective_choice
 #print axioms HPC.BJ59.exists_pos_forall_le
 #print axioms HPC.BJ59.exists_privatePoint_shrink
-#print axioms HPC.BJ59.bj_theorem7_proof_n3
 -- Step 1(b), skeleton §3 (HPC/BJ59/Step1b.lean)
 #print axioms HPC.BJ59.meets_all_of_meets_ends
 #print axioms HPC.BJ59.exists_nhd_step1b
@@ -3846,10 +2326,6 @@ subset of it.
 #print axioms HPC.BJ59.walk_any'
 #print axioms HPC.BJ59.exists_fibre_spread
 #print axioms HPC.BJ59.bj_theorem8_cor
--- Domokos–Prajs Theorem 6.1, skeleton §6 (HPC/BJ59/DP61.lean)
-#print axioms HPC.BJ59.IsAtomicCircPAMap.comp_homeomorph
-#print axioms HPC.BJ59.exists_atomic_of_plane_isCircleOfPA
-#print axioms HPC.BJ59.dp22_theorem61_iff
 -- ## Bing–Jones 1959, IV (batch 201)
 -- §2 conditions and §3 tools (HPC/BJ59/Thm10Defs.lean)
 #print axioms HPC.BJ59.exists_point_only_of_minimal
@@ -3872,13 +2348,11 @@ subset of it.
 #print axioms HPC.BJ59.chainMap_ivt
 -- Step 2(b), skeleton §3 (HPC/BJ59/Thm10Pattern.lean)
 #print axioms HPC.BJ59.exists_pattern
-#print axioms HPC.BJ59.exists_pattern_skeleton
 -- windows, skeleton §3 (HPC/BJ59/Thm10Window.lean)
 #print axioms HPC.BJ59.winInv_mem
 #print axioms HPC.BJ59.continuous_winInv
 #print axioms HPC.BJ59.continuous_winScale
 #print axioms HPC.BJ59.winScale_eq_iff
-#print axioms HPC.BJ59.winScale_winInv
 #print axioms HPC.BJ59.window_transfer
 #print axioms HPC.BJ59.bj_theorem5_window_aux
 #print axioms HPC.BJ59.bj_theorem5_window
@@ -3912,9 +2386,6 @@ subset of it.
 #print axioms HPC.BJ59.bjThm10_of_step
 -- Theorem 10 and the classification, skeleton §5 (HPC/BJ59/BJ59D.lean)
 #print axioms HPC.BJ59.bjThm10
-#print axioms HPC.BJ59.ho16_classification_atomic'
-#print axioms HPC.BJ59.isHomogeneous_of_isCircleOfPA'
-#print axioms HPC.BJ59.homeomorph_of_isCircleOfPA'
 #print axioms HPC.BJ59.ho16_classification₃
 #print axioms HPC.BJ59.ho16_classification_plane₃
 -- ## Bing–Jones 1959, V (batch 202)
@@ -4154,6 +2625,3 @@ subset of it.
 #print axioms HPC.BJ59.bjPlaneExample
 #print axioms HPC.BJ59.ho16_classification₄
 #print axioms HPC.BJ59.ho16_classification_plane₄
-#print axioms HPC.BJ59.dp22_theorem61'
-#print axioms HPC.BJ59.dp22_theorem61_iff'
-#print axioms HPC.BJ59.hoCircleLike'

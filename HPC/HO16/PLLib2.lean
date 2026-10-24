@@ -189,18 +189,6 @@ theorem IsPLGraph.finite_components_diff {G K P : Set E} (hG : IsPLGraph G) (hK 
   obtain ⟨S, -, -, -, hpc, -, hU⟩ := hG.exists_pieces hK hKG hP hPG
   exact finite_components_of_pieces hpc hU
 
-/-- **§2.1**: a component of `G \ (K ∪ P)` is a relative neighbourhood of each of its points.
-
-Shape change (batch 195): the skeleton's hypotheses `K ⊆ G` and `P ⊆ G` are not needed and
-have been dropped. -/
-theorem IsPLGraph.comp_diff_mem_nhdsWithin {G K P : Set E} (hG : IsPLGraph G)
-    (hK : IsPLGraph K) (hP : P.Finite) {x y : E}
-    (hy : y ∈ _root_.connectedComponentIn (G \ (K ∪ P)) x) :
-    _root_.connectedComponentIn (G \ (K ∪ P)) x ∈ 𝓝[G] y := by
-  have hc : IsClosed (K ∪ P) := hK.isCompact.isClosed.union hP.isClosed
-  rw [diff_eq] at hy ⊢
-  exact hG.connectedComponentIn_inter_mem_nhdsWithin hc.isOpen_compl hy
-
 /-- **§2.1**: the closure of a component of `G \ (K ∪ P)` is a PL graph. -/
 theorem IsPLGraph.closure_comp_diff {G K P : Set E} (hG : IsPLGraph G) (hK : IsPLGraph K)
     (hKG : K ⊆ G) (hP : P.Finite) (hPG : P ⊆ G) (x : E) :
@@ -210,31 +198,6 @@ theorem IsPLGraph.closure_comp_diff {G K P : Set E} (hG : IsPLGraph G) (hK : IsP
   rw [connectedComponentIn_eq_biUnion_pieces hpc hU x, Finset.closure_biUnion]
   rw [iUnion₂_congr fun s hs => hcl s (Finset.mem_filter.1 hs).1]
   exact isPLGraph_biUnion_filter hne hdis _
-
-/-- **§2.1**: the frontier of a component of `G \ (K ∪ P)` lies in the frontier of `K ∪ P`.
-
-Shape change (batch 195): the skeleton's hypotheses `K ⊆ G` and `P ⊆ G` are not needed and
-have been dropped. -/
-theorem IsPLGraph.relFrontier_comp_diff {G K P : Set E} (hG : IsPLGraph G) (hK : IsPLGraph K)
-    (hP : P.Finite) (x : E) :
-    relFrontier G (_root_.connectedComponentIn (G \ (K ∪ P)) x) ⊆ relFrontier G (K ∪ P) := by
-  rintro z ⟨hzC, hzD⟩
-  have hGc : IsClosed G := hG.isCompact.isClosed
-  have hCG : _root_.connectedComponentIn (G \ (K ∪ P)) x ⊆ G :=
-    (connectedComponentIn_subset _ _).trans diff_subset
-  have hzG : z ∈ G := closure_minimal hCG hGc hzC
-  by_cases hz : z ∈ K ∪ P
-  · exact ⟨subset_closure hz, closure_mono (connectedComponentIn_subset _ _) hzC⟩
-  · exfalso
-    have hz' : z ∈ _root_.connectedComponentIn (G \ (K ∪ P)) z := mem_connectedComponentIn ⟨hzG, hz⟩
-    obtain ⟨u, hu, hzu, hut⟩ := mem_nhdsWithin.1 (hG.comp_diff_mem_nhdsWithin hK hP hz')
-    obtain ⟨w, hwu, hwC⟩ := mem_closure_iff.1 hzC u hu hzu
-    have hwz := hut ⟨hwu, hCG hwC⟩
-    have hCeq : _root_.connectedComponentIn (G \ (K ∪ P)) x =
-        _root_.connectedComponentIn (G \ (K ∪ P)) z :=
-      (connectedComponentIn_eq hwC).trans (connectedComponentIn_eq hwz).symm
-    obtain ⟨v, hvu, hvG, hvC⟩ := mem_closure_iff.1 hzD u hu hzu
-    exact hvC (hCeq ▸ hut ⟨hvu, hvG⟩)
 
 /-- A point inside an edge of a decomposition is ordinary: the edge is a neighbourhood. -/
 theorem isOrdinaryPt_of_mem_openSegment {G : Set E} {S : Finset (E × E)}
@@ -515,24 +478,6 @@ theorem isOrdinaryPt_iff_order {G : Set E} {S : Finset (E × E)} (hne : ∀ s �
       rcases he with rfl | rfl
       · left; rw [segment_symm]; exact hze
       · exact Or.inr hze
-
-/-- **§2.2**: a PL graph has finitely many branch points and endpoints. -/
-theorem IsPLGraph.finite_not_ordinary {G : Set E} (hG : IsPLGraph G) :
-    {x ∈ G | ¬ IsOrdinaryPt G x}.Finite := by
-  obtain ⟨S, hne, hGS, hdis⟩ := hG
-  refine (finite_vertices S).subset ?_
-  rintro x ⟨hxG, hxo⟩
-  have hxG' := hxG
-  rw [hGS] at hxG'
-  obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.1 hxG'
-  by_cases h : x ∈ openSegment ℝ s.1 s.2
-  · exact absurd (isOrdinaryPt_of_mem_openSegment hne hGS hdis hs h) hxo
-  · refine mem_biUnion hs ?_
-    rw [← insert_endpoints_openSegment] at hxs
-    rcases hxs with h1 | h2 | h3
-    · exact Or.inl h1
-    · exact Or.inr h2
-    · exact absurd h3 h
 
 /-- **§2.3**: the intersection of two PL graphs is a PL graph plus finitely many points. -/
 theorem IsPLGraph.inter_eq_union_finite {A B : Set E} (hA : IsPLGraph A) (hB : IsPLGraph B) :

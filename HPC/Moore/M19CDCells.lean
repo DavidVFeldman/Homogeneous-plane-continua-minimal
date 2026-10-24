@@ -60,11 +60,6 @@ namespace Space.DoubleRuling
 variable {J I : Set S} {A B C D : S} {sAB sBC sCD sDA : Set S}
   {q : σ.Quad J I A B C D sAB sBC sCD sDA} {n m : ℕ} (R : σ.DoubleRuling q n m)
 
-theorem X_inj : Function.Injective R.X := by
-  obtain ⟨hnd, -⟩ := R.orderAB.nodup_subset
-  exact List.nodup_ofFn.mp (hnd.sublist
-    ((List.sublist_append_right [A] _).trans (List.sublist_append_left _ [B])))
-
 theorem X_mem (i : Fin n) : R.X i ∈ sAB ∧ R.X i ≠ A ∧ R.X i ≠ B :=
   R.orderAB.mid _ (List.mem_ofFn.mpr ⟨i, rfl⟩)
 
@@ -325,16 +320,6 @@ variable (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h5
 include h1 h2 h3 h4 h5 h7 h8
 
 variable {J I : Set S} {A B C D : S} {sAB sBC sCD sDA : Set S}
-
-/-- **Subdivision lemma** (used throughout 1919, never stated): every subdivision of a double
-ruling is the interior of a closed curve lying in `J ∪ ⋃ arcs`. *Axioms used: 1, 2, 3, 4, 5, 7, 8.*
-**Shape change:** the axioms are made explicit (Axiom 6 is not used). -/
-theorem doubleRuling_cell {q : σ.Quad J I A B C D sAB sBC sCD sDA} {n m : ℕ}
-    (R : σ.DoubleRuling q n m) {U : Set S} (hU : U ∈ R.cells) :
-    ∃ J' : Set S, σ.IsInteriorOf J' U ∧ J' ⊆ J ∪ R.carrier := by
-  obtain ⟨F, hT, -⟩ := R.tiling h1 h2 h3 h4 h5 h7 h8
-  rw [R.cells_eq h1 h2 h3 h4 h5 h7 hT] at hU
-  exact hT.int U hU
 
 /-- **Subdivision lemma**, the count: there are exactly `(n + 1)(m + 1)` subdivisions.
 *Axioms used: 1, 2, 3, 4, 5, 7, 8.* **Shape change:** the axioms are made explicit. -/

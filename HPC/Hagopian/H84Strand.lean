@@ -308,51 +308,6 @@ section Lemma16
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
 
-/-- The end layer `c⁻¹(0)` of any minimal admissible map `c` of a strand misses `midUnion P` (it is
-an end layer of the map given by regularity, `piece_end_layers`). -/
-theorem strand_end_layer_not_mid (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {P : Fin 5 → Set M} (hP : IsChain5 P) (hr : IsRegular5 P) {x : M} (hx : x ∈ midUnion P)
-    {c : closure (connectedComponentIn (midUnion P) x) → unitInterval}
-    (hc : IsMinimalAdmissible (closure (connectedComponentIn (midUnion P) x)) c) :
-    Disjoint (layer c 0) (midUnion P) := by
-  obtain ⟨c', hc', hcs'⟩ := hr x hx
-  haveI : CompactSpace (closure (connectedComponentIn (midUnion P) x)) :=
-    isCompact_iff_compactSpace.mp hc'.isCompact
-  rcases piece_end_layers hc' (lsc_of_minimalAdmissible hX hi hc') zero_lt_one
-      (layerSet_Icc_zero_one c').symm hc with ⟨h0, -⟩ | ⟨h0, -⟩
-  · rw [h0, disjoint_left]
-    exact fun v hv => endlayers_not_mid hP hcs' (Or.inl hv)
-  · rw [h0, disjoint_left]
-    exact fun v hv => endlayers_not_mid hP hcs' (Or.inr hv)
-
-/-- **Lemma 16 as printed** (pp. 341–342), from Lemma 16′ (commission 187 §3.5): a layer of `F`
-meeting three consecutive links meets `midUnion P`, so it is a layer of a strand running straight
-through `𝒫`; such a layer cannot meet both `P i` and `P (i + 2)`. -/
-theorem hagopian84_lemma16_aux (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {P : Fin 5 → Set M} (hP : IsChain5 P) (hn : IsNormal5 P) (hf : IsFree5 P) (hr : IsRegular5 P)
-    {x : M} (hx : x ∈ midUnion P)
-    {c : closure (connectedComponentIn (midUnion P) x) → unitInterval}
-    (hc : IsMinimalAdmissible (closure (connectedComponentIn (midUnion P) x)) c) {F : Set M}
-    {d : F → unitInterval} (hd : IsMinimalAdmissible F d) (hd0 : layer d 0 = layer c 0)
-    (t : unitInterval) (i : ℕ) (hi3 : i + 2 < 5) :
-    ¬ ((layer d t ∩ P ⟨i, by omega⟩).Nonempty ∧ (layer d t ∩ P ⟨i + 1, by omega⟩).Nonempty ∧
-      (layer d t ∩ P ⟨i + 2, hi3⟩).Nonempty) := by
-  rintro ⟨h₀, ⟨y, hy, hy1⟩, h₂⟩
-  have hd0' : Disjoint (layer d 0) (midUnion P) := hd0 ▸ strand_end_layer_not_mid hX hi hP hr hx hc
-  have hym : y ∈ midUnion P := by
-    have : i = 0 ∨ i = 1 ∨ i = 2 := by omega
-    rcases this with rfl | rfl | rfl
-    · exact Or.inl (Or.inl hy1)
-    · exact Or.inl (Or.inr hy1)
-    · exact Or.inr hy1
-  obtain ⟨c'', hc'', hcs'', s, hs⟩ :=
-    strand_layer_of_extension_aux hX hi hP hn hf hr hd hd0' hy hym
-  rw [hs] at h₀ h₂
-  have hA := layer_subset_link hc''.2.1 hP.isOpen hcs'' h₀
-  have hB := layer_subset_link hc''.2.1 hP.isOpen hcs'' h₂
-  obtain ⟨z, hz, -⟩ := h₀
-  exact disjoint_left.1 (chain5_disjoint hP ⟨i, by omega⟩ ⟨i + 2, hi3⟩ (by simp)) (hA hz) (hB hz)
-
 end Lemma16
 
 end HPC.Hagopian

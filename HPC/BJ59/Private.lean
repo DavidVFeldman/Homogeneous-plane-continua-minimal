@@ -17,46 +17,6 @@ section Private
 
 variable {X : Type*} [MetricSpace X]
 
-/-- **Interior links have private points.** In a chain in Bing–Jones's sense properly covering a
-connected set, each interior link contains a point of the set outside the closures of the other
-links. -/
-theorem exists_privatePoint_interior {P : Set X} (hP : IsConnected P) {n : ℕ} (D : Chain X n)
-    (hD : IsBJChain D) (hDP : P ⊆ D.union) (hDp : ∀ i, (D.link i ∩ P).Nonempty) (i : Fin n)
-    (hi : 0 < i.val) (hin : i.val + 1 < n) :
-    ∃ p ∈ P ∩ D.link i, ∀ j, j ≠ i → p ∉ closure (D.link j) := by
-  by_contra hno
-  push_neg at hno
-  set A : Set X := ⋃ (j : Fin n) (_ : j.val < i.val), closure (D.link j)
-  set B : Set X := ⋃ (j : Fin n) (_ : i.val < j.val), closure (D.link j)
-  have hA : IsClosed A := isClosed_iUnion_of_finite fun j =>
-    isClosed_iUnion_of_finite fun _ => isClosed_closure
-  have hB : IsClosed B := isClosed_iUnion_of_finite fun j =>
-    isClosed_iUnion_of_finite fun _ => isClosed_closure
-  have hmemAB : ∀ (j : Fin n) (x : X), j ≠ i → x ∈ closure (D.link j) → x ∈ A ∪ B := by
-    intro j x hji hx
-    rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hji) with h | h
-    · exact Or.inl (mem_iUnion₂.2 ⟨j, h, hx⟩)
-    · exact Or.inr (mem_iUnion₂.2 ⟨j, h, hx⟩)
-  have hcov : P ⊆ A ∪ B := by
-    intro p hp
-    obtain ⟨j, hj⟩ := mem_iUnion.1 (hDP hp)
-    by_cases hji : j = i
-    · subst hji
-      obtain ⟨j', hj'i, hj'⟩ := hno p ⟨hp, hj⟩
-      exact hmemAB j' p hj'i hj'
-    · exact hmemAB j p hji (subset_closure hj)
-  have hPA : (P ∩ A).Nonempty := by
-    obtain ⟨p, hp, hpP⟩ := hDp ⟨i.val - 1, by omega⟩
-    exact ⟨p, hpP, mem_iUnion₂.2 ⟨⟨i.val - 1, by omega⟩, by simp; omega, subset_closure hp⟩⟩
-  have hPB : (P ∩ B).Nonempty := by
-    obtain ⟨p, hp, hpP⟩ := hDp ⟨i.val + 1, hin⟩
-    exact ⟨p, hpP, mem_iUnion₂.2 ⟨⟨i.val + 1, hin⟩, by simp, subset_closure hp⟩⟩
-  obtain ⟨x, -, hxA, hxB⟩ := isPreconnected_closed_iff.1 hP.2 A B hA hB hcov hPA hPB
-  obtain ⟨j, hj, hxj⟩ := mem_iUnion₂.1 hxA
-  obtain ⟨k, hk, hxk⟩ := mem_iUnion₂.1 hxB
-  have := hD.adjacent_of_closure hxj hxk
-  omega
-
 /-- A preconnected non-degenerate set has no isolated points: an open set meeting it meets it
 outside any given finite set. -/
 theorem exists_mem_inter_notMem_finite {K : Set X} (hK : IsPreconnected K) (hKn : K.Nontrivial)
@@ -230,42 +190,5 @@ theorem exists_privatePoint_shrink {K : Set X} (hK : Fold.Q78.IsContinuum K) (hK
     exact hb.2 (mem_iUnion.2 ⟨⟨i, fun h => hji h.symm⟩, mem_closedBall'.2 hdb.le⟩)
 
 end Private
-
-/-- **Theorem 7's printed reduction fails for three links** (`LEDGER.md` BJ.19 (e)): the link `V`
-playing `U₂` (`P·(d₂ − d₁) ⊂ U₂`) meets the link `U` playing `U_{n+1}` (`U ⊆ d₃`,
-`P·(d₃ − d₂) ⊂ U`, `U` meeting `P`), though their places in `D′` are not adjacent. Links are
-numbered from 1 in this comment: `d_k` is `D.link (k - 1)`. -/
-theorem bj_theorem7_proof_n3 {X : Type*} [MetricSpace X] {P : Set X} (hP : IsConnected P)
-    (D : Chain X 3) (hDP : P ⊆ D.union) (hDp : ∀ j, (D.link j ∩ P).Nonempty)
-    {V U : Set X} (hU : IsOpen U) (hUd : U ⊆ D.link 2)
-    (hV : P ∩ (D.link 1 \ D.link 0) ⊆ V) (hUP : P ∩ (D.link 2 \ D.link 1) ⊆ U)
-    (hUne : (U ∩ P).Nonempty) : (V ∩ U).Nonempty := by
-  have h02 : D.link 0 ∩ D.link 2 = ∅ := by
-    by_contra h
-    have := (D.adjacent 0 2).1 (nonempty_iff_ne_empty.2 h)
-    simp at this
-  -- it suffices to find a point of `U ∩ P` in `d₂`
-  suffices hs : (U ∩ D.link 1 ∩ P).Nonempty by
-    obtain ⟨p, ⟨hpU, hp1⟩, hpP⟩ := hs
-    have hp0 : p ∉ D.link 0 := fun h => (h02 ▸ (⟨h, hUd hpU⟩ : p ∈ D.link 0 ∩ D.link 2) :
-      p ∈ (∅ : Set X))
-    exact ⟨p, hV ⟨hpP, hp1, hp0⟩, hpU⟩
-  by_contra hno
-  rw [not_nonempty_iff_eq_empty] at hno
-  have hcov : P ⊆ (D.link 0 ∪ D.link 1) ∪ U := by
-    intro p hp
-    obtain ⟨j, hj⟩ := mem_iUnion.1 (hDP hp)
-    fin_cases j
-    · exact Or.inl (Or.inl hj)
-    · exact Or.inl (Or.inr hj)
-    · by_cases h1 : p ∈ D.link 1
-      · exact Or.inl (Or.inr h1)
-      · exact Or.inr (hUP ⟨hp, hj, h1⟩)
-  obtain ⟨p, hpP, hp01, hpU⟩ := hP.2 _ _ ((D.isOpen 0).union (D.isOpen 1)) hU hcov
-    (by obtain ⟨p, hp, hpP⟩ := hDp 0; exact ⟨p, hpP, Or.inl hp⟩)
-    (by obtain ⟨p, hp, hpP⟩ := hUne; exact ⟨p, hpP, hp⟩)
-  rcases hp01 with h0 | h1
-  · exact (h02 ▸ (⟨h0, hUd hpU⟩ : p ∈ D.link 0 ∩ D.link 2) : p ∈ (∅ : Set X))
-  · exact (hno ▸ (⟨⟨hpU, h1⟩, hpP⟩ : p ∈ U ∩ D.link 1 ∩ P) : p ∈ (∅ : Set X))
 
 end HPC.BJ59

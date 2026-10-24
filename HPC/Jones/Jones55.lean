@@ -34,11 +34,6 @@ section Jones55
 
 variable {X : Type*} [MetricSpace X] [CompactSpace X] [ConnectedSpace X]
 
-/-- Each `L_x` is a continuum (p. 738: "It follows from Theorem 3 of [11] that `N_o` is a
-continuum", with `N_o = M − U_o = L_o`). Jones 1948 Theorem 3 gives this for every `x`, with no
-homogeneity: `theorem3`. -/
-theorem jones55_isContinuum (x : X) : Fold.Q78.IsContinuum (Lset x) := isContinuum_Lset x
-
 omit [ConnectedSpace X] in
 /-- **Jones 1955, Theorem 1 (b).** The sets `L_x` are mutually exclusive: `y ∈ L_x` iff
 `L_y = L_x`.

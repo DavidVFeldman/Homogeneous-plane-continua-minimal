@@ -267,13 +267,6 @@ theorem exists_surjSpanPos_of_surjSemiSpanPos {A : Set X} (hHI : IsHereditarilyI
   refine ⟨B, hBA, hB, Z₀, fun p hp => ⟨mem_image_of_mem _ hp, hQB ▸ mem_image_of_mem _ hp⟩, hZ₀,
     fun p hp => hoff p (hZ₀Z hp), rfl, hQB⟩
 
-/-- **§4.2, corollary.** -/
-theorem semiSpanZero_of_spanZero (hHI : IsHereditarilyIndecomposable (univ : Set X))
-    (h : SpanZero X) : SemiSpanZero X := by
-  intro A hA hpos
-  obtain ⟨B, -, hB, hBpos⟩ := exists_surjSpanPos_of_surjSemiSpanPos (hi_mono hHI (subset_univ A)) hpos
-  exact h B hB hBpos
-
 end Davis
 
 end HPC.Span

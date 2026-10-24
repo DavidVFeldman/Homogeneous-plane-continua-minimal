@@ -77,23 +77,6 @@ theorem nested_rulings (q : σ.Quad J I A B C D sAB sBC sCD sDA) (𝒢 : ℕ →
   · rw [hRs]; exact (hF k (R k)).2.2.1
   · rw [hRs]; exact (hF k (R k)).2.2.2
 
-/-- **Moore's instance** (Theorem E, first sentence of the proof): the `k`-th double ruling has
-each subdivision inside a fundamental region (of the fixed sequence `K` of Axiom 1) of subscript
-greater than `k`. *Axioms used: 1–8.* -/
-theorem nested_rulings_fund (q : σ.Quad J I A B C D sAB sBC sCD sDA) {K : ℕ → Set S}
-    (hK : σ.IsFund K) :
-    ∃ R : ℕ → σ.RulingStage q,
-      (∀ k, ∀ U ∈ (R k).2.2.cells, ∃ l > k, U ⊆ K l) ∧
-      (∀ k i, ∃ i', (R (k + 1)).2.2.arcX i' = (R k).2.2.arcX i) ∧
-      (∀ k j, ∃ j', (R (k + 1)).2.2.arcY j' = (R k).2.2.arcY j) ∧
-      (∀ k, ∀ U ∈ (R (k + 1)).2.2.cells, ∃ V ∈ (R k).2.2.cells, U ⊆ V) := by
-  obtain ⟨R, hR, hX, hY, hU⟩ := nested_rulings h1 h2 h3 h4 h5 h6 h7 h8 q
-    (fun k => K '' Ioi k) (fun k => by rintro _ ⟨l, -, rfl⟩; exact hK.1 l)
-    (fun k P => by obtain ⟨l, hl, hP⟩ := hK.2.1 k P; exact ⟨K l, ⟨l, hl, rfl⟩, hP⟩)
-  refine ⟨R, fun k U hU' => ?_, hX, hY, hU⟩
-  obtain ⟨_, ⟨l, hl, rfl⟩, hUl⟩ := hR k U hU'
-  exact ⟨l, hl, hUl⟩
-
 end M19ESeq
 
 end HPC.Moore

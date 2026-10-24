@@ -71,27 +71,6 @@ theorem IsSeparation.isOpen_right {Y P Q : Set X} (h : IsSeparation Y P Q) (hY :
   obtain ⟨t, ht, -, -, hteq⟩ := h.exists_open_right
   rw [← hteq]; exact ht.inter hY
 
-/-- Two nonempty separated sets with union `Y` form a separation of `Y`. -/
-theorem IsSeparation.of_separated {Y P Q : Set X} (hP : P.Nonempty) (hQ : Q.Nonempty)
-    (hPQ : P ∪ Q = Y) (h1 : Disjoint (closure P) Q) (h2 : Disjoint P (closure Q)) :
-    IsSeparation Y P Q := by
-  have key : ∀ {P Q : Set X}, P ∪ Q = Y → Disjoint P (closure Q) →
-      IsOpen ((↑) ⁻¹' P : Set Y) := by
-    intro P Q hPQ h2
-    refine isOpen_induced_iff.mpr ⟨(closure Q)ᶜ, isClosed_closure.isOpen_compl, ?_⟩
-    ext ⟨y, hy⟩
-    simp only [mem_preimage, mem_compl_iff]
-    constructor
-    · intro hyQ
-      rw [← hPQ] at hy
-      rcases hy with hy | hy
-      · exact hy
-      · exact absurd (subset_closure hy) hyQ
-    · intro hyP hyQ
-      exact Set.disjoint_left.mp h2 hyP hyQ
-  exact ⟨hP, hQ, h2.mono_right subset_closure, hPQ, key hPQ h2,
-    key (by rw [union_comm]; exact hPQ) h1.symm⟩
-
 /-- **A preconnected set inside a union of two separated sets lies in one of them.** -/
 theorem subset_side_of_isPreconnected {T P Q : Set X} (hT : IsPreconnected T) (hTPQ : T ⊆ P ∪ Q)
     (h1 : Disjoint (closure P) Q) (h2 : Disjoint P (closure Q)) : T ⊆ P ∨ T ⊆ Q := by
@@ -346,23 +325,6 @@ theorem exists_two_nonCutPoints [CompactSpace X] [ConnectedSpace X] [T1Space X] 
   · push_neg at hc
     obtain ⟨a, b, hab⟩ := exists_pair_ne X
     exact ⟨a, b, hab, hc a, hc b⟩
-
-/-- **Nadler 6.7.** No proper connected subset contains all the non-cut points. (Only
-preconnectedness of `Z` is used; `[Nontrivial X]` of the skeleton is not needed.) -/
-theorem not_subset_of_nonCutPoints [CompactSpace X] [ConnectedSpace X] [T1Space X]
-    {Z : Set X} (hZ : IsConnected Z) (hne : Z ≠ univ) : ¬ {x | ¬ IsCutPoint x} ⊆ Z := by
-  intro hsub
-  obtain ⟨c, hc⟩ := (ne_univ_iff_exists_notMem Z).mp hne
-  have hcut : IsCutPoint c := by
-    by_contra h; exact hc (hsub h)
-  obtain ⟨z, hz⟩ := hZ.nonempty
-  have hzc : z ∈ ({c}ᶜ : Set X) := fun e => hc (mem_singleton_iff.mp e ▸ hz)
-  obtain ⟨U, V, hUV, -⟩ := exists_separation_of_not_isConnected hzc hcut
-  have hZc : Z ⊆ {c}ᶜ := fun y hy e => hc (mem_singleton_iff.mp e ▸ hy)
-  obtain ⟨⟨u, hu, hu'⟩, ⟨v, hv, hv'⟩⟩ := exists_nonCutPoint_of_cut hUV
-  rcases hUV.subset_or_subset hZ.isPreconnected hZc with h | h
-  · exact Set.disjoint_left.mp hUV.2.2.1 (h (hsub hv')) hv
-  · exact Set.disjoint_left.mp hUV.2.2.1 hu (h (hsub hu'))
 
 end NonCut
 

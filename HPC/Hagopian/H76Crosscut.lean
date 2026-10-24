@@ -1,4 +1,4 @@
-import HPC.Hagopian.H76DCollar
+import HPC.Hagopian.H76Domain
 
 /-!
 # Batch 166, item B (addition): the low segment is a cross-cut of the domain
@@ -244,89 +244,5 @@ theorem rect_domain_crosscut {a b c : ℝ} (hab : a < b) {r s : ℝ × ℝ} {I D
   rcases hS.subset_or_subset hUo hOo hUO hSJ with h | h
   · exact disjoint_left.1 hUO (h hvS) hvO
   · exact disjoint_left.1 hUO huU (h huS)
-
-/-- **`K₀` is a cross-cut of `D`** (in the plane): no connected subset of `π⁻¹[D] − K₀` has closure
-meeting both `π⁻¹F[{a} × (0, r₂)]` and `π⁻¹F[{b} × (0, s₂)]` (the open side edges `⟨p₁, r⟩`,
-`⟨p₅, s⟩` without their ends). -/
-theorem K0_crosscut_aux {π : Pt → Pt} {γ : unitInterval → Pt} (hπc : Continuous π)
-    {F : ℝ × ℝ → Pt} (hF : IsCollar γ F) {a b c : ℝ} (ha : 0 < a) (hab : a < b) (hb : b < 1)
-    (hc1 : c ≤ 1) {r₂ s₂ : ℝ} {I₂ : Set Pt}
-    (hI : TArc ((a, r₂) : ℝ × ℝ) (b, s₂) (Icc a b ×ˢ Ioc 0 c ∩ F ⁻¹' I₂))
-    (hIs : (Icc a b ×ˢ Ioc 0 c ∩ F ⁻¹' I₂) ∩ (({a, b} : Set ℝ) ×ˢ Icc 0 c) =
-      {(a, r₂), (b, s₂)})
-    {D' : Set (ℝ × ℝ)} (hDo : IsOpen D') (hDR : D' ⊆ Ioo a b ×ˢ Ioo 0 c)
-    (hDf : frontier D' = (Icc a b ×ˢ Ioc 0 c ∩ F ⁻¹' I₂) ∪ Icc a b ×ˢ {0} ∪
-        ({a} : Set ℝ) ×ˢ Icc 0 r₂ ∪ ({b} : Set ℝ) ×ˢ Icc 0 s₂)
-    {x₀ w₂ : ℝ} (hx₀ : x₀ ∈ Ioo a b) (hw₂ : w₂ ∈ Ioc 0 c) (hFw : F (x₀, w₂) ∈ I₂)
-    (hseg : Disjoint (({x₀} : Set ℝ) ×ˢ Ioo 0 w₂) (Icc a b ×ˢ Ioc 0 c ∩ F ⁻¹' I₂))
-    {S : Set Pt} (hS : IsPreconnected S)
-    (hSD : S ⊆ π ⁻¹' (F '' D') \ π ⁻¹' (F '' (({x₀} : Set ℝ) ×ˢ Ioo 0 w₂)))
-    (hL : (closure S ∩ π ⁻¹' (F '' (({a} : Set ℝ) ×ˢ Ioo 0 r₂))).Nonempty)
-    (hR : (closure S ∩ π ⁻¹' (F '' (({b} : Set ℝ) ×ˢ Ioo 0 s₂))).Nonempty) : False := by
-  obtain ⟨hFemb, -, -⟩ := hF
-  set R1 : Set (ℝ × ℝ) := Icc (0 : ℝ) 1 ×ˢ Icc (-1 : ℝ) 1 with hR1
-  have hFc : ContinuousOn F R1 := continuousOn_iff_continuous_restrict.2 hFemb.continuous
-  have hFinj : InjOn F R1 := fun z hz w hw h =>
-    congrArg Subtype.val (hFemb.injective (a₁ := ⟨z, hz⟩) (a₂ := ⟨w, hw⟩) h)
-  have hRR1 : Icc a b ×ˢ Icc 0 c ⊆ R1 :=
-    fun z ⟨⟨h1, h2⟩, h3, h4⟩ => ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩
-  have hDR1 : D' ⊆ R1 := fun z hz => by
-    obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hDR hz
-    exact hRR1 ⟨⟨h1.le, h2.le⟩, h3.le, h4.le⟩
-  set T' := π '' S with hT'
-  set T := R1 ∩ F ⁻¹' T' with hT
-  have hT'D : T' ⊆ F '' D' := by
-    rintro _ ⟨u, hu, rfl⟩; exact (hSD hu).1
-  have hTD : T ⊆ D' \ ({x₀} : Set ℝ) ×ˢ Ioo 0 w₂ := by
-    rintro z ⟨hzR, u, huS, hu⟩
-    obtain ⟨⟨y, hyD, hy⟩, hns⟩ := hSD huS
-    have hyz : y = z := hFinj (hDR1 hyD) hzR (hy.trans hu)
-    exact ⟨hyz ▸ hyD, fun hzs => hns ⟨z, hzs, hu.symm⟩⟩
-  have hFT : F '' T = T' := by
-    rw [hT, image_inter_preimage]; exact inter_eq_right.2 (hT'D.trans (image_mono hDR1))
-  have hTpc : IsPreconnected T := by
-    have hT'r : T' ⊆ range (R1.restrict F) := fun p hp => by
-      obtain ⟨y, hyD, rfl⟩ := hT'D hp; exact ⟨⟨y, hDR1 hyD⟩, rfl⟩
-    have h1 : IsPreconnected (R1.restrict F ⁻¹' T') := by
-      rw [← hFemb.isInducing.isPreconnected_image, image_preimage_eq_of_subset hT'r]
-      exact hS.image _ hπc.continuousOn
-    have heq : T = Subtype.val '' (R1.restrict F ⁻¹' T') := by
-      ext z
-      constructor
-      · rintro ⟨hzR, hzT⟩; exact ⟨⟨z, hzR⟩, hzT, rfl⟩
-      · rintro ⟨z, hzT, rfl⟩; exact ⟨z.2, hzT⟩
-    rw [heq]; exact h1.image _ continuous_subtype_val.continuousOn
-  have hclT : closure T ⊆ Icc a b ×ˢ Icc 0 c :=
-    closure_minimal (fun z hz => by
-      obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hDR (hTD hz).1
-      exact ⟨⟨h1.le, h2.le⟩, h3.le, h4.le⟩) (isClosed_Icc.prod isClosed_Icc)
-  have hclTc : IsCompact (closure T) :=
-    (isCompact_Icc.prod isCompact_Icc).of_isClosed_subset isClosed_closure hclT
-  have hcl : ∀ z ∈ closure S, ∀ p ∈ R1, F p = π z → p ∈ closure T := by
-    intro z hz p hpR hzp
-    have h1 : π z ∈ closure T' := image_closure_subset_closure_image hπc ⟨z, hz, rfl⟩
-    have h2 : closure T' ⊆ F '' closure T := by
-      rw [← hFT]
-      exact closure_minimal (image_mono subset_closure)
-        (hclTc.image_of_continuousOn (hFc.mono (hclT.trans hRR1))).isClosed
-    obtain ⟨p', hp', hFp'⟩ := h2 h1
-    have : p' = p := hFinj (hRR1 (hclT hp')) hpR (hFp'.trans hzp.symm)
-    rw [← this]; exact hp'
-  have hr₂ := hI.left_mem.1.2
-  have hs₂ := hI.right_mem.1.2
-  obtain ⟨z₁, hz₁S, p, hp, hz₁p⟩ := hL
-  obtain ⟨z₂, hz₂S, q, hq, hz₂q⟩ := hR
-  have hpR : p ∈ R1 := by
-    obtain ⟨hp1, hp2⟩ := hp
-    have hp1' : p.1 = a := hp1
-    exact hRR1 ⟨⟨hp1'.ge, by rw [hp1']; exact hab.le⟩, hp2.1.le, hp2.2.le.trans hr₂.2⟩
-  have hqR : q ∈ R1 := by
-    obtain ⟨hq1, hq2⟩ := hq
-    have hq1' : q.1 = b := hq1
-    exact hRR1 ⟨⟨by rw [hq1']; exact hab.le, hq1'.le⟩, hq2.1.le, hq2.2.le.trans hs₂.2⟩
-  exact rect_domain_crosscut (r := ((a, r₂) : ℝ × ℝ)) (s := ((b, s₂) : ℝ × ℝ)) hab hI
-    inter_subset_left rfl rfl hIs hDo hDR hDf hx₀ hw₂.1
-    ⟨⟨⟨hx₀.1.le, hx₀.2.le⟩, hw₂⟩, hFw⟩ hseg hTpc hTD hp hq (hcl z₁ hz₁S p hpR hz₁p)
-    (hcl z₂ hz₂S q hqR hz₂q)
 
 end HPC.Hagopian

@@ -58,10 +58,6 @@ variable [MetricSpace X] [MulAction G X] [ContinuousSMul G X]
 /-- `U • x := {g • x | g ∈ U}`. -/
 def orbitPart (U : Set G) (x : X) : Set X := (fun g : G => g • x) '' U
 
-omit [TopologicalSpace G] [IsTopologicalGroup G] [MetricSpace X] [ContinuousSMul G X] in
-theorem mem_orbitPart {U : Set G} {x y : X} : y ∈ orbitPart U x ↔ ∃ g ∈ U, g • x = y :=
-  Iff.rfl
-
 /-- **van Mill, Lemma 3.1.** Suppose `V` is open and `z ∈ V ∩ U n • x`. Then
 `U m • z ⊆ V ∩ U n • x` for some `m`. (The hypothesis `U 0 = univ` of the skeleton is not
 used and was dropped.) -/
@@ -161,25 +157,6 @@ theorem vanMill_3_4 [PolishSpace G] [MulAction.IsPretransitive G X] [BaireSpace 
         exact ⟨h⁻¹ * g, hUU n (mul_mem_mul hhinv hg), by simp [mul_smul]⟩
   exact interior_maximal hsub (isOpen_interior.smul _) ⟨h • x, hhV, by simp⟩
 
-/-- **van Mill, Lemma 3.4, first sentence** (as printed, with the closure bars of the original):
-the interior of `closure (U n • x)` is dense in `closure (U n • x)`. Van Mill's proof: an open
-`V` meeting `closure (U n • x)` meets `U n • x`; by 3.3 `V ∩ U n • x` is not meager, so its
-closure has nonempty interior, which lies in `closure V ∩ interior (closure (U n • x))` and hence
-meets `V`. -/
-theorem vanMill_3_4_dense [PolishSpace G] [MulAction.IsPretransitive G X] [BaireSpace X]
-    [Nonempty X] {U : ℕ → Set G} (hU : ∀ n, IsOpen (U n) ∧ (1 : G) ∈ U n ∧ (U n)⁻¹ = U n)
-    (hb : (𝓝 (1 : G)).HasBasis (fun _ => True) U) (x : X) (n : ℕ) :
-    closure (orbitPart (U n) x) ⊆ closure (interior (closure (orbitPart (U n) x))) := by
-  intro y hy
-  rw [_root_.mem_closure_iff] at hy ⊢
-  intro V hV hyV
-  have hne := hy V hV hyV
-  obtain ⟨o, ho⟩ := nonempty_interior_closure_of_not_meagre (vanMill_3_3 hU hb x n V hV hne)
-  have hoV : o ∈ closure V := closure_mono inter_subset_left (interior_subset ho)
-  rw [_root_.mem_closure_iff] at hoV
-  obtain ⟨w, hwO, hwV⟩ := hoV _ isOpen_interior ho
-  exact ⟨w, hwV, interior_mono (closure_mono inter_subset_right) hwO⟩
-
 /-- **van Mill, Proposition 3.5** (as printed, with the closure bar). `interior (closure (U (n+1) • x)) ⊆ U n • x`.
 For `z` in the left side, put `E := interior (closure (U (n+1) • x)) ∩ interior (closure
 (U (n+1) • z))`, an open neighbourhood of `z` by 3.4. The sets `U (n+1) • x ∩ E` and
@@ -248,27 +225,6 @@ theorem effros_open_mapping [PolishSpace G] [MulAction.IsPretransitive G X] [Bai
   have h2 := vanMill_3_5 hB hBUU hb x n
   refine mem_of_superset (isOpen_interior.mem_nhds h1) (h2.trans ?_)
   exact image_mono hn
-
-/-- The orbit map `g ↦ g • x` is open. -/
-theorem isOpenMap_smul_left [PolishSpace G] [MulAction.IsPretransitive G X] [BaireSpace X]
-    [Nonempty X] (x : X) : IsOpenMap (fun g : G => g • x) := by
-  intro O hO
-  rw [isOpen_iff_mem_nhds]
-  rintro _ ⟨g, hg, rfl⟩
-  have hO' : (fun k => g * k) ⁻¹' O ∈ 𝓝 (1 : G) :=
-    (hO.preimage (continuous_const.mul continuous_id)).mem_nhds (by simpa using hg)
-  have h1 := effros_open_mapping x hO'
-  have h2 : (fun p => g • p) '' orbitPart ((fun k => g * k) ⁻¹' O) x ∈ 𝓝 (g • x) := by
-    have := (Homeomorph.smul g).isOpenMap.image_mem_nhds h1
-    simpa using this
-  refine mem_of_superset h2 ?_
-  rintro _ ⟨_, ⟨k, hk, rfl⟩, rfl⟩
-  exact ⟨g * k, hk, by simp [mul_smul]⟩
-
-/-- **van Mill, remark after Corollary 3.6.** `U • x` is open for every open `U ⊆ G`. -/
-theorem isOpen_orbitPart [PolishSpace G] [MulAction.IsPretransitive G X] [BaireSpace X]
-    [Nonempty X] {U : Set G} (hU : IsOpen U) (x : X) : IsOpen (orbitPart U x) :=
-  isOpenMap_smul_left x U hU
 
 end OpenMapping
 

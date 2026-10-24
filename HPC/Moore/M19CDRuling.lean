@@ -53,11 +53,6 @@ theorem Space.XArc.symm (h1 : σ.Axiom1) {I sAB sCD : Set S} {A B C D : S} {x : 
   obtain ⟨P, P', hP, hP', hx, hxI⟩ := h
   exact ⟨P', P, hP', hP, hx.symm, by rwa [pair_comm]⟩
 
-theorem Space.XArc.mono {I I' sAB sCD : Set S} {A B C D : S} {x : Set S}
-    (h : σ.XArc I sAB sCD A B C D x) (hI : I ⊆ I') : σ.XArc I' sAB sCD A B C D x := by
-  obtain ⟨P, P', hP, hP', hx, hxI⟩ := h
-  exact ⟨P, P', hP, hP', hx, hxI.trans hI⟩
-
 /-- **Rotation of a ruling**: a ruling of `ABCDA` is a ruling of `BCDAB`, the two sets of arcs
 exchanging roles. -/
 theorem Space.ArcRuling.rot (h1 : σ.Axiom1) {I sAB sBC sCD sDA : Set S} {A B C D : S} {𝒳 𝒴 : Set (Set S)}

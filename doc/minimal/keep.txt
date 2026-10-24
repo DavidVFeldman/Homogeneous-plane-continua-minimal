@@ -1,0 +1,11 @@
+# Candidates of doc/minimal/unused.tsv that are not to be deleted, each with its reason.
+# Format: name  # reason
+
+HPC.BJ59.chainRestrict_link  # @[simp] rfl lemma: simp may use it without a trace in proof terms
+HPC.Effros.homeo_one_apply  # @[simp] rfl lemma: simp may use it without a trace in proof terms
+HPC.Effros.homeoCM_apply  # @[simp] rfl lemma: simp may use it without a trace in proof terms
+HPC.Description.shift_n  # @[simp] rfl lemma: simp may use it without a trace in proof terms
+HPC.Description.shift_D  # @[simp] rfl lemma: simp may use it without a trace in proof terms
+HPC.Effros.homeo_smul_def  # in `simp only [homeo_smul_def]` (Effros/Effros.lean, line 66)
+HPC.BJ59.CircDescr.fib_eq  # in `simp only [fib_eq, ...]` (BJ59/CircDescr.lean, line 339)
+HPC.Jones.Sector.shH_apply  # in `simp only [shH_apply]` (Jones/Jones49COrder.lean, line 236)

@@ -322,30 +322,10 @@ The relative forms (`theorem7_1951_rel`, `theorem6_1951_rel`, `theorem7_weak_rel
 renaming of COMMISSION-batch131.md §2) are specialised at `planeFacts_holds`. Statements otherwise
 verbatim. -/
 
-/-- **Bing 1951 (Duke), Theorem 7** (with the hypothesis "no subcontinuum of `M` separates the
-plane" in place of "tree-like", as in batches 120–130): a bounded plane continuum no subcontinuum
-of which separates the plane is covered, for every `ε > 0`, by a tree chain whose links are
-interiors of simple closed polygons of diameter `< ε`. No interface, no hypothesis beyond the
-theorem's own. -/
-theorem theorem7_1951 {M : Set Pt} (hM : Fold.Q78.IsContinuum M)
-    (hns : ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K) {ε : ℝ} (hε : 0 < ε) :
-    ∃ G : Finset (Set Pt), IsTreeChain G ∧
-      (∀ h ∈ G, ∃ Γ : Set Pt, IsSimpleClosedPolygon Γ ∧ h = polyInterior Γ) ∧
-      (∀ h ∈ G, diam h < ε) ∧ M ⊆ ⋃ h ∈ G, h :=
-  theorem7_1951_rel planeFacts_holds hM hns hε
-
 /-- **Bing 1951 (Duke), Theorem 6**: a bounded plane continuum containing no continuum that
 separates the plane is tree-like. No interface. -/
 theorem theorem6_1951 {M : Set Pt} (hM : Fold.Q78.IsContinuum M)
     (hns : ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K) : IsTreeLike M :=
   theorem6_1951_rel planeFacts_holds hM hns
-
-/-- **Theorem 7, weak form**, unconditional. -/
-theorem theorem7_weak {M : Set Pt} (hM : Fold.Q78.IsContinuum M)
-    (hns : ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K) {ε : ℝ} (hε : 0 < ε) :
-    ∃ G : Finset (Set Pt), IsTreeChain G ∧ (∀ h ∈ G, diam h < ε) ∧ M ⊆ ⋃ h ∈ G, h ∧
-      ∀ h ∈ G, IsOpen h ∧ IsConnected h ∧ Bornology.IsBounded h ∧
-        interior (closure h) = h ∧ ¬ SeparatesPlane h :=
-  theorem7_weak_rel planeFacts_holds hM hns hε
 
 end HPC.Plane

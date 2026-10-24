@@ -36,20 +36,6 @@ theorem relFrontier_over {G A : Set E} {F D : Set (E × ℝ)} (hG : IsClosed G)
   · exact absurd (hfrA z hz) (hCsub h).2
   · exact h
 
-/-- Consistent complement depends only on `B ∩ X`. -/
-theorem hasConsCompl_congr {F X B B' : Set (E × ℝ)} (hF : IsPLGraph F) (hX : IsClosed X)
-    (h : HasConsCompl F X B) (hB : B ∩ X = B' ∩ X) : HasConsCompl F X B' := by
-  intro x hx
-  have hsub := hF.relFrontier_comp_subset hX x
-  rcases h x hx with h | h
-  · refine Or.inl fun z hz => ?_
-    have : z ∈ B ∩ X := ⟨h hz, hsub hz⟩
-    rw [hB] at this; exact this.1
-  · refine Or.inr (Set.disjoint_left.2 fun z hz hz' => ?_)
-    have : z ∈ B' ∩ X := ⟨hz', hsub hz⟩
-    rw [← hB] at this
-    exact Set.disjoint_left.1 h hz this.1
-
 variable {G : Set E} {S : Set (E × ℝ)} {k i₀ : ℕ} {T α : ℕ → Set (E × ℝ)}
   {γ P₁ P₂ F₁ F₂ F₃ : Set (E × ℝ)}
 

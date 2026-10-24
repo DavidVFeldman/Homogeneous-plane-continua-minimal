@@ -229,11 +229,6 @@ theorem isPseudoArc_subtype_of_image {T : Set X} [CompactSpace T] {S : Set T}
     (h : IsPseudoArc (Subtype.val '' S : Set X)) : IsPseudoArc S :=
   isPseudoArc_of_homeomorph h (IsEmbedding.subtypeVal.homeomorphImage S).symm
 
-/-- A pseudo-arc of a subtype is a pseudo-arc of the (compact) ambient space. -/
-theorem isPseudoArc_image_of_subtype [CompactSpace X] {T : Set X} {S : Set T}
-    (h : IsPseudoArc S) : IsPseudoArc (Subtype.val '' S : Set X) :=
-  isPseudoArc_of_homeomorph h (IsEmbedding.subtypeVal.homeomorphImage S)
-
 /-- A snake-like set `A` is snake-like as the whole of the subtype `A`. -/
 theorem isSnakeLike_univ_of_isSnakeLike {A : Set X} (h : IsSnakeLike A) :
     IsSnakeLike (univ : Set A) := by

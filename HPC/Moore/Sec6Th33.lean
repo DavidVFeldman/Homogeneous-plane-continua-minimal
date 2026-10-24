@@ -259,15 +259,4 @@ theorem fa_theorem34_region (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (
       hP'.2 (Or.inl (Or.inl hYΓ)) hYPE.1 (fun e => hP'Γ (e ▸ hYΓ))
       hΓ.isPreconnected_diff_right hΓK' ⟨hΓ.left_mem, hPE⟩ ⟨hYΓ, hYPE.2⟩
 
-/-- **Theorem 34.** If `J` is a closed curve and `AB` is an arc lying wholly in `R`, the interior of
-`J`, then `R − AB` is connected. *Axioms used: 1–8.* **Check 6:** printed \"If `J` is a Jordan
-arc\"; since `R` is \"the interior of `J`\", this is a misprint for closed curve. The statement is
-the special case of `fa_theorem34_region` (the interior of `J` is a region); Moore's first proof
-(for this case) is not needed. **Shape change:** the axioms are made explicit. -/
-theorem fa_theorem34 (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4)
-    (h5 : σ.Axiom5) (h6 : σ.Axiom6) (h7 : σ.Axiom7) (h8 : σ.Axiom8) {J R : Set S}
-    (hR : σ.IsInteriorOf J R) {A B : S} {K : Set S} (hK : σ.IsArc A B K) (hKR : K ⊆ R) :
-    σ.IsConn (R \ K) :=
-  fa_theorem34_region h1 h2 h3 h4 h5 h6 h7 h8 hR.2.1 hK hKR
-
 end HPC.Moore

@@ -43,29 +43,6 @@ theorem exists_chain84_core (hX : IsHomogeneous M) {E : Set M} {k : E → unitIn
   have := hgap j hj a b ha hb
   linarith
 
-/-- **Lemma 13, steps (1)–(6)** in the batch-186 shape `chainLinks84_runsStraight`. -/
-theorem chainLinks84_runsStraight_aux (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {ε : ℝ} (hε : 0 < ε)
-    {A B : Set M} (hA : IsClosed A) (hAE : Disjoint A E) (hB : IsOpen B)
-    (hBE : layer k 0 ∪ layer k 1 ⊆ B) :
-    ∃ (x : Fin 16 → unitInterval) (δ : ℝ), 0 < δ ∧ δ < ε ∧ StrictMono x ∧ x 0 = 0 ∧ x 15 = 1 ∧
-      IsChain5 (chainLinks84 k x δ) ∧ IsNormal5 (chainLinks84 k x δ) ∧
-      (⋃ i, chainLinks84 k x δ i) ⊆ Aᶜ ∧
-      closure (chainLinks84 k x δ 0 ∪ chainLinks84 k x δ 4) ⊆ B ∧
-      ∀ h : M ≃ₜ M, (∀ v, dist v (h v) < δ) → ∃ g : (h '' E) → unitInterval,
-        IsMinimalAdmissible (h '' E) g ∧ RunsStraight g (chainLinks84 k x δ) ∧
-        layer g 0 ⊆ chainLinks84 k x δ 0 \ closure (chainLinks84 k x δ 1) ∧
-        layer g 1 ⊆ chainLinks84 k x δ 4 \ closure (chainLinks84 k x δ 3) := by
-  obtain ⟨x, δ, hδ, hδε, hx, hx0, hx15, hgap, hch, hn, hAc, hBc, hall⟩ :=
-    exists_chain84_core hX hE hε hA hAE hB hBE
-  refine ⟨x, δ, hδ, hδε, hx, hx0, hx15, hch, hn, hAc, hBc, fun h hh => ?_⟩
-  obtain ⟨hcov, h0, h1⟩ := hall h hh
-  obtain ⟨g, hg, hgl⟩ := exists_image_map h hE
-  refine ⟨g, hg, translate_runsStraight84 hX hi hE hx hx0 hx15 hgap hch h hh hcov h0 h1 rfl hgl,
-    ?_, ?_⟩
-  · rw [show layer g 0 = h '' layer k 0 from hgl {0}]; exact h0
-  · rw [show layer g 1 = h '' layer k 1 from hgl {1}]; exact h1
-
 /-- **Lemma 13, regularity** in the batch-186 shape `chainLinks84_regular`: for links through which
 every `δ`-translate of `E` runs straight (with end layers in `L 0 ∖ Cl L 1` and `L 4 ∖ Cl L 3`),
 the chain is regular and the closure of each component of `⋃𝔏′` is an essential subcontinuum of a

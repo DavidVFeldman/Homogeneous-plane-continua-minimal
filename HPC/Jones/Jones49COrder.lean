@@ -79,12 +79,6 @@ theorem exists_far2 {L L' : Set (ℝ × ℝ)} (hL : IsCross a b L) (hL' : IsCros
 variable (hab : a < b)
 include hab
 
-theorem lc_sub_notR {L : Set (ℝ × ℝ)} (hL : IsCross a b L) : Lc a b L ⊆ NotR a b L :=
-  fun z hz => ⟨(lc_sub hz).1, by
-    rintro (h | h)
-    · exact (lc_sub hz).2 h
-    · exact disjoint_left.1 (lc_disjoint_rc hab hL) hz h⟩
-
 omit hab in
 /-- If `L'` is not to the right of `L`, then `L` is to the right of `L'`. -/
 theorem prec_of_notR {L L' : Set (ℝ × ℝ)} (hL : IsCross a b L) (hL' : IsCross a b L')
@@ -212,9 +206,6 @@ theorem sh_subset_iff {c : ℝ} {S L : Set (ℝ × ℝ)} : sh c S ⊆ sh c L ↔
     simpa using this
   · exact sh_mono
 
-theorem disjoint_sh_iff {c : ℝ} {S L : Set (ℝ × ℝ)} : Disjoint (sh c S) (sh c L) ↔ Disjoint S L := by
-  rw [sh_eq_image, sh_eq_image, disjoint_image_iff (shH c).injective]
-
 theorem IsCross.sh {L : Set (ℝ × ℝ)} (hL : IsCross a b L) (c : ℝ) : IsCross a b (sh c L) where
   compact := hL.compact.image (shH c).continuous
   conn := hL.conn.image _ (shH c).continuous.continuousOn
@@ -307,12 +298,6 @@ omit hab in
 theorem prec_irrefl {L : Set (ℝ × ℝ)} (hL : L ∈ F) : ¬ Prec a b L L := fun h => by
   obtain ⟨z, hz⟩ := (hF.cross L hL).conn.nonempty
   exact (rc_sub (h hz)).2 hz
-
-theorem asymm {L L' : Set (ℝ × ℝ)} (hL : L ∈ F) (hL' : L' ∈ F) (h1 : Prec a b L L')
-    (h2 : Prec a b L' L) : False := by
-  by_cases he : L = L'
-  · subst he; exact hF.prec_irrefl hL h1
-  · exact prec_asymm hab (hF.cross L hL) (hF.cross L' hL') (hF.disj L hL L' hL' he) h1 h2
 
 omit hab in
 theorem total {L L' : Set (ℝ × ℝ)} (hL : L ∈ F) (hL' : L' ∈ F) (he : L ≠ L') :

@@ -5,7 +5,6 @@ import HPC.HO16.Lemma6
 import HPC.HO16.FoldExists
 import HPC.HO16.Thm8Fold
 import HPC.HO16.Prop7
-import HPC.HO16.FoldExample
 
 /-!
 # Batch 195, definitions: sides, ordinary points, straight sets, stairwells (commission §§3–6)

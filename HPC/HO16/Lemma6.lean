@@ -24,10 +24,6 @@ theorem fold_diff_left (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃)
   subst hcov hG₂; ext x; simp only [mem_diff, mem_union, mem_inter_iff]; tauto
 
 omit [TopologicalSpace α] in
-theorem fold_diff_right (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃) : G \ G₃ = G₁ \ G₂ := by
-  subst hcov hG₂; ext x; simp only [mem_diff, mem_union, mem_inter_iff]; tauto
-
-omit [TopologicalSpace α] in
 theorem fold_diff_mid (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃) :
     G \ G₂ = (G₁ \ G₂) ∪ (G₃ \ G₂) := by
   subst hcov hG₂; ext x; simp only [mem_diff, mem_union, mem_inter_iff]; tauto
@@ -35,11 +31,6 @@ theorem fold_diff_mid (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃) 
 omit [TopologicalSpace α] in
 theorem fold_diff_diff_left (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃) :
     G \ (G₁ \ G₂) = G₃ := by
-  subst hcov hG₂; ext x; simp only [mem_diff, mem_union, mem_inter_iff]; tauto
-
-omit [TopologicalSpace α] in
-theorem fold_diff_diff_right (hcov : G₁ ∪ G₃ = G) (hG₂ : G₂ = G₁ ∩ G₃) :
-    G \ (G₃ \ G₂) = G₁ := by
   subst hcov hG₂; ext x; simp only [mem_diff, mem_union, mem_inter_iff]; tauto
 
 /-- `∂G₁ = cl (G₃ \ G₂) ∩ G₂`. -/

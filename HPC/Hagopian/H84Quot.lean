@@ -1,4 +1,4 @@
-import HPC.Hagopian.Hagopian76AB
+import HPC.Hagopian.H76E24
 
 /-!
 # Batch 184, §3: monotone images and the plane quotient (Hagopian 1984, p. 346)

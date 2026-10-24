@@ -3,8 +3,9 @@ import HPC.Hagopian.H76Lemma4
 import HPC.Hagopian.H76Lemma4Ext
 import HPC.Hagopian.H76NoMax
 import HPC.Hagopian.H76Lemma4Layers
-import HPC.Hagopian.H76Lemma8
-import HPC.Hagopian.H76Cons
+import HPC.Hagopian.H76Lemma3
+import HPC.Plane.SorgenfreyDefs
+import HPC.Hagopian.H76Defs
 
 /-!
 # Batch 156 skeleton: Hagopian 1976, §2 (Lemmas 2–8) and the consequences of Theorem 1
@@ -51,14 +52,6 @@ theorem hagopian76_lemma2 (hX : IsHomogeneous M) {ε : ℝ} (hε : 0 < ε) (x : 
       x ∈ {y : M | ∃ h : M ≃ₜ M, h x = y ∧ ∀ v, dist v (h v) < ε} := by
   exact lemma2_aux hX hε x
 
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **End sets** (p. 340): "No proper subcontinuum of `E` intersects both `X` and `Z` [14, Theorem
-8, p. 14]." (`admissible_end_sets'`, batch 155, in this setting.) -/
-theorem hagopian76_end_sets {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    {K : Set M} (hKE : K ⊆ E) (hK : Fold.Q78.IsContinuum K) (h0 : (K ∩ layer k 0).Nonempty)
-    (h1 : (K ∩ layer k 1).Nonempty) : K = E := by
-  exact end_sets_aux hE hKE hK h0 h1
-
 /-- **Lemma 3** (p. 340). "Let `Y` be an element of the decomposition of `E` distinct from the end
 sets `X` and `Z` of `E`. Let `F` be a type A′ subcontinuum of `M` with end sets `T` and `V`, and let
 `U` be an element of the decomposition of `F` distinct from `T` and `V`. Suppose `h` is a
@@ -88,71 +81,12 @@ theorem hagopian76_lemma3 (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
 
 -- `hagopian76_lemma4_layers` (D1): re-rendered as printed in `Hagopian76B.lean` (open, batch 157; see `OPEN.md`).
 
-omit [CompactSpace M] [ConnectedSpace M] in
-/-- **Lemma 4, first paragraph, corrected** (the part implied by minimality). `s` is the largest value
-of `d` on `E`; `d⁻¹[0, s) ⊆ E ⊆ d⁻¹[[0, s]]` (Hagopian: "`d[E] = [0, s]`" and "for each positive number
-`r` less than `s`, the set `d⁻¹(r)` is in `E`"); every element of the decomposition of `E` lies in an
-element of the decomposition of `F`; and an element of the decomposition of `E` lying in `d⁻¹(u)` with
-`u < s` is `d⁻¹(u)`.
-
-*Shape change* from `hagopian76_lemma4_layers` (commented out above): `layerSet d (Icc 0 s) = E` is
-weakened to the two inclusions, and "`∀ t ≠ 1, ∃ u, k⁻¹(t) = d⁻¹(u)`" to the last two clauses. The
-hypotheses `hX`, `hi` are not used (only minimality is). -/
-theorem hagopian76_lemma4_layers' {E F : Set M} {k : E → unitInterval} {d : F → unitInterval}
-    (hE : IsMinimalAdmissible E k) (hF : IsMinimalAdmissible F d) (hEF : E ⊆ F)
-    (hX0 : layer d 0 = layer k 0) :
-    ∃ s : unitInterval, 0 < s ∧ layerSet d (Ico 0 s) ⊆ E ∧ E ⊆ layerSet d (Icc 0 s) ∧
-      (∀ t, ∃ u, layer k t ⊆ layer d u) ∧
-      ∀ t u, u < s → layer k t ⊆ layer d u → layer k t = layer d u :=
-  lemma4_layers_aux hE hF hEF hX0
-
 /-- **Lemma 4, linear order** (the first half of `hagopian76_lemma4`). The proof is Hagopian's triod
 (`ext_chain`, `H76Lemma4.lean`); the first paragraph is not needed. -/
 theorem hagopian76_lemma4_chain (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
     {k : E → unitInterval} (hE : IsMinimalAdmissible E k) :
     IsChain (· ⊆ ·) {F | IsExtensionAway E (layer k 0) F} :=
   fun _ hF _ hH _ => ext_chain (hagopian75_lemma1_hu hX hi) (hagopian75_lemma1 hX hi).1 hE hF hH
-
-/-- **Lemma 4, the countable form, from "no maximal element".** Given the second half of
-`hagopian76_lemma4` as the hypothesis `hnomax`, the sequence of `hagopian76_lemma4_seq` exists: a
-nonempty chain of closed sets with no largest element in a second-countable space has a strictly
-increasing cofinal sequence (`exists_strictMono_seq_of_chain`). -/
-theorem hagopian76_lemma4_seq_of_noMax (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hnomax : ∀ F ∈ {F | IsExtensionAway E (layer k 0) F},
-      ∃ H ∈ {F | IsExtensionAway E (layer k 0) F}, F ⊂ H) :
-    ∃ Fs : ℕ → Set M, StrictMono Fs ∧ (∀ i, IsExtensionAway E (layer k 0) (Fs i)) ∧
-      extUnion E (layer k 0) = ⋃ i, Fs i :=
-  exists_strictMono_seq_of_chain (hagopian76_lemma4_chain hX hi hE)
-    (fun _ ⟨_, _, ⟨⟨_, _, hab⟩, _, _⟩, _⟩ => hab.1.1.isClosed) ⟨E, subset_rfl, k, hE, rfl⟩ hnomax
-
-/-- **Lemma 4, "no maximal element", given the branching continuum.** Hagopian's step "it is a
-proper subset of an element of `𝓕` that is contained in `F ∪ h⁻¹[F]`" splits into (1) a continuum
-`C` (his piece of `h⁻¹[F]`) with `∅ ≠ C ∩ F ⊆ d⁻¹(1)` and `C ⊄ F`, and (2) a proper extension of `F`
-inside `F ∪ C`. Step (2) is proved (`ext_of_branch`, `H76Lemma4Ext.lean`: an irreducible continuum
-from `X` to a point of `C ∖ F` contains `F`, is of type A′ by Kuratowski's criterion and the 1975 ¶2
-argument, and its end layer at `X` is `X`). Step (1) is the hypothesis `hbranch`; it is the open part
-of D2 (`OPEN.md`). With it, Lemma 4 holds as printed. -/
-theorem hagopian76_lemma4_of_branch (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hbranch : ∀ (F : Set M) (d : F → unitInterval), E ⊆ F → IsMinimalAdmissible F d →
-      layer d 0 = layer k 0 → ∃ C : Set M, Fold.Q78.IsContinuum C ∧ (C ∩ F).Nonempty ∧
-        C ∩ F ⊆ layer d 1 ∧ ¬ C ⊆ F) :
-    IsChain (· ⊆ ·) {F | IsExtensionAway E (layer k 0) F} ∧
-      ∀ F ∈ {F | IsExtensionAway E (layer k 0) F},
-        ∃ H ∈ {F | IsExtensionAway E (layer k 0) F}, F ⊂ H :=
-  lemma4_of_branch hX (hagopian75_lemma1_hu hX hi) (hagopian75_lemma1 hX hi).1 hE hbranch
-
-/-- **Lemma 4, the countable form, given the branching continuum** (from
-`hagopian76_lemma4_of_branch` and `exists_strictMono_seq_of_chain`). -/
-theorem hagopian76_lemma4_seq_of_branch (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hbranch : ∀ (F : Set M) (d : F → unitInterval), E ⊆ F → IsMinimalAdmissible F d →
-      layer d 0 = layer k 0 → ∃ C : Set M, Fold.Q78.IsContinuum C ∧ (C ∩ F).Nonempty ∧
-        C ∩ F ⊆ layer d 1 ∧ ¬ C ⊆ F) :
-    ∃ Fs : ℕ → Set M, StrictMono Fs ∧ (∀ i, IsExtensionAway E (layer k 0) (Fs i)) ∧
-      extUnion E (layer k 0) = ⋃ i, Fs i :=
-  lemma4_seq_of_branch hX (hagopian75_lemma1_hu hX hi) (hagopian75_lemma1 hX hi).1 hE hbranch
 
 /-- **Lemma 4** (p. 340). "The collection `𝓕` of extensions of `E` away from the end set `X` is
 linearly ordered by inclusion and does not have a maximal element." Proof (p. 341): "If `H` is an
@@ -238,17 +172,6 @@ theorem hagopian76_lemma7 (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
   sorry
 -/
 
-/-- **Lemma 8** (p. 344). "Every chain in `R²` that follows `E` has an ordered refinement that
-follows `E` and is free relative to `M`." Proof: "Since `M` is atriodic, there exist open sets `A`
-and `B` in `G₁` and `Gₙ`, respectively, such that `E` is a component of `M − (A ∪ B)`." Then Moore
-1962 Theorem 44, p. 15, gives disjoint open `C ⊃ E` and `D ⊃ M − St G` with
-`C ∪ D ⊃ M − (A ∪ B)`, and `L₁ = G₁`, `Lₙ = Gₙ`, `Lᵢ = C ∩ Gᵢ`. -/
-theorem hagopian76_lemma8 (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M) {E : Set M}
-    {k : E → unitInterval} (hE : IsMinimalAdmissible E k) {n : ℕ} (G : Fin (n + 1) → Set Pt)
-    (hG : IsPlaneChain G) (hGE : Follows G k) :
-    ∃ L : Fin (n + 1) → Set Pt, IsOrderedRefinement L G ∧ Follows L k ∧ IsFree M L := by
-  exact lemma8_aux (hagopian75_lemma1_hu hX hi) (hagopian75_lemma1 hX hi).1 hE G hG hGE
-
 end Section2
 
 /-! ## Theorem 1 as a statement, and its consequences -/
@@ -256,49 +179,6 @@ end Section2
 section Consequences
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
-
-/-- **Hagopian 1976, Theorem 2** (p. 349). "Every homogeneous plane continuum that does not separate
-the plane is hereditarily indecomposable." Proof: "Since every homogeneous nonseparating plane
-continuum is indecomposable [4], [6], this theorem follows immediately from Theorem 1." Here [4] is
-Gordh 1975 and [6] Jones 1951; the repository route is `jones55_two_domains'` (a decomposable
-homogeneous plane continuum has two complementary domains). -/
-theorem hagopian76_theorem2 (h1 : Hagopian76Thm1) (hX : IsHomogeneous M)
-    (hns : ¬ SeparatesPlane M) : IsHereditarilyIndecomposable (univ : Set M) := by
-  exact hagopian76_theorem2_aux h1 hX hns
-
-/-- **Hagopian 1975, Corollary** (p. 39). "If `M` is a homogeneous indecomposable plane continuum,
-then no subcontinuum of `M` is hereditarily decomposable." (Nondegenerate subcontinua: Hagopian's
-continua are nondegenerate.) -/
-theorem hagopian75_corollary (h1 : Hagopian76Thm1) (hX : IsHomogeneous M)
-    (hi : ¬ IsDecomposableSpace M) {H : Set M} (hH : Fold.Q78.IsContinuum H) (hnd : H.Nontrivial) :
-    ¬ IsHereditarilyDecomposable H := by
-  exact hagopian75_corollary_aux h1 hX hi hH hnd
-
-/-- **Hagopian 1975, Theorem 1** (p. 38), as printed: "Suppose `M` is a homogeneous indecomposable
-plane continuum and `A` is a decomposable subcontinuum of `M`. Then `A` contains a homogeneous
-indecomposable continuum." From Theorem 1 of 1976 the hypothesis is impossible. -/
-theorem hagopian75_theorem1 (h1 : Hagopian76Thm1) (hX : IsHomogeneous M)
-    (hi : ¬ IsDecomposableSpace M) {A : Set M} (hA : Fold.Q78.IsContinuum A)
-    (hAd : ¬ Fold.Q78.IsIndecomposable A) :
-    ∃ Y ⊆ A, Fold.Q78.IsContinuum Y ∧ Y.Nontrivial ∧ IsHomogeneous Y ∧
-      Fold.Q78.IsIndecomposable Y := by
-  exact absurd (h1 M hX hi A (subset_univ _) hA) hAd
-
-/-- **Hagopian 1975, Theorem 2** (p. 39). "The simple closed curve is the only homogeneous plane
-continuum that has a hereditarily decomposable subcontinuum." Proof (p. 40): the Corollary, Jones's
-decomposition [Jones 1955, Theorem 2], and "if `H` meets more than one element of `G`, then `H`
-contains an element of `G` [Jones 1955, Theorem 1]" (`jones55_c`). -/
-theorem hagopian75_theorem2 (h1 : Hagopian76Thm1) (hX : IsHomogeneous M) {H : Set M}
-    (hH : Fold.Q78.IsContinuum H) (hnd : H.Nontrivial) (hHd : IsHereditarilyDecomposable H) :
-    Nonempty (M ≃ₜ Circle) := by
-  exact hagopian75_theorem2_aux h1 hX hH hnd hHd
-
-/-- **Bing 1960 for plane continua** (Canad. J. Math. 12, title theorem): "A simple closed curve is
-the only homogeneous bounded plane continuum that contains an arc." An arc is hereditarily
-decomposable, so this is `hagopian75_theorem2`. -/
-theorem bing60_plane (h1 : Hagopian76Thm1) (hX : IsHomogeneous M) {α : Set M}
-    (hα : Nonempty (α ≃ₜ unitInterval)) : Nonempty (M ≃ₜ Circle) := by
-  exact bing60_plane_aux h1 hX hα
 
 end Consequences
 

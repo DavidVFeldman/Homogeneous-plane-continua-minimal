@@ -1,9 +1,8 @@
-# Homogeneous plane continua in Lean: the modules of the classification
+# Homogeneous plane continua in Lean: the classification alone
 
-This repository holds the modules of the Lean formalization in the repository
+This repository holds the declarations of the Lean formalization in the repository
 [homogeneous-plane-continua][full] that the proof of the classification of homogeneous plane
-continua draws on. The documentation, the records and the other modules are in the full
-repository.
+continua uses. The documentation, the records and the other results are in the full repository.
 
 [full]: https://github.com/DavidVFeldman/homogeneous-plane-continua
 
@@ -12,27 +11,28 @@ The two final theorems, `HPC.BJ59.ho16_classification₄` and
 
 ## How this repository was made
 
-`scripts/make_minimal.py` derives it from the full repository, using the full repository's
-dependency census (`doc/depcensus/` there; its README says which state of the sources it
-describes):
+It was derived from the full repository in two steps, using the full repository's dependency
+census (`doc/depcensus/` there; its README defines the census and says which state of the sources
+it describes). A declaration is *used* when the census finds it in the closure of the two final
+theorems under the constants occurring in types and proof terms.
 
-* only the library `HPC` is kept, the import closure of `HPC.BJ59.BJ59E` (709 modules);
-* of these, 635 modules are kept: the 446 that hold a declaration the final theorems use,
-  and every module that a declaration in a kept module refers to;
-* the other 74 are removed;
-* a module that defines syntax, notation, macros or attributes for kept modules is kept too,
-  since that leaves no trace in the census; here every such module is kept already;
-* a kept module that imported a removed one imports what the removed one imported instead.
+1. `scripts/make_minimal.py` kept the library `HPC`, and of the 709 modules of the import closure
+   of `HPC.BJ59.BJ59E` the 635 that hold a used declaration or that declarations in such
+   modules refer to.
+2. `scripts/prune.py` deleted from those modules the declarations that are not used (the
+   2,927 candidates of `doc/minimal/unused.tsv`), except the 8 listed in
+   `doc/minimal/keep.txt`, and removed the modules left without declarations. A module that
+   imported a removed one imports what the removed one imported instead.
 
-Nothing inside a kept module is changed apart from its import lines. So the kept modules also
-hold declarations the final theorems do not use: of their 7,618 declarations, the final
-theorems use 4,689.
+Nothing else in the Lean files was changed. The declarations of `keep.txt` are needed by proofs
+without occurring in their proof terms (a lemma named in a `simp only` list, for example), so the
+census does not see them; each line gives the reason.
 
-635 modules under `HPC/`, with 188,502 lines of Lean, and the root module `HPC.lean`.
+446 modules under `HPC/`, with 114,063 lines of Lean, and the root module `HPC.lean`. They
+hold 4,697 declarations: the 4,689 used ones and those of `keep.txt`.
 
-Comments in the Lean files cite documents, modules and line numbers of the full repository. In
-the 35 modules whose imports were rewritten, the line numbers differ from the full
-repository's.
+Comments in the Lean files cite documents, modules and line numbers of the full repository; line
+numbers here differ.
 
 ## Building and checking
 
@@ -45,11 +45,11 @@ lake build                                 # the library HPC
 lake env lean Axioms.lean > axioms-ci.txt  # the axiom audit; compare with axioms.txt
 ```
 
-`Axioms.lean` holds the `#print axioms` lines of the full repository's audit for theorems
-declared in kept modules: 3,623 lines, for 3,612 theorems (as in the full repository,
-a few theorems are printed in more than one group). `axioms.txt` is its expected output. The
-workflow in `.github/workflows/build.yml` builds the library on every push, fails on any
-`sorry`, regenerates the audit, compares it with `axioms.txt`, and allows no axiom other than
+`Axioms.lean` holds the `#print axioms` lines of the full repository's audit for the theorems
+this repository keeps: 2,253 lines, for 2,246 theorems (as in the full
+repository, a few theorems are printed in more than one group). `axioms.txt` is its expected
+output. The workflow in `.github/workflows/build.yml` builds the library on every push, fails on
+any `sorry`, regenerates the audit, compares it with `axioms.txt`, and allows no axiom other than
 `propext`, `Classical.choice` and `Quot.sound`.
 
 ## Credits
@@ -69,7 +69,7 @@ To cite Aristotle:
 Co-authored-by: Aristotle (Harmonic) <aristotle-harmonic@harmonic.fun>
 ```
 
-`scripts/make_minimal.py` was written by Claude (Anthropic).
+`scripts/make_minimal.py` and `scripts/prune.py` were written by Claude (Anthropic).
 
 ## License
 

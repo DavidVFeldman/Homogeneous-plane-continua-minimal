@@ -105,14 +105,6 @@ theorem IsLine.shift {ℓ : ℝ → Y} (hℓ : IsLine ℓ) (c : ℝ) : IsLine (f
   rw [this, hℓ.range_eq c]
   simp only [zero_add]
 
-omit [CompactSpace Y] in
-/-- A reversed line is a line. -/
-theorem IsLine.neg {ℓ : ℝ → Y} (hℓ : IsLine ℓ) : IsLine (fun s => ℓ (-s)) := by
-  refine ⟨hℓ.1.comp continuous_neg, fun s t h => neg_inj.mp (hℓ.2.1 h), ?_⟩
-  have : range (fun s => ℓ (-s)) = range ℓ := (Equiv.neg ℝ).surjective.range_comp ℓ
-  rw [this, hℓ.2.2]
-  simp only [neg_zero]
-
 /-- **§2.4**, general form: a homeomorphism carrying one point of `ℓ` into `ℓ'` acts by a
 continuous monotone bijection of the parameters. -/
 theorem JonesSetting.homeo_on_line_gen (S : JonesSetting Y) {ℓ ℓ' : ℝ → Y} (hℓ : IsLine ℓ)

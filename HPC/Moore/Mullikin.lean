@@ -284,10 +284,6 @@ theorem not_isConnected_compl_union {M₁ M₂ K₁ K₂ : Set Pt} (hM₁ : IsCo
     push_cast at h1 h2; linear_combination h2 - h1
   simp [Real.pi_ne_zero] at this
 
-theorem mem_connectedComponentIn_symm {F : Set Pt} {x y : Pt} (hx : x ∈ F)
-    (h : y ∈ connectedComponentIn F x) : x ∈ connectedComponentIn F y := by
-  rw [← connectedComponentIn_eq h]; exact mem_connectedComponentIn hx
-
 /-- **At most two components** (Eilenberg's bound for two pieces). -/
 theorem compl_union_two_components {M₁ M₂ K₁ K₂ : Set Pt} (hM₁ : IsCompact M₁)
     (hM₂ : IsCompact M₂) (hs₁ : IsConnected M₁ᶜ) (hs₂ : IsConnected M₂ᶜ)

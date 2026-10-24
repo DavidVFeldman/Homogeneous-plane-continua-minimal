@@ -1,9 +1,6 @@
 import HPC.Jones.Defs
 import HPC.Jones.Basic
-import HPC.Jones.Theorem6
-import HPC.Jones.Theorem13Aux
-import HPC.Jones.Theorem13
-import HPC.Jones.CutPoints
+import HPC.PseudoArc.T13Topo
 import HPC.Jones.Jones51
 
 /-!
@@ -39,19 +36,6 @@ theorem semiLocConn_of_isAposyndetic (h : IsAposyndetic X) (x : X) : SemiLocConn
 from `theorem0`). -/
 theorem isAposyndetic_of_semiLocConn (h : ∀ z : X, SemiLocConnAt z) : IsAposyndetic X :=
   fun y x hyx => (theorem0 x).mp (h x) y hyx
-
-/-- **Whyburn (6.1).** In a semi-locally-connected continuum, each component of `X − x` is open.
-
-*Shape change:* the skeleton's `ha : a ≠ x` is dropped (for `a = x` the set is empty). -/
-theorem whyburn_6_1 (h : ∀ z : X, SemiLocConnAt z) (x a : X) :
-    IsOpen (connectedComponentIn {x}ᶜ a) := by
-  refine isOpen_iff_forall_mem_open.mpr fun b hb => ?_
-  have hbx : b ≠ x := connectedComponentIn_subset _ _ hb
-  obtain ⟨K, V, hK, hV, hbV, hVK, hxK⟩ := isAposyndetic_of_semiLocConn h b x hbx
-  refine ⟨V, ?_, hV, hbV⟩
-  rw [connectedComponentIn_eq hb]
-  exact hVK.trans (hK.2.isPreconnected.subset_connectedComponentIn (hVK hbV)
-    (fun z hz hzx => hxK (hzx ▸ hz)))
 
 /-- **Whyburn (6.2).** If `x` does not separate `a` and `b` (they lie in one component of
 `X − x`), then some continuum contains `a` and `b` and misses `x`. -/
@@ -91,14 +75,6 @@ theorem whyburn_6_2 (h : ∀ z : X, SemiLocConnAt z) {x a b : X} (ha : a ≠ x)
     · exact Or.inl hzW
     · exact Or.inr ⟨connectedComponentIn_subset _ _ hz, hzW⟩
   exact hsub hb
-
-/-- **Whyburn (6.21)**, in the form Jones 1951 uses: in a semi-locally-connected continuum, if `p`
-cuts `a` from `b` (every continuum through both contains `p`), then `p` separates `a` from `b`. -/
-theorem whyburn_6_21 (h : ∀ z : X, SemiLocConnAt z) {p a b : X} (hc : CutsPts p a b) :
-    b ∉ connectedComponentIn {p}ᶜ a := by
-  intro hb
-  obtain ⟨N, hN, haN, hbN, hpN⟩ := whyburn_6_2 h hc.1 hb
-  exact hpN (hc.2.2.2 N hN haN hbN)
 
 end Whyburn
 

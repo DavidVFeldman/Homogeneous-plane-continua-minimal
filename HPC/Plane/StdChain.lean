@@ -83,15 +83,6 @@ def tameChain (Φ : Pt ≃ₜ Pt) (m : ℕ) : Chain Pt m where
 @[simp] theorem tameChain_link (Φ : Pt ≃ₜ Pt) (m : ℕ) (j : Fin m) :
     (tameChain Φ m).link j = Φ '' stdRect j := rfl
 
-theorem closure_tameChain_link (Φ : Pt ≃ₜ Pt) (m : ℕ) (j : Fin m) :
-    closure ((tameChain Φ m).link j) = Φ '' closure (stdRect j) := by
-  rw [tameChain_link, Φ.image_closure]
-
-/-- A chain is *tame* if it is the image of a standard chain under a plane homeomorphism. -/
-def IsTame {m : ℕ} (D : Chain Pt m) : Prop := ∃ Φ : Pt ≃ₜ Pt, ∀ j, D.link j = Φ '' stdRect j
-
-theorem tameChain_isTame (Φ : Pt ≃ₜ Pt) (m : ℕ) : IsTame (tameChain Φ m) := ⟨Φ, fun _ => rfl⟩
-
 theorem closure_stdRect_subset_region {m : ℕ} (j : Fin m) : closure (stdRect j) ⊆ region m := by
   rw [closure_stdRect]
   intro p hp

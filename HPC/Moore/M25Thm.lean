@@ -87,15 +87,6 @@ theorem exists_region_in_tube (p : Quotient r) {e : ℝ} (he : 0 < e) :
   obtain ⟨y, rfl⟩ := Quotient.mk_surjective q
   exact hJT (hRJ hq)
 
-/-- **Theorem 3** (p. 419). For each element `p` and `e > 0` there is a region every element of
-which is at upper distance `< e` from `p`. *The printed statement does not say that the region
-contains `p`; the proof gives it and Theorem 4 needs it, so `p ∈ R` is added (skeleton).* -/
-theorem m25_theorem3 (p : Quotient r) {e : ℝ} (he : 0 < e) :
-    ∃ R, mooreRegion R ∧ p ∈ R ∧ ∀ k ∈ R, ∀ y, Quotient.mk r y = k → ∀ z ∈ elt r y,
-      ∀ x, Quotient.mk r x = p → infDist z (elt r x) < e := by
-  obtain ⟨R, hR, hpR, hRT⟩ := exists_region_in_tube hG p he
-  exact ⟨R, hR, hpR, fun k hk => upper_iff_mem_tube.2 (hRT hk)⟩
-
 /-- Moore regions about `p` inside any neighbourhood of `p`. -/
 theorem exists_region_subset {p : Quotient r} {V : Set (Quotient r)} (hV : V ∈ 𝓝 p) :
     ∃ R, mooreRegion R ∧ p ∈ R ∧ R ⊆ V := by
@@ -141,24 +132,6 @@ theorem cl_eq_closure_quot (M : Set (Quotient r)) : (spaceOfElts r).cl M = closu
     by_cases hXM : X ∈ M
     · exact Or.inl hXM
     · exact Or.inr fun R hR hXR => ⟨h R hR hXR, ⟨X, hXR, hXM⟩⟩
-
-/-- **Moore's boundary** (p. 417), read with "a limit element of `G`" in its second clause (as
-printed, "of `H`", that clause would be empty): the elements of `H` that are limit elements of
-`G − H`, together with the elements not in `H` that are limit elements of `H`. So read, it is the
-frontier of `H` in the quotient topology. -/
-theorem m25_boundary_iff {H : Set (Quotient r)} {p : Quotient r} :
-    ((p ∈ H ∧ IsLimitElt p Hᶜ) ∨ (p ∉ H ∧ IsLimitElt p H)) ↔ p ∈ frontier H := by
-  have key : ∀ C : Set (Quotient r), p ∉ C → (AccPt p (Filter.principal C) ↔ p ∈ closure C) :=
-    fun C hC => by
-      rw [accPt_principal_iff_clusterPt, mem_closure_iff_clusterPt, diff_singleton_eq_self hC]
-  rw [isLimitElt_iff hG, isLimitElt_iff hG, frontier_eq_closure_inter_closure]
-  by_cases hp : p ∈ H
-  · rw [key Hᶜ (not_not_intro hp)]
-    exact ⟨fun h => ⟨subset_closure hp, h.elim And.right (fun h' => absurd hp h'.1)⟩,
-      fun h => Or.inl ⟨hp, h.2⟩⟩
-  · rw [key H hp]
-    exact ⟨fun h => ⟨h.elim (fun h' => absurd h'.1 hp) And.right,
-      subset_closure (show p ∈ Hᶜ from hp)⟩, fun h => Or.inr ⟨hp, h.1⟩⟩
 
 end hG
 

@@ -650,15 +650,6 @@ theorem exists_arc_of_isOpen_isPreconnected {M : Set S} (hMo : @IsOpen S σ.topo
   refine ⟨C, hCM, (isArc_iff_topological h1 h4).mpr ⟨hAB, hCc, ⟨⟨A, hAC⟩, hCp⟩, hAC, hBC,
     fun H hHC hne hAH hBH hH => hne (hirr H hHC hH.isPreconnected hAH hBH)⟩⟩
 
-/-- **Theorem 15.** Two distinct points of a domain are joined by an arc in the domain.
-(Moore's proof by nested simple chains, pp. 136–139: `exists_irreducible`.)
-*Axioms used: 1, 2, 4; and 3, 5₁ (through metrizability).*
-**Shape change:** Axiom 5 is weakened to Axiom 5₁ (which it implies, `axiom5₁_of_axiom5`). -/
-theorem fa_theorem15 {M : Set S} (hM : σ.IsDomain M) {A B : S} (hA : A ∈ M) (hB : B ∈ M)
-    (hAB : A ≠ B) : ∃ C ⊆ M, σ.IsArc A B C := by
-  obtain ⟨hMo, hMc⟩ := (isDomain_iff h1).mp hM
-  exact exists_arc_of_isOpen_isPreconnected h1 h2 h3 h4 h51 hMo hMc hA hB hAB
-
 /-- **Theorem 16.** Two points of a region are joined by an arc in the region; two points without
 the region are joined by an arc without it. (No proof printed.) The region is a domain by Axiom 2
 and Theorem 1; the exterior `S − R'` is a domain: open since `R'` is closed, connected by

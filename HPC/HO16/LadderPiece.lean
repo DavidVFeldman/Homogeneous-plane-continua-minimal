@@ -170,10 +170,6 @@ theorem ladderPiece_eq {y : E → List ℝ} {s : E × E} {e : Option (ℕ × ℝ
       · exact Or.inl (Or.inr hp)
       · exact Or.inr hp
 
-theorem eI_sub_Icc {j i k : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) (hk : k < 5) :
-    eI j e i k ⊆ Icc 0 1 :=
-  (eI_sub_eP hk).trans (e_P_sub he)
-
 theorem eI_disj {j i k k' : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) (hi : 1 ≤ i)
     (hkk : k ≠ k') (hk : k < 5) (hk' : k' < 5) {μ : ℝ} (h1 : μ ∈ eI j e i k)
     (h2 : μ ∈ eI j e i k') : False := by
@@ -557,13 +553,6 @@ theorem isCompact_eQB (j : ℕ) (e : Option (ℕ × ℝ × ℝ)) (i : ℕ) : IsC
   rcases e with _ | ⟨m, lam, h⟩
   · exact isCompact_ite_Icc _ _ _
   · simp only [eQB, wQB]
-    exact ((((isCompact_ite_Icc _ _ _).union (isCompact_ite_Icc _ _ _)).union
-      (isCompact_ite_Icc _ _ _)).union (isCompact_ite_Icc _ _ _)).union (isCompact_ite_Icc _ _ _)
-
-theorem isCompact_eP (j : ℕ) (e : Option (ℕ × ℝ × ℝ)) (i : ℕ) : IsCompact (eP j e i) := by
-  rcases e with _ | ⟨m, lam, h⟩
-  · exact isCompact_ite_Icc _ _ _
-  · simp only [eP, wP]
     exact ((((isCompact_ite_Icc _ _ _).union (isCompact_ite_Icc _ _ _)).union
       (isCompact_ite_Icc _ _ _)).union (isCompact_ite_Icc _ _ _)).union (isCompact_ite_Icc _ _ _)
 

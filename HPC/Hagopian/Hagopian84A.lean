@@ -121,33 +121,6 @@ section Theorem1Of75
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
 
-/-- **§3, Hagopian 1975 Theorem 1, paragraph 4 supplied** ("for otherwise, `E` would contain an arc
-… and `M` would be a simple closed curve"): `hagopian75_theorem1_of_layer` without `hnd`, from
-`NoArcIndecHomPlane` and `exists_arc_of_degenerate_layers`.
-
-*Shape* (skeleton: `True`): the statement of `hagopian75_theorem1_of_layer` with the hypothesis
-`hnd` replaced by `hA : NoArcIndecHomPlane`.
-
-*Proof.* If some interior layer is nondegenerate, `hagopian75_theorem1_of_layer`. Otherwise every
-interior layer is degenerate and `E` contains an arc (`exists_arc_of_degenerate_layers`), so `M`
-contains an arc, against `hA` applied to `M` itself.
-
-*Non-vacuity:* `hA` is used inside a proof by contradiction (the case where every interior layer
-is degenerate is shown not to occur); it is not equivalent to the conclusion. -/
-theorem hagopian75_theorem1_of_noArc (hA : NoArcIndecHomPlane) (hX : IsHomogeneous M)
-    (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} (hE : ∃ a b, IsIrreducibleBetween E a b) {k : E → unitInterval}
-    (hk : IsAdmissibleMap E k) (hk0 : ∀ t, interior (k ⁻¹' {t}) = ∅) :
-    ∃ Y ⊆ E, Fold.Q78.IsContinuum Y ∧ Y.Nontrivial ∧ IsHomogeneous Y ∧
-      Fold.Q78.IsIndecomposable Y := by
-  by_cases hnd : ∃ s : unitInterval, 0 < s ∧ s < 1 ∧ (layer k s).Nontrivial
-  · exact hagopian75_theorem1_of_layer hX hi hE hk hk0 hnd
-  · have hdeg : ∀ s : unitInterval, 0 < s → s < 1 → (layer k s).Subsingleton := fun s h0 h1 =>
-      Set.not_nontrivial_iff.1 fun h => hnd ⟨s, h0, h1, h⟩
-    obtain ⟨a, b, hab⟩ := hE
-    obtain ⟨A, -, hA'⟩ := exists_arc_of_degenerate_layers hab.1.1 hk hdeg
-    exact absurd hA' (hA M hX hi A)
-
 end Theorem1Of75
 
 /-! ## §4. The definitions of §3 of the paper and Lemma 6 -/

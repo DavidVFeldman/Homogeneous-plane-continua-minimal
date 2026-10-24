@@ -144,40 +144,4 @@ theorem exists_simpleChain_sublist {α : Type*} (f : α → Set S) {A B : S} (hA
         · rw [hget2 k (by omega), hget2 (k + 1) (by omega)]
           convert hch (j + (k - (i + 1))) (by omega) using 3; congr 1; omega
 
-/-- **Theorem 10.** If `M` is connected, `A ≠ B` are in `M`, and `G` is a set of regions covering
-`M`, there is a simple chain from `A` to `B` with every link in `G`. *Axioms used: none.*
-Moore's proof, run with weak chains: the points joined to `A` by a weak `G`-chain form a set `S_A`
-which, if `B ∉ S_A`, is separated from the rest of `M`; then `exists_simpleChain_sublist`. -/
-theorem fa_theorem10 {M : Set S} (hM : σ.IsConn M) {A B : S} (hA : A ∈ M) (hB : B ∈ M)
-    (hAB : A ≠ B) {G : Set (Set S)} (hG : σ.Covers G M) :
-    ∃ R : List (Set S), σ.IsSimpleChain A B R ∧ ∀ X ∈ R, X ∈ G := by
-  obtain ⟨hGreg, hMG⟩ := hG
-  set SA : Set S := {P ∈ M | ∃ l : List (Set S), (∀ X ∈ l, X ∈ G) ∧ IsWeakChain A P l}
-  have hAS : A ∈ SA := by
-    obtain ⟨R, hRG, hAR⟩ := hMG hA
-    exact ⟨hA, [R], by simpa using hRG, by simp, by simpa using hAR, by simpa using hAR,
-      fun i hi => by simp at hi⟩
-  have hBS : B ∈ SA := by
-    by_contra hBS
-    rcases hM SA (M \ SA) (union_diff_cancel fun x hx => hx.1) disjoint_sdiff_right ⟨A, hAS⟩
-        ⟨B, hB, hBS⟩ with ⟨X, hX, hlim⟩ | ⟨X, hX, hlim⟩
-    · obtain ⟨R, hRG, hXR⟩ := hMG hX.1
-      obtain ⟨Y, ⟨hYM, hYS⟩, hYR, -⟩ := hlim R (hGreg hRG) hXR
-      obtain ⟨l, hlG, hl⟩ := hX.2
-      refine hYS ⟨hYM, l ++ [R], fun Z hZ => ?_, hl.append_single hXR hYR⟩
-      rcases List.mem_append.mp hZ with hZ | hZ
-      · exact hlG Z hZ
-      · rw [List.mem_singleton.mp hZ]; exact hRG
-    · obtain ⟨R, hRG, hXR⟩ := hMG hX.1
-      obtain ⟨Y, hYS, hYR, -⟩ := hlim R (hGreg hRG) hXR
-      obtain ⟨l, hlG, hl⟩ := hYS.2
-      refine hX.2 ⟨hX.1, l ++ [R], fun Z hZ => ?_, hl.append_single hYR hXR⟩
-      rcases List.mem_append.mp hZ with hZ | hZ
-      · exact hlG Z hZ
-      · rw [List.mem_singleton.mp hZ]; exact hRG
-  obtain ⟨-, l, hlG, hl⟩ := hBS
-  obtain ⟨l', hl'l, hl'⟩ := exists_simpleChain_sublist (σ := σ) id hAB
-    (fun a ha => hGreg (hlG a ha)) (by simpa using hl)
-  exact ⟨l', by simpa using hl', fun X hX => hlG X (hl'l.subset (by simpa using hX))⟩
-
 end HPC.Moore

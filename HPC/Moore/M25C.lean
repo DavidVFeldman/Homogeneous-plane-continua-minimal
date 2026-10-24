@@ -26,13 +26,6 @@ open Set Topology Metric HPC.Plane Filter
 
 variable {r : Setoid Pt}
 
-/-- Homeomorphisms preserve accumulation points. -/
-theorem accPt_iff_homeomorph {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] (g : X ≃ₜ Y)
-    (P : X) (M : Set X) : AccPt P (𝓟 M) ↔ AccPt (g P) (𝓟 (g '' M)) := by
-  rw [accPt_iff_frequently, accPt_iff_frequently, ← g.map_nhds_eq, Filter.frequently_map]
-  refine Filter.frequently_congr (Filter.Eventually.of_forall fun x => ?_)
-  simp only [ne_eq, g.injective.eq_iff, g.injective.mem_set_image]
-
 section M25C
 
 variable (hG : MooreDecomp r)
@@ -54,17 +47,6 @@ theorem m25_theorem22 : Nonempty (Quotient r ≃ₜ ℝ × ℝ) := by
   obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩ := m25_theorem21 hG
   have := m19_plane h1 h2 h3 h4 h5 h6 h7 h8
   rwa [spaceRestricted_topology hG] at this
-
-/-- **Theorem 22**, Moore's form: a one-to-one correspondence between the elements of `G` and the
-points of the plane such that a point `P` is a limit point of a point set `M` iff the corresponding
-element is a limit element (in Moore's sense) of the set of elements corresponding to `M`. -/
-theorem m25_theorem22_moore :
-    ∃ e : Quotient r ≃ ℝ × ℝ, ∀ (P : ℝ × ℝ) (M : Set (ℝ × ℝ)),
-      AccPt P (Filter.principal M) ↔ IsLimitElt (e.symm P) (e.symm '' M) := by
-  obtain ⟨h⟩ := m25_theorem22 hG
-  refine ⟨h.toEquiv, fun P M => ?_⟩
-  rw [isLimitElt_iff hG]
-  exact accPt_iff_homeomorph h.symm P M
 
 end M25C
 

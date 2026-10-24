@@ -1,7 +1,8 @@
 import HPC.PseudoArc.Statements79
 import HPC.PseudoArc.Uniqueness
 import HPC.PseudoArc.PatGeom
-import HPC.PseudoArc.T5Main
+import HPC.Chains.Basic
+import HPC.PseudoArc.PatMain
 
 /-!
 # Bing 1948, Theorems 5 and 6, and Theorem 12 unconditional
@@ -41,12 +42,6 @@ namespace HPC.Description
 
 variable {X : Type*} [MetricSpace X] {P Q : X}
 
-/-- **Bing 1948, Theorem 5.**
-
-Batch 80: proved as stated (`HPC.Description.theorem5_of`, file `T5Main.lean`). -/
-theorem theorem5 [CompactSpace X] (Δ : Description X P Q) : Theorem5Statement Δ :=
-  Δ.theorem5_of
-
 -- Commented-out statement `theorem6Pos_shift` removed in batch 103; see `LEDGER.md`.
 
 /-- **Bing 1948, Theorem 6**, with the deep level Bing's proof produces, for every tail of the
@@ -57,14 +52,6 @@ without it (`not_theorem6Pos_shift_unconditional`). -/
 theorem theorem6Pos_shift [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ Q) (i : ℕ) :
     Theorem6PosStatement (Δ.shift i) :=
   (Δ.shift i).theorem6Pos_of_ne hPQ
-
-/-- **Bing 1948, Theorem 6** as stated in `Statements79.lean` (some level `j`, possibly `0`),
-for descriptions with `P ≠ Q`. -/
-theorem theorem6 [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ Q) :
-    Theorem6Statement Δ := by
-  intro N x hx
-  obtain ⟨j, -, E, hE⟩ := Δ.theorem6Pos_of_ne hPQ N x hx
-  exact ⟨j, E, hE⟩
 
 -- Commented-out statement `patternFollowing` (without `P ≠ Q`) removed in batch 103; see `LEDGER.md`.
 
@@ -77,69 +64,6 @@ theorem patternFollowing [CompactSpace X] (Δ : Description X P Q) (hPQ : P ≠ 
   patternFollowing_of_theorem6Pos Δ (theorem6Pos_shift Δ hPQ)
 
 /-! ## The counterexample to the statements without `P ≠ Q` -/
-
-/-- The chain with one link, the whole one-point space. -/
-def unitChain : Chain PUnit 1 where
-  link _ := Set.univ
-  isOpen _ := isOpen_univ
-  adjacent i j := by
-    have hi : i = 0 := Subsingleton.elim _ _
-    have hj : j = 0 := Subsingleton.elim _ _
-    subst hi hj
-    simp
-
-/-- A description of the one-point space with `P = Q`: one link at every level. -/
-noncomputable def unitDescription : Description PUnit PUnit.unit PUnit.unit where
-  n _ := 1
-  D _ := unitChain
-  isFrom _ := ⟨one_pos, trivial, trivial, fun _ _ => Subsingleton.elim _ _,
-    fun _ _ => Subsingleton.elim _ _⟩
-  crooked _ := ⟨fun _ => ⟨0, subset_rfl⟩, fun h k hk => absurd hk (by omega)⟩
-  closure_subset _ _ := ⟨0, Set.subset_univ _⟩
-  ε i := 1 / ((i : ℝ) + 1)
-  ε_pos i := by positivity
-  ε_tendsto := tendsto_one_div_add_atTop_nhds_zero_nat
-  bdd _ _ := Metric.isBounded_iff.mpr ⟨0, fun a _ b _ => by simp⟩
-  diam_le i _ := by
-    rw [Metric.diam_subsingleton Set.subsingleton_of_subsingleton]
-    positivity
-
-/-- No chain with two links is a chain from a point to itself. -/
-theorem not_isFrom_self_two {Y : Type*} [MetricSpace Y] (E : Chain Y 2) (y : Y) :
-    ¬ E.IsFrom y y := by
-  rintro ⟨_, _, hQ, hPu, _⟩
-  have := hPu _ hQ
-  simp at this
-
-/-- In the one-point description, the pattern `0, 0` in the first level is not followed by any
-chain from `P` to `Q`. -/
-theorem unitDescription_not_theorem6Pos (i : ℕ) :
-    ¬ Theorem6PosStatement (unitDescription.shift i) := by
-  intro h
-  obtain ⟨-, -, E, hE, -⟩ := h 2 (fun _ => ⟨0, one_pos⟩)
-    ⟨two_pos, one_pos, rfl, rfl, fun _ _ _ => by simp⟩
-  exact not_isFrom_self_two E _ hE
-
-/-- In the one-point description, Theorem 6 as stated in `Statements79.lean` (any level `j`)
-fails as well: the hypothesis `P ≠ Q` of `theorem6` cannot be dropped. -/
-theorem unitDescription_not_theorem6 : ¬ Theorem6Statement unitDescription := by
-  intro h
-  obtain ⟨-, E, hE, -⟩ := h 2 (fun _ => ⟨0, one_pos⟩)
-    ⟨two_pos, one_pos, rfl, rfl, fun _ _ _ => by simp⟩
-  exact not_isFrom_self_two E _ hE
-
-/-- **The skeleton's `theorem6Pos_shift` is false** without the hypothesis `P ≠ Q`. -/
-theorem not_theorem6Pos_shift_unconditional :
-    ¬ ∀ (X : Type) [MetricSpace X] [CompactSpace X] (P Q : X) (Δ : Description X P Q) (i : ℕ),
-      Theorem6PosStatement (Δ.shift i) :=
-  fun h => unitDescription_not_theorem6Pos 0 (h PUnit PUnit.unit PUnit.unit unitDescription 0)
-
-/-- **The skeleton's `patternFollowing` is false** without the hypothesis `P ≠ Q`. -/
-theorem not_patternFollowing_unconditional :
-    ¬ ∀ (X : Type) [MetricSpace X] [CompactSpace X] (P Q : X) (Δ : Description X P Q),
-      Δ.PatternFollowing := fun h =>
-  unitDescription_not_theorem6Pos 0
-    (theorem6_shift_of_patternFollowing _ (h PUnit PUnit.unit PUnit.unit unitDescription) 0)
 
 end HPC.Description
 

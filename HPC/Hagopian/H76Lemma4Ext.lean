@@ -203,38 +203,6 @@ theorem ext_of_branch [CompactSpace M] (hX : IsHomogeneous M)
   have hyH := hXH hy
   exact ⟨⟨y, hyH⟩, hXD ⟨y, hyH⟩ hy, rfl⟩
 
-/-- **Lemma 4, from the branching continuum.** If every extension `F` of `E` away from `X` (with its
-map `d`) admits a continuum `C` with `∅ ≠ C ∩ F ⊆ d⁻¹(1)` and `C ⊄ F`, then `𝓕` is a chain without a
-maximal element. -/
-theorem lemma4_of_branch [CompactSpace M] (hX : IsHomogeneous M)
-    (hHU : IsHereditarilyUnicoherent (univ : Set M)) (hAT : IsAtriodic (univ : Set M))
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hbranch : ∀ (F : Set M) (d : F → unitInterval), E ⊆ F → IsMinimalAdmissible F d →
-      layer d 0 = layer k 0 → ∃ C : Set M, Fold.Q78.IsContinuum C ∧ (C ∩ F).Nonempty ∧
-        C ∩ F ⊆ layer d 1 ∧ ¬ C ⊆ F) :
-    IsChain (· ⊆ ·) {F | IsExtensionAway E (layer k 0) F} ∧
-      ∀ F ∈ {F | IsExtensionAway E (layer k 0) F},
-        ∃ H ∈ {F | IsExtensionAway E (layer k 0) F}, F ⊂ H := by
-  refine ⟨fun _ hF _ hH _ => ext_chain hHU hAT hE hF hH, ?_⟩
-  rintro F ⟨hEF, d, hd, hdX⟩
-  obtain ⟨C, hC, hCF, hCT, hCnF⟩ := hbranch F d hEF hd hdX
-  obtain ⟨H, hFH, D, hD, hDX⟩ := ext_of_branch hX hHU hAT hd hC hCF hCT hCnF
-  exact ⟨H, ⟨hEF.trans hFH.1, D, hD, hDX.trans hdX⟩, hFH⟩
-
-/-- **Lemma 4, the countable form, from the branching continuum** (via `lemma4_of_branch` and
-`exists_strictMono_seq_of_chain`). -/
-theorem lemma4_seq_of_branch [CompactSpace M] (hX : IsHomogeneous M)
-    (hHU : IsHereditarilyUnicoherent (univ : Set M)) (hAT : IsAtriodic (univ : Set M))
-    {E : Set M} {k : E → unitInterval} (hE : IsMinimalAdmissible E k)
-    (hbranch : ∀ (F : Set M) (d : F → unitInterval), E ⊆ F → IsMinimalAdmissible F d →
-      layer d 0 = layer k 0 → ∃ C : Set M, Fold.Q78.IsContinuum C ∧ (C ∩ F).Nonempty ∧
-        C ∩ F ⊆ layer d 1 ∧ ¬ C ⊆ F) :
-    ∃ Fs : ℕ → Set M, StrictMono Fs ∧ (∀ i, IsExtensionAway E (layer k 0) (Fs i)) ∧
-      extUnion E (layer k 0) = ⋃ i, Fs i :=
-  have h4 := lemma4_of_branch hX hHU hAT hE hbranch
-  exists_strictMono_seq_of_chain h4.1
-    (fun _ ⟨_, _, ⟨⟨_, _, hab⟩, _, _⟩, _⟩ => hab.1.1.isClosed) ⟨E, subset_rfl, k, hE, rfl⟩ h4.2
-
 end Lemma4Ext
 
 end HPC.Hagopian

@@ -52,7 +52,6 @@ variable {ι : Type*} {K : Set X} (F : Family ι K)
 def line (i : ι) : Set X := F.L i ∩ F.R i
 
 theorem L_sub (i : ι) : F.L i ⊆ K := fun _ h => F.union i ▸ Or.inl h
-theorem R_sub (i : ι) : F.R i ⊆ K := fun _ h => F.union i ▸ Or.inr h
 
 theorem mem_L_or_R {z : X} (hz : z ∈ K) (i : ι) : z ∈ F.L i ∨ z ∈ F.R i := by
   rw [← F.union i] at hz; exact hz

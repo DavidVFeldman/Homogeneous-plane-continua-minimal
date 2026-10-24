@@ -338,21 +338,6 @@ section links
 variable (hx : UnitSteps x) (hs : Slow x N) (hN : 12 ≤ N)
 include hx hs hN
 
-omit hx hs hN in
-theorem int_le_of_lt {a b : ℤ} {c : ℝ} (hc : c ≤ 2) (h : 2 * (a : ℝ) < 2 * b + c) : a ≤ b := by
-  by_contra hne
-  have : b + 1 ≤ a := by omega
-  have : (b : ℝ) + 1 ≤ a := by exact_mod_cast this
-  linarith
-
-omit hx hs hN in
-theorem int_ge_of_lt {a b : ℤ} {c : ℝ} (hc : c ≤ 2) (h : 2 * (b : ℝ) + 1 - c < 2 * a + 3) :
-    b - 1 ≤ a := by
-  by_contra hne
-  have : a + 2 ≤ b := by omega
-  have : (a : ℝ) + 2 ≤ b := by exact_mod_cast this
-  linarith
-
 /-- The six shapes of a link. -/
 theorem link_cases {t : ℕ} (ht : t < n) :
     (xe x (t - 1) = xe x t ∧ xe x t = xe x (t + 1) ∧

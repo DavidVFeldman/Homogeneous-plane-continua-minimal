@@ -388,12 +388,6 @@ theorem e_A_sub {j i : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) (hi
   · simp [eA]
   · exact w_A_sub hi he.1 he.2.1 he.2.2.1 he.2.2.2
 
-theorem e_A_finite (j : ℕ) (e : Option (ℕ × ℝ × ℝ)) (i : ℕ) : (eA j e i).Finite := by
-  rcases e with _ | ⟨m, lam, h⟩
-  · simp [eA]
-  · simp only [eA, wA]
-    refine ((Finite.union ?_ ?_).union ?_) <;> split_ifs <;> simp
-
 theorem e_ends {j i : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) (hi : 1 ≤ i) :
     ((0 : ℝ) ∈ eQA j e i → j < i ∧ (i - j) % 2 = 0) ∧
     ((0 : ℝ) ∈ eQB j e i → j < i ∧ (i - j) % 2 = 1) ∧
@@ -429,22 +423,6 @@ theorem e_A_disj {j i i' : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e)
   rcases e with _ | ⟨m, lam, h⟩
   · simp [eA]
   · exact w_A_disj he.1 he.2.2.1 hii
-
-theorem e_A_one {j : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) : eA j e 1 = ∅ := by
-  rcases e with _ | ⟨m, lam, h⟩
-  · rfl
-  · have := he.1
-    simp only [eA, wA]
-    simp (disch := omega) only [if_neg, union_empty]
-
-theorem e_A_top {j i : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) (hi : eJ2 j e < i) :
-    eA j e i = ∅ := by
-  rcases e with _ | ⟨m, lam, h⟩
-  · rfl
-  · have := he.2.1
-    simp only [eJ2] at hi
-    simp only [eA, wA]
-    simp (disch := omega) only [if_neg, union_empty]
 
 theorem e_P_sub {j i : ℕ} {e : Option (ℕ × ℝ × ℝ)} (he : EvOK j e) : eP j e i ⊆ Icc 0 1 := by
   rcases e with _ | ⟨m, lam, h⟩

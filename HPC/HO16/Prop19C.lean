@@ -74,7 +74,6 @@ theorem α_subG {i : ℕ} (hi : i ∈ Icc 1 (k + 1)) : α i ⊆ G ×ˢ Icc (0 : 
 theorem γ_subG : γ ⊆ G ×ˢ Icc (0 : ℝ) 1 := H.γ_sub_Ti₀.trans H.Ti₀_straight.1
 
 theorem i₀1_mem : i₀ + 1 ∈ Icc 1 (k + 1) := ⟨by omega, by have := H.i₀_le; omega⟩
-theorem i₀_mem : i₀ ∈ Icc 1 (k + 1) := ⟨H.i₀_pos, by have := H.i₀_le; omega⟩
 
 theorem img_T' {i : ℕ} (hi : i ∈ Icc 1 k) (hne : i ≠ i₀) :
     Prod.fst '' p19T F₁ F₂ F₃ T P₁ P₂ i₀ i = (F₁ ∪ F₂ ∪ F₃) ∩ Prod.fst ⁻¹' (Prod.fst '' T i) := by

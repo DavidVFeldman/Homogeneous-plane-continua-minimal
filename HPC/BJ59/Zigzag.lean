@@ -103,13 +103,6 @@ theorem starImage_succ_subset {n m : ℕ → ℕ} {D : ∀ i, Chain X (n i)} {E 
   obtain ⟨j, hj, hyj⟩ := mem_starImage.1 hy
   exact mem_starImage.2 ⟨K i (H (i + 1) j), hB i j hj, hB' i _ hyj⟩
 
-theorem starImage_antitone {n m : ℕ → ℕ} {D : ∀ i, Chain X (n i)} {E : ∀ i, Chain Y (m i)}
-    {H : ∀ i, Fin (n i) → Fin (m i)} {K : ∀ i, Fin (m (i + 1)) → Fin (n i)}
-    (hB : ∀ i j, (D (i + 1)).link j ⊆ (D i).link (K i (H (i + 1) j)))
-    (hB' : ∀ i j, (E (i + 1)).link j ⊆ (E i).link (H i (K i j))) (p : X) :
-    Antitone fun i => starImage (D i) (E i) (H i) p :=
-  antitone_nat_of_succ_le fun i => starImage_succ_subset hB hB' i p
-
 /-- A number bounded by `c * ε i` for all `i`, with `ε i → 0`, is at most `0`. -/
 theorem le_zero_of_le_mul_tendsto {ε : ℕ → ℝ} (hε : Tendsto ε atTop (𝓝 0)) {d c : ℝ}
     (h : ∀ i, d ≤ c * ε i) : d ≤ 0 := by

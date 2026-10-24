@@ -181,14 +181,6 @@ theorem th21Prop (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h5 : σ.Axi
   refine fa_theorem21 h1 h3 h4 h5 h7 hK hR ?_
   rwa [bdry_eq_frontier h1, cl_eq_closure h1]
 
-/-- **Theorem 22.** The set of all points is connected. *Axioms used: 1, 3, 4, 5.* This is batch
-137's `isConn_univ`: if `S = U ⊔ V` with `U`, `V` open and nonempty, Axiom 3 applied to a region
-inside `U` makes `U` compact (Axiom 4), likewise `V`, against Axiom 5. **Shape change:** the
-axioms are made explicit; Moore's hint (Theorem 19, Axioms 2 and 3, Theorem 20) is not used. -/
-theorem fa_theorem22 (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h5 : σ.Axiom5) :
-    σ.IsConn univ :=
-  isConn_univ h1 h3 h4 h5
-
 /-- Axiom 8 in the form `Ax8Prop`. -/
 theorem ax8Prop (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h51 : Space.Axiom5₁ (S := S))
     (h8 : σ.Axiom8) : @Ax8Prop S σ.topology σ.region := by
@@ -209,112 +201,5 @@ theorem existsUnique_interior (h1 : σ.Axiom1) (h3 : σ.Axiom3) (h4 : σ.Axiom4)
   · exact fa_theorem21 h1 h3 h4 h5 h7 hR' hR (hRJ ▸ hR'J ▸ fun x hx => Or.inr hx)
 
 /-! ### Theorem 23 -/
-
-/-- **Theorem 23.** No (nonempty) region is a subset of an arc. *Axioms used: 1, 2, 3, 4, 5₁, 8.*
-Moore's proof: a point `O` of `R` other than `A`, `B` (Theorem 4); a region `K` about `O` whose
-closure misses `A` and `B`; an arc `AXB` without `K` (Theorem 16). `A₁` is the last point of
-`AXB` on the interval `AO`, `B₁` the first point after `A₁` on `OB` (here: the first point of
-`BXA` on `AO`, then the first point from there on `OB`). The interval `A₁OB₁` and the arc of
-`AXB` from `A₁` to `B₁` form a closed curve `J`; `O` is on the boundary of its interior `R₁`
-(Axiom 8), and a region about `O` inside `R` missing `AA₁ + B₁B` lies in `J` and meets `R₁`.
-**Shape change:** `R.Nonempty` is added (the empty region refutes the printed form:
-`not_fa_theorem23_printed`); the axioms are made explicit, with Axiom 5₁ for Axiom 5. -/
-theorem fa_theorem23 (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4)
-    (h51 : Space.Axiom5₁ (S := S)) (h8 : σ.Axiom8) {R : Set S} (hR : R ∈ σ.region)
-    (hne : R.Nonempty) {A B : S} {C : Set S} (hC : σ.IsArc A B C) : ¬ R ⊆ C := by
-  letI := σ.topology
-  haveI := t2Space h1
-  intro hRC
-  rw [isArc_iff_tarc h1 h3 h4 h51] at hC
-  obtain ⟨-, f, hf, rfl, rfl, rfl⟩ := hC
-  obtain ⟨O, hOR, hOAB⟩ := ((fa_theorem4 h1 h3 h51 hR hne).diff (toFinite {f 0, f 1})).nonempty
-  obtain ⟨o, rfl⟩ := hRC hOR
-  simp only [mem_insert_iff, mem_singleton_iff, not_or] at hOAB
-  have ho0 : 0 < o := lt_of_le_of_ne nonneg' fun e => hOAB.1 (by rw [← e])
-  have ho1 : o < 1 := lt_of_le_of_ne le_one' fun e => hOAB.2 (by rw [e])
-  -- a region `K` about `O` whose closure misses `A` and `B`
-  have hABc : IsClosed ({f 0, f 1} : Set S) := (toFinite _).isClosed
-  obtain ⟨K, hK, hOK, hKcl⟩ := exists_region_closure_subset h1 hABc.isOpen_compl
-    (by simp only [mem_compl_iff, mem_insert_iff, mem_singleton_iff, not_or]; exact hOAB)
-  have hA : f 0 ∈ (closure K)ᶜ := fun h => hKcl h (by simp)
-  have hB : f 1 ∈ (closure K)ᶜ := fun h => hKcl h (by simp)
-  have hE : IsPreconnected (closure K)ᶜ := by
-    have := (isConn_iff h1).mp (h3 K hK); rwa [ext_eq_compl_closure h1] at this
-  obtain ⟨Z, hZE, hZ⟩ := arcConn h1 h3 h4 h51 h2 _ isClosed_closure.isOpen_compl hE _ hA _ hB
-    (fun e => zero_ne_one' unitInterval (hf.injective e))
-  have hOZ : f o ∉ Z := fun h => hZE h (subset_closure hOK)
-  -- the last point of `AXB` on `AO`, then the first point after it on `OB`
-  have hc1 : IsClosed (f '' Icc 0 o) := (isCompact_Icc.image hf.continuous).isClosed
-  have hc2 : IsClosed (f '' Icc o 1) := (isCompact_Icc.image hf.continuous).isClosed
-  obtain ⟨P₁, hP₁, Z₁, hZ₁Z, hZ₁, hZ₁c⟩ := hZ.symm.first_point hc1
-    ⟨f 0, hZ.left_mem, mem_image_of_mem _ ⟨le_rfl, nonneg'⟩⟩
-    (fun ⟨u, hu, hu1⟩ => by
-      have := hf.injective hu1; subst this; exact absurd hu.2 (not_le.mpr ho1))
-  obtain ⟨a, ⟨-, hao⟩, rfl⟩ := hP₁
-  have hao' : a < o := lt_of_le_of_ne hao fun e => hOZ (e ▸ hZ₁Z hZ₁.right_mem)
-  obtain ⟨Q₁, hQ₁, Z₂, hZ₂Z₁, hZ₂, hZ₂c⟩ := hZ₁.symm.first_point hc2
-    ⟨f 1, hZ₁.left_mem, mem_image_of_mem _ ⟨le_one', le_rfl⟩⟩
-    (fun ⟨u, hu, hua⟩ => by
-      have := hf.injective hua; subst this; exact absurd hu.1 (not_le.mpr hao'))
-  obtain ⟨b, ⟨hob, -⟩, rfl⟩ := hQ₁
-  have hob' : o < b := lt_of_le_of_ne hob fun e => hOZ (e ▸ hZ₁Z (hZ₂Z₁ hZ₂.right_mem))
-  have hab : a < b := hao'.trans hob'
-  -- the closed curve `J`
-  have hZ₂f : Z₂ ∩ range f ⊆ {f a, f b} := by
-    rintro _ ⟨hx, u, rfl⟩
-    rcases le_total u o with hu | hu
-    · left
-      have : f u ∈ Z₁ ∩ f '' Icc 0 o := ⟨hZ₂Z₁ hx, mem_image_of_mem _ ⟨nonneg', hu⟩⟩
-      rwa [hZ₁c] at this
-    · right
-      have : f u ∈ Z₂ ∩ f '' Icc o 1 := ⟨hx, mem_image_of_mem _ ⟨hu, le_one'⟩⟩
-      rwa [hZ₂c] at this
-  have hJ : TSCC (f '' Icc a b ∪ Z₂) := by
-    refine ⟨f a, f b, _, _, TArc.image_Icc hf hab, hZ₂, ?_, rfl⟩
-    apply subset_antisymm
-    · rintro x ⟨hx1, hx2⟩
-      exact hZ₂f ⟨hx2, image_subset_range _ _ hx1⟩
-    · rintro x hx
-      rcases hx with rfl | rfl
-      · exact ⟨mem_image_of_mem _ ⟨le_rfl, hab.le⟩, hZ₂.left_mem⟩
-      · exact ⟨mem_image_of_mem _ ⟨hab.le, le_rfl⟩, hZ₂.right_mem⟩
-  obtain ⟨R₁, hR₁, hR₁J⟩ := ax8Prop h1 h3 h4 h51 h8 _ hJ
-  have hOJ : f o ∈ frontier R₁ := hR₁J ▸ Or.inl (mem_image_of_mem _ ⟨hao'.le, hob'.le⟩)
-  -- a region about `O` inside `R` missing `AA₁ + B₁B`
-  have hcl : IsClosed (f '' Icc 0 a ∪ f '' Icc b 1) :=
-    (isCompact_Icc.image hf.continuous).isClosed.union
-      (isCompact_Icc.image hf.continuous).isClosed
-  have hOU : f o ∈ R ∩ (f '' Icc 0 a ∪ f '' Icc b 1)ᶜ := by
-    refine ⟨hOR, ?_⟩
-    rintro (⟨u, hu, hu'⟩ | ⟨u, hu, hu'⟩) <;> have := hf.injective hu' <;> subst this
-    · exact absurd hu.2 (not_le.mpr hao')
-    · exact absurd hu.1 (not_le.mpr hob')
-  obtain ⟨y, ⟨hyR, hyc⟩, hyR₁⟩ := mem_closure_iff_nhds.mp hOJ.1 _
-    (((isOpen_region hR).inter hcl.isOpen_compl).mem_nhds hOU)
-  obtain ⟨u, rfl⟩ := hRC hyR
-  have hu : u ∈ Icc a b := by
-    simp only [mem_compl_iff, mem_union, mem_image, not_or, not_exists, not_and] at hyc
-    exact ⟨not_lt.mp fun h => hyc.1 u ⟨nonneg', h.le⟩ rfl,
-      not_lt.mp fun h => hyc.2 u ⟨h.le, le_one'⟩ rfl⟩
-  have : f u ∈ frontier R₁ := hR₁J ▸ Or.inl (mem_image_of_mem _ hu)
-  exact notMem_of_mem_frontier (isOpen_region hR₁) this hyR₁
-
-/-- **Theorem 23 as printed is not a consequence of Axioms 1–8** (unless they have no model): in
-the space with `∅` added to the regions (batch 137, `withEmpty`), which satisfies Axioms 1–8,
-the region `∅` is a subset of every arc, and arcs exist. -/
-theorem not_fa_theorem23_printed (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3)
-    (h4 : σ.Axiom4) (h5 : σ.Axiom5) (h6 : σ.Axiom6) (h7 : σ.Axiom7) (h8 : σ.Axiom8) :
-    σ.withEmpty.Axiom1 ∧ σ.withEmpty.Axiom2 ∧ σ.withEmpty.Axiom3 ∧ σ.withEmpty.Axiom4 ∧
-      σ.withEmpty.Axiom5 ∧ σ.withEmpty.Axiom6 ∧ σ.withEmpty.Axiom7 ∧ σ.withEmpty.Axiom8 ∧
-      ¬ ∀ R ∈ σ.withEmpty.region, ∀ A B : S, ∀ C : Set S, σ.withEmpty.IsArc A B C →
-        ¬ R ⊆ C := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, -⟩ := not_fa_theorem4_printed h1 h2 h3 h4 h5 h6 h7 h8
-  refine ⟨a1, a2, a3, a4, a5, a6, a7, a8, fun h => ?_⟩
-  have h51 := axiom5₁_of_axiom5 h5
-  obtain ⟨P, -⟩ := axiom5₁_of_axiom5 h5
-  obtain ⟨R, hR, hPR⟩ := Space.exists_region_mem h1 P
-  obtain ⟨Q, hQR, hQP⟩ := exists_ne_of_region h1 h3 h51 hR hPR
-  obtain ⟨C, -, hC⟩ := (fa_theorem16 h1 h2 h3 h4 h51 hR).1 P hPR Q hQR hQP.symm
-  exact h ∅ (mem_insert _ _) P Q C (Space.isArc_withEmpty.mpr hC) (empty_subset _)
 
 end HPC.Moore

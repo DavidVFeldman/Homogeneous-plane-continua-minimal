@@ -82,8 +82,6 @@ theorem rad_tendsto_zero (ε : ℕ → ℝ) (_hε : ∀ i, 0 < ε i) (hsum : Sum
 theorem subset_fat (S : Set X) {δ : ℝ} (hδ : 0 < δ) : S ⊆ fat S δ :=
   Metric.self_subset_thickening hδ S
 
-theorem isOpen_fat (S : Set X) (δ : ℝ) : IsOpen (fat S δ) := Metric.isOpen_thickening
-
 theorem isBounded_fat {S : Set X} (hS : Bornology.IsBounded S) (δ : ℝ) :
     Bornology.IsBounded (fat S δ) := hS.thickening
 
@@ -254,11 +252,6 @@ theorem step1₂ (C : MatchingCovers M₁ M₂ ε) (hε : ∀ i, 0 < ε i) (hsum
     {i : ℕ} {s : Fin (C.N (i + 1))} {r : Fin (C.N i)}
     (h : (C.x₁ (i + 1) s ∩ C.x₁ i r).Nonempty) : closure (C.y₂ (i + 1) s) ⊆ C.y₂ i r :=
   closure_fat_subset_fat ε hε hsum i (C.bdd₂ _ _) (C.diam₂ _ _) (C.match₁ i s r h)
-
-theorem step1₁ (C : MatchingCovers M₁ M₂ ε) (hε : ∀ i, 0 < ε i) (hsum : Summable ε)
-    {i : ℕ} {s : Fin (C.N (i + 1))} {r : Fin (C.N i)}
-    (h : (C.x₂ (i + 1) s ∩ C.x₂ i r).Nonempty) : closure (C.y₁ (i + 1) s) ⊆ C.y₁ i r :=
-  C.swap.step1₂ hε hsum h
 
 /-- **Step 2.** If an element of level `i` and one of a later level `j` meet in a point of `M₁`,
 the corresponding fattened elements on side 2 are nested. -/

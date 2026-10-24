@@ -127,10 +127,6 @@ theorem isClosed_M : IsClosed Δ.M := by
 
 theorem isCompact_M [CompactSpace X] : IsCompact Δ.M := Δ.isClosed_M.isCompact
 
-/-- Every deeper level is crooked (1948 sense) in every shallower one. Batch-1 T5. -/
-theorem crooked_of_lt {i j : ℕ} (hij : i < j) : (Δ.D j).IsCrookedIn' (Δ.D i) :=
-  Chain.isCrookedIn'_of_refines (Δ.refines_of_le hij) (Δ.crooked i)
-
 /-- The *closure*-refinement map from level `i+1` to level `i` — the index `s` with
 `closure (link t) ⊆ (D i).link s` supplied by `closure_subset` — sends the first link to the
 first and the last to the last, and moves by at most one between adjacent indices; hence it

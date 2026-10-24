@@ -59,10 +59,6 @@ theorem cycParity_polyEdges {n : ℕ} {v : Fin n → Pt} (hv : IsSimpleVertices 
   simp only [ceInd, parity, crossCount]
   rw [Finset.sum_boole]
 
-theorem graphSet_polyEdges {n : ℕ} (v : Fin n → Pt) : graphSet (polyEdges v) = polygonOf v := by
-  classical
-  simp [graphSet, polyEdges, polygonOf, segSet]
-
 /-! ### Simple cycles in a proper graph -/
 
 /-- A finite set of segments `C` is a **simple cycle** if its point set is the simple closed

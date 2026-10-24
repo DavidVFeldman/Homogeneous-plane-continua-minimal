@@ -199,42 +199,6 @@ section Corollaries
 
 variable {M : Set Pt} [CompactSpace M] [ConnectedSpace M]
 
-/-- **§6.3, Bing 1960 for plane continua**, unconditional: "A simple closed curve is the only
-homogeneous bounded plane continuum that contains an arc." -/
-theorem bing60_plane_uncond (hX : IsHomogeneous M) {α : Set M}
-    (hα : Nonempty (α ≃ₜ unitInterval)) : Nonempty (M ≃ₜ Circle) :=
-  bing60_plane hagopian76_theorem1 hX hα
-
-/-- **§6.3, Hagopian 1976, Theorem 2**, unconditional: every homogeneous plane continuum that does
-not separate the plane is hereditarily indecomposable. -/
-theorem hagopian76_theorem2_uncond (hX : IsHomogeneous M) (hns : ¬ SeparatesPlane M) :
-    IsHereditarilyIndecomposable (univ : Set M) :=
-  hagopian76_theorem2 hagopian76_theorem1 hX hns
-
-/-- **Hagopian 1975, Corollary**, unconditional: no nondegenerate subcontinuum of a homogeneous
-indecomposable plane continuum is hereditarily decomposable. -/
-theorem hagopian75_corollary_uncond (hX : IsHomogeneous M) (hi : ¬ IsDecomposableSpace M)
-    {H : Set M} (hH : Fold.Q78.IsContinuum H) (hnd : H.Nontrivial) :
-    ¬ IsHereditarilyDecomposable H :=
-  hagopian75_corollary hagopian76_theorem1 hX hi hH hnd
-
-/-- **Hagopian 1975, Theorem 2**, unconditional: the simple closed curve is the only homogeneous
-plane continuum that has a (nondegenerate) hereditarily decomposable subcontinuum. -/
-theorem hagopian75_theorem2_uncond (hX : IsHomogeneous M) {H : Set M}
-    (hH : Fold.Q78.IsContinuum H) (hnd : H.Nontrivial) (hHd : IsHereditarilyDecomposable H) :
-    Nonempty (M ≃ₜ Circle) :=
-  hagopian75_theorem2 hagopian76_theorem1 hX hH hnd hHd
-
-/-- **Hagopian 1975, Theorem 1, paragraph 4 supplied** (`hagopian75_theorem1_of_noArc`),
-unconditional. -/
-theorem hagopian75_theorem1_of_noArc_uncond (hX : IsHomogeneous M)
-    (hi : ¬ IsDecomposableSpace M)
-    {E : Set M} (hE : ∃ a b, IsIrreducibleBetween E a b) {k : E → unitInterval}
-    (hk : IsAdmissibleMap E k) (hk0 : ∀ t, interior (k ⁻¹' {t}) = ∅) :
-    ∃ Y ⊆ E, Fold.Q78.IsContinuum Y ∧ Y.Nontrivial ∧ IsHomogeneous Y ∧
-      Fold.Q78.IsIndecomposable Y :=
-  hagopian75_theorem1_of_noArc jones75_noArc hX hi hE hk hk0
-
 end Corollaries
 
 end HPC.Hagopian

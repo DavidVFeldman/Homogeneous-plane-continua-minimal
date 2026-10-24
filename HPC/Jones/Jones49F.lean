@@ -41,14 +41,6 @@ theorem jones49_setting [Nontrivial M] (hX : IsHomogeneous M) (ha : IsAposyndeti
   rw [← image_singleton, ← Set.image_compl_eq h.bijective]
   exact hu'.image _ h.continuous.continuousOn
 
-/-- **"Hence each element of `G` is a simple domain [6, 7]"** (p. 113), from Whyburn 1939
-Corollary 1 (`whyburn39_corollary1`, with `jones49_setting`). -/
-theorem jones49_simple_domains [Nontrivial M] (hX : IsHomogeneous M) (ha : IsAposyndetic M)
-    {x : Pt} (hx : x ∉ M) : Nonempty (frontier (connectedComponentIn Mᶜ x) ≃ₜ Circle) := by
-  obtain ⟨hcyc, hS⟩ := jones49_setting hX ha
-  exact whyburn39_corollary1 (isCompact_iff_compactSpace.mpr ‹_›)
-    (isConnected_iff_connectedSpace.mpr ‹_›) hS hcyc hx
-
 /-- **Case 1** (p. 113). "If `M − J` is connected, then each point of `M` belongs to some such
 simple closed curve lying in `M`. Consequently each point of `M` belongs to the boundary of an
 element of `G`. But `G` is countable. Hence `M = ΣJᵢ` …, such that for each `i`, `Jᵢ` is the boundary
@@ -127,40 +119,6 @@ theorem jones49_theorem1 : Jones49Thm1 := by
     obtain ⟨q, hq⟩ := jones49_some_order_two hX hA
     exact (hord q hq).elim
 
-/-- **Jones 1949, Theorem 2** (p. 114). "If a homogeneous, compact, plane continuum `M` contains no
-weak cut point, it is a simple closed curve." Proof: "If `M` contains no weak cut point, it is
-aposyndetic at some point [9] (Jones 1948, Theorem 18). Being aposyndetic at one point, `M` must be
-aposyndetic at each of its points. Hence Theorem 2 follows from Theorem 1."
-
-*Proof.* `theorem18` gives a dense, hence nonempty, set of points at which `M` is aposyndetic;
-homogeneity (`aposAt_homeomorph_iff`) spreads aposyndesis to every point, and `jones49_theorem1`
-applies. The degenerate case is `not_jones49_theorem2_point`. -/
-theorem jones49_theorem2 (K : Set Pt) (hK : IsCompact K) (hKc : IsConnected K) (hn : K.Nontrivial)
-    (hX : IsHomogeneous K) (hw : ∀ p : K, ¬ IsWeakCutPoint p) : Nonempty (K ≃ₜ Circle) := by
-  haveI : CompactSpace K := isCompact_iff_compactSpace.mp hK
-  haveI : ConnectedSpace K := isConnected_iff_connectedSpace.mp hKc
-  obtain ⟨-, hd⟩ := theorem18 (X := K) hw
-  obtain ⟨x₀, hx₀, -⟩ := hd.nonempty
-  have hap : IsAposyndetic K := by
-    intro x y hxy
-    obtain ⟨h, rfl⟩ := hX x₀ x
-    have hne : h.symm y ≠ x₀ := fun e => hxy (by rw [← e, Homeomorph.apply_symm_apply])
-    rw [← h.apply_symm_apply y]
-    exact (aposAt_homeomorph_iff h).mpr (hx₀ _ hne)
-  exact jones49_theorem1 K hK hKc hn hX hap
-
-/-- **The degenerate case of Theorem 2.** A one-point continuum is homogeneous and has no weak cut
-point (`CutsPts` needs two distinct points other than the cut point), but is not a simple closed
-curve: the printed Theorem 2, like Theorem 1 (`not_jones49_theorem1_point`), needs `M`
-nondegenerate. -/
-theorem not_jones49_theorem2_point :
-    ¬ ∀ K : Set Pt, IsCompact K → IsConnected K → IsHomogeneous K →
-      (∀ p : K, ¬ IsWeakCutPoint p) → Nonempty (K ≃ₜ Circle) := by
-  intro h
-  obtain ⟨e⟩ := h {0} isCompact_singleton isConnected_singleton isHomogeneous_of_subsingleton
-    fun _ ⟨x, y, hc⟩ => hc.2.2.1 (Subsingleton.elim x y)
-  exact not_homeomorph_circle_of_subsingleton e
-
 /-! ## Jones 1955 Theorem 2 and the closing remarks, unconditional -/
 
 section Jones55
@@ -174,21 +132,9 @@ theorem jones55_theorem2' (hX : IsHomogeneous M) (hd : IsDecomposableSpace M) :
         ¬ SeparatesPlane (Subtype.val '' Lset x) :=
   jones55_theorem2 jones49_theorem1 hX hd
 
-theorem jones55_two_domains' (hX : IsHomogeneous M) (hd : IsDecomposableSpace M) :
-    ∃ U V : Set Pt, IsOpen U ∧ IsConnected U ∧ IsOpen V ∧ IsConnected V ∧ Disjoint U V ∧
-      U ∪ V = Mᶜ :=
-  jones55_two_domains jones49_theorem1 hX hd
-
 theorem jones55_elements_indecomposable' (hX : IsHomogeneous M) (hd : IsDecomposableSpace M)
     (x : M) : ¬ IsDecomposableSpace (Lset x) :=
   jones55_elements_indecomposable jones49_theorem1 hX hd x
-
-theorem jones55_three_domains' (hX : IsHomogeneous M) {a b c : Pt} (ha : a ∉ M) (hb : b ∉ M)
-    (hc : c ∉ M) (hab : connectedComponentIn Mᶜ a ≠ connectedComponentIn Mᶜ b)
-    (hac : connectedComponentIn Mᶜ a ≠ connectedComponentIn Mᶜ c)
-    (hbc : connectedComponentIn Mᶜ b ≠ connectedComponentIn Mᶜ c) :
-    ¬ IsDecomposableSpace M :=
-  jones55_three_domains jones49_theorem1 hX ha hb hc hab hac hbc
 
 end Jones55
 

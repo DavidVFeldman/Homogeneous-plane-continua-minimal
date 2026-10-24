@@ -48,41 +48,9 @@ theorem isDecomposableSpace_iff_not_isIndecomposable :
     push_neg at hne
     exact hd ⟨A, B, hA, hB, hne.1, hne.2, hAB⟩
 
-omit [CompactSpace X] [ConnectedSpace X] in
-/-- Jones's composant is the repository's `HPC.composant` of the whole space. -/
-theorem composant_eq_composant_univ (x : X) : composant x = HPC.composant univ x := by
-  ext y
-  constructor
-  · rintro ⟨K, hK, hKu, hxK, hyK⟩
-    exact mem_sUnion.mpr ⟨K, ⟨hK, subset_univ _, hKu, hxK⟩, hyK⟩
-  · intro hy
-    obtain ⟨K, ⟨hK, -, hKu, hxK⟩, hyK⟩ := mem_sUnion.mp hy
-    exact ⟨K, hK, hKu, hxK, hyK⟩
-
 end Equivalences
 
 /-! ### Theorems 1–5 -/
-
-omit [CompactSpace X] in
-/-- **Theorem 1.** Suppose `xᵢ → x` and `yᵢ → y`, and `X` is not aposyndetic at `xᵢ` with respect
-to `yᵢ`. Then `X` is not aposyndetic at `x` with respect to `y`.
-
-*Shape change:* the hypotheses `x ≠ y` and `yᵢ ≠ xᵢ` of the skeleton are not needed and are
-dropped (`X` is never aposyndetic at a point with respect to itself). Compactness is not used. -/
-theorem theorem1 {x y : X} (u v : ℕ → X) (hu : Tendsto u atTop (𝓝 x))
-    (hv : Tendsto v atTop (𝓝 y)) (hna : ∀ i, ¬ AposAt (u i) (v i)) : ¬ AposAt x y := by
-  have h := isClosed_setOf_not_aposAt.mem_of_tendsto (hu.prodMk_nhds hv)
-    (Eventually.of_forall hna)
-  exact h
-
-omit [CompactSpace X] in
-/-- The set of Theorem 2 is the set of all `y` with `X` not aposyndetic at `x` w.r.t. `y`. -/
-theorem setOf_theorem2_eq (x : X) :
-    {y | y ≠ x ∧ ¬ AposAt x y} ∪ {x} = {y | ¬ AposAt x y} := by
-  ext y
-  by_cases hy : y = x
-  · subst hy; simp [not_aposAt_self]
-  · simp [hy]
 
 omit [CompactSpace X] in
 /-- The set of Theorem 3 is the set of all `x` with `X` not aposyndetic at `x` w.r.t. `y`. -/
@@ -92,12 +60,6 @@ theorem setOf_theorem3_eq (y : X) :
   by_cases hx : x = y
   · subst hx; simp [not_aposAt_self]
   · simp [hx]
-
-omit [CompactSpace X] in
-/-- **Theorem 2.** The set `K` of points `y ≠ x` such that `X` is not aposyndetic at `x` with
-respect to `y`, together with `x`, is closed. (No proof printed.) -/
-theorem theorem2 (x : X) : IsClosed ({y | y ≠ x ∧ ¬ AposAt x y} ∪ {x}) := by
-  rw [setOf_theorem2_eq]; exact isClosed_not_aposAt_right x
 
 /-- **Theorem 3.** The set `L` of points `x ≠ y` such that `X` is not aposyndetic at `x` with
 respect to `y`, together with `y`, is a continuum. (No proof printed. This is Jones 1955's `L_y`.)
@@ -141,26 +103,6 @@ theorem theorem3 [ConnectedSpace X] (y : X) :
   · exact Or.inl (key u v hu hv hLuv hLuv' hyu)
   · refine Or.inr (key v u hv hu (by rwa [union_comm]) ?_ hyv)
     rwa [inter_comm v u]
-
-/-- **Theorem 4.** The set of points at which `X` is non-aposyndetic is an `F_σ`. -/
-theorem theorem4 : ∃ F : ℕ → Set X, (∀ i, IsClosed (F i)) ∧
-    {x : X | ¬ AposyndeticAt x} = ⋃ i, F i := by
-  refine ⟨fun i => Prod.fst '' ({p : X × X | ¬ AposAt p.1 p.2} ∩
-    {p : X × X | 1 / ((i : ℝ) + 1) ≤ dist p.1 p.2}), fun i => isClosed_fst_image
-      (isClosed_setOf_not_aposAt.inter (isClosed_le continuous_const continuous_dist)), ?_⟩
-  ext x
-  simp only [AposyndeticAt, mem_setOf_eq, not_forall, mem_iUnion, mem_image, mem_inter_iff,
-    Prod.exists, exists_and_right, exists_eq_right]
-  constructor
-  · rintro ⟨y, hyx, hna⟩
-    obtain ⟨i, hi⟩ := exists_nat_one_div_lt (dist_pos.mpr (Ne.symm hyx))
-    exact ⟨i, y, hna, hi.le⟩
-  · rintro ⟨i, y, hna, hi⟩
-    refine ⟨y, fun h => ?_, hna⟩
-    subst h
-    rw [dist_self] at hi
-    have : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
-    linarith
 
 /-! ### Theorem 0 -/
 
@@ -212,102 +154,13 @@ theorem theorem0 [ConnectedSpace X] (p : X) : SemiLocConnAt p ↔ ∀ x, x ≠ p
       exact (htH i hi).1.2.isPreconnected.subset_connectedComponentIn (hc i hi) (hHV i hi)
         ((htH i hi).2.2.1 hzi)
 
-/-- **Theorem 5.** The set of points at which `X` is not semi-locally-connected is an `F_σ`.
-(\"Theorem 0 and an argument similar to that used for Theorem 4.\") -/
-theorem theorem5 [ConnectedSpace X] : ∃ F : ℕ → Set X, (∀ i, IsClosed (F i)) ∧
-    {x : X | ¬ SemiLocConnAt x} = ⋃ i, F i := by
-  refine ⟨fun i => Prod.snd '' ({p : X × X | ¬ AposAt p.1 p.2} ∩
-    {p : X × X | 1 / ((i : ℝ) + 1) ≤ dist p.1 p.2}), fun i => isClosed_snd_image
-      (isClosed_setOf_not_aposAt.inter (isClosed_le continuous_const continuous_dist)), ?_⟩
-  ext x
-  simp only [theorem0, mem_setOf_eq, not_forall, mem_iUnion, mem_image, mem_inter_iff,
-    Prod.exists, exists_eq_right]
-  constructor
-  · rintro ⟨z, hzx, hna⟩
-    obtain ⟨i, hi⟩ := exists_nat_one_div_lt (dist_pos.mpr hzx)
-    exact ⟨i, z, hna, hi.le⟩
-  · rintro ⟨i, z, hna, hi⟩
-    refine ⟨z, fun h => ?_, hna⟩
-    subst h
-    rw [dist_self] at hi
-    have : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
-    linarith
-
 /-! ### Theorem 7 -/
 
 section Theorem7
 
 variable {Y Z : Type*} [MetricSpace Y] [ConnectedSpace Y] [MetricSpace Z] [ConnectedSpace Z]
 
-/-- The continuum of Jones's proof of Theorem 7: `(A × Z) ∪ (Y × {c})`, `A` closed. -/
-theorem isContinuum_prod_cross [CompactSpace Y] [CompactSpace Z] {A : Set Y} (hA : IsClosed A)
-    (hAne : A.Nonempty) (c : Z) :
-    Fold.Q78.IsContinuum (A ×ˢ (univ : Set Z) ∪ (univ : Set Y) ×ˢ {c}) := by
-  obtain ⟨a, ha⟩ := hAne
-  refine ⟨((hA.prod isClosed_univ).union (isClosed_univ.prod isClosed_singleton)).isCompact,
-    ⟨(a, c), Or.inr ⟨mem_univ _, rfl⟩⟩, ?_⟩
-  have hrow : IsPreconnected ((univ : Set Y) ×ˢ ({c} : Set Z)) :=
-    isPreconnected_univ.prod isPreconnected_singleton
-  refine isPreconnected_of_forall (a, c) ?_
-  rintro ⟨y₁, y₂⟩ (⟨hy₁, -⟩ | ⟨-, hy₂⟩)
-  · refine ⟨({y₁} : Set Y) ×ˢ (univ : Set Z) ∪ (univ : Set Y) ×ˢ {c}, ?_, Or.inr ⟨mem_univ _,
-      rfl⟩, Or.inl ⟨rfl, mem_univ _⟩, ?_⟩
-    · exact union_subset_union_left _ (Set.prod_mono (singleton_subset_iff.mpr hy₁) Subset.rfl)
-    · exact (isPreconnected_singleton.prod isPreconnected_univ).union (y₁, c)
-        ⟨rfl, mem_univ _⟩ ⟨mem_univ _, rfl⟩ hrow
-  · exact ⟨(univ : Set Y) ×ˢ {c}, subset_union_right, ⟨mem_univ _, rfl⟩, ⟨mem_univ _, hy₂⟩,
-      hrow⟩
-
-/-- Theorem 7, the case of distinct first coordinates. -/
-theorem aposAt_prod_of_fst_ne [CompactSpace Y] [CompactSpace Z] [Nontrivial Z] {a b : Y × Z}
-    (h : a.1 ≠ b.1) : AposAt a b := by
-  set d := dist a.1 b.1 with hd
-  have hdpos : 0 < d := dist_pos.mpr h
-  obtain ⟨c, hc⟩ := exists_ne b.2
-  refine ⟨closedBall a.1 (d / 2) ×ˢ (univ : Set Z) ∪ (univ : Set Y) ×ˢ {c},
-    ball a.1 (d / 2) ×ˢ (univ : Set Z),
-    isContinuum_prod_cross isClosed_closedBall ⟨a.1, mem_closedBall_self (half_pos hdpos).le⟩ c,
-    isOpen_ball.prod isOpen_univ, ⟨mem_ball_self (half_pos hdpos), mem_univ _⟩,
-    (Set.prod_mono ball_subset_closedBall Subset.rfl).trans subset_union_left, ?_⟩
-  rintro (⟨hb, -⟩ | ⟨-, hb⟩)
-  · rw [mem_closedBall, dist_comm] at hb; linarith
-  · exact hc hb.symm
-
-/-- Theorem 7, the case of distinct second coordinates. -/
-theorem aposAt_prod_of_snd_ne [CompactSpace Y] [CompactSpace Z] [Nontrivial Y] {a b : Y × Z}
-    (h : a.2 ≠ b.2) : AposAt a b := by
-  set d := dist a.2 b.2 with hd
-  have hdpos : 0 < d := dist_pos.mpr h
-  obtain ⟨c, hc⟩ := exists_ne b.1
-  have hcont : Fold.Q78.IsContinuum ((univ : Set Y) ×ˢ closedBall a.2 (d / 2) ∪
-      ({c} : Set Y) ×ˢ (univ : Set Z)) := by
-    have h0 := isContinuum_prod_cross (Y := Z) (Z := Y) isClosed_closedBall
-      ⟨a.2, mem_closedBall_self (half_pos hdpos).le⟩ c
-    have himg : (Prod.swap '' (closedBall a.2 (d / 2) ×ˢ (univ : Set Y) ∪
-        (univ : Set Z) ×ˢ {c})) = (univ : Set Y) ×ˢ closedBall a.2 (d / 2) ∪
-          ({c} : Set Y) ×ˢ (univ : Set Z) := by
-      rw [image_union, image_swap_prod, image_swap_prod]
-    rw [← himg]
-    exact ⟨h0.1.image continuous_swap, h0.2.image _ continuous_swap.continuousOn⟩
-  refine ⟨(univ : Set Y) ×ˢ closedBall a.2 (d / 2) ∪ ({c} : Set Y) ×ˢ (univ : Set Z),
-    (univ : Set Y) ×ˢ ball a.2 (d / 2), hcont, isOpen_univ.prod isOpen_ball,
-    ⟨mem_univ _, mem_ball_self (half_pos hdpos)⟩,
-    (Set.prod_mono Subset.rfl ball_subset_closedBall).trans subset_union_left, ?_⟩
-  rintro (⟨-, hb⟩ | ⟨hb, -⟩)
-  · rw [mem_closedBall, dist_comm] at hb; linarith
-  · exact hc hb.symm
-
 end Theorem7
-
-/-- **Theorem 7.** The product of two nondegenerate continua is aposyndetic at each of its
-points. (Stated for two compact connected metric spaces, both nontrivial.) -/
-theorem theorem7 (Y Z : Type*) [MetricSpace Y] [CompactSpace Y] [ConnectedSpace Y]
-    [Nontrivial Y] [MetricSpace Z] [CompactSpace Z] [ConnectedSpace Z] [Nontrivial Z] :
-    IsAposyndetic (Y × Z) := by
-  intro a b hab
-  by_cases h : a.1 = b.1
-  · exact aposAt_prod_of_snd_ne fun h' => hab (Prod.ext h h')
-  · exact aposAt_prod_of_fst_ne h
 
 /-! ### §2: Theorems 8–10 -/
 
@@ -382,95 +235,8 @@ theorem theorem8 : IsDecomposableSpace X ↔ ∃ x y : X, x ≠ y ∧ AposAt x y
           · exact Or.inl (Or.inr h')
           · exact Or.inr (Or.inr h')
 
-/-- **Theorem 9.** `X` is indecomposable iff there are no distinct `x`, `y` with `X` aposyndetic
-at `x` with respect to `y`. -/
-theorem theorem9 : ¬ IsDecomposableSpace X ↔ ∀ x y : X, x ≠ y → ¬ AposAt x y := by
-  rw [theorem8]; push_neg; rfl
-
-/-- **Theorem 10** (corrected: `D` nonempty). `X` is indecomposable iff it contains a nonempty open
-set `D` such that `X` is not aposyndetic at any `x ∈ D` with respect to any `y ≠ x`.
-
-*Shape change:* the skeleton's `[Nontrivial X]` is not needed and is dropped. As printed (without
-\"nonempty\") the theorem is false for every decomposable continuum: `theorem10_printed_iff`. -/
-theorem theorem10 :
-    ¬ IsDecomposableSpace X ↔
-      ∃ D : Set X, IsOpen D ∧ D.Nonempty ∧ ∀ x ∈ D, ∀ y, y ≠ x → ¬ AposAt x y := by
-  constructor
-  · intro h
-    exact ⟨univ, isOpen_univ, univ_nonempty, fun x _ y hyx => theorem9.mp h x y (Ne.symm hyx)⟩
-  · rintro ⟨D, hD, ⟨x, hxD⟩, hDna⟩ ⟨H, K, hH, hK, hHu, hKu, hHK⟩
-    have hxK : x ∈ K := by
-      by_contra hxK
-      obtain ⟨y, hy⟩ := (ne_univ_iff_exists_notMem H).mp hHu
-      have h := aposAt_of_decomposition hH hK.1.isClosed hHK hxK hy
-      exact hDna x hxD y (Ne.symm h.ne) h
-    have hDH : D ⊆ H := by
-      intro z hzD
-      by_contra hzH
-      obtain ⟨y, hy⟩ := (ne_univ_iff_exists_notMem K).mp hKu
-      have h := aposAt_of_decomposition hK hH.1.isClosed (by rw [union_comm]; exact hHK) hzH hy
-      exact hDna z hzD y (Ne.symm h.ne) h
-    obtain ⟨y, hy⟩ := (ne_univ_iff_exists_notMem H).mp hHu
-    have h : AposAt x y := ⟨H, D, hH, hD, hxD, hDH, hy⟩
-    exact hDna x hxD y (Ne.symm h.ne) h
-
-omit [CompactSpace X] [ConnectedSpace X] in
-/-- **Theorem 10 as printed** (without \"`D` nonempty\") says exactly that `X` is indecomposable:
-its right-hand side always holds, with `D = ∅`. So the printed theorem fails for every
-decomposable continuum. -/
-theorem theorem10_printed_iff :
-    (¬ IsDecomposableSpace X ↔ ∃ D : Set X, IsOpen D ∧ ∀ x ∈ D, ∀ y, y ≠ x → ¬ AposAt x y) ↔
-      ¬ IsDecomposableSpace X := by
-  have hrhs : ∃ D : Set X, IsOpen D ∧ ∀ x ∈ D, ∀ y, y ≠ x → ¬ AposAt x y :=
-    ⟨∅, isOpen_empty, fun x hx => absurd hx (notMem_empty x)⟩
-  exact ⟨fun h => h.mpr hrhs, fun h => iff_of_true h hrhs⟩
-
 end Indecomposable
 
 /-! ### The refutation of Theorem 10 as printed: an arc -/
-
-/-- The unit interval is decomposable: `[0, 1/2] ∪ [1/2, 1]`. -/
-theorem isDecomposableSpace_unitInterval : IsDecomposableSpace unitInterval := by
-  have hcont : ∀ a b : ℝ, a ≤ b → 0 ≤ a → b ≤ 1 →
-      Fold.Q78.IsContinuum {t : unitInterval | a ≤ (t : ℝ) ∧ (t : ℝ) ≤ b} := by
-    intro a b hab ha hb
-    have hset : {t : unitInterval | a ≤ (t : ℝ) ∧ (t : ℝ) ≤ b} =
-        (Subtype.val : unitInterval → ℝ) ⁻¹' Icc a b := rfl
-    have hcl : IsClosed {t : unitInterval | a ≤ (t : ℝ) ∧ (t : ℝ) ≤ b} := by
-      rw [hset]; exact isClosed_Icc.preimage continuous_subtype_val
-    refine ⟨hcl.isCompact, ⟨⟨a, ha, hab.trans hb⟩, le_refl a, hab⟩, ?_⟩
-    rw [hset, ← Topology.IsInducing.subtypeVal.isPreconnected_image, Subtype.image_preimage_coe]
-    have : Icc (0 : ℝ) 1 ∩ Icc a b = Icc a b := by
-      ext t; simp only [mem_inter_iff, mem_Icc]; constructor
-      · exact fun h => h.2
-      · exact fun h => ⟨⟨ha.trans h.1, h.2.trans hb⟩, h⟩
-    rw [unitInterval, this]
-    exact isPreconnected_Icc
-  refine ⟨_, _, hcont 0 (1 / 2) (by norm_num) le_rfl (by norm_num),
-    hcont (1 / 2) 1 (by norm_num) (by norm_num) le_rfl, ?_, ?_, ?_⟩
-  · intro h
-    have : (1 : unitInterval) ∈ {t : unitInterval | 0 ≤ (t : ℝ) ∧ (t : ℝ) ≤ 1 / 2} :=
-      h ▸ mem_univ _
-    have h' := this.2
-    simp at h'
-    norm_num at h'
-  · intro h
-    have : (0 : unitInterval) ∈ {t : unitInterval | 1 / 2 ≤ (t : ℝ) ∧ (t : ℝ) ≤ 1} :=
-      h ▸ mem_univ _
-    have h' := this.1
-    simp at h'
-    norm_num at h'
-  · refine eq_univ_of_forall fun t => ?_
-    rcases le_total (t : ℝ) (1 / 2) with h | h
-    · exact Or.inl ⟨t.2.1, h⟩
-    · exact Or.inr ⟨h, t.2.2⟩
-
-/-- **Theorem 10 as printed is false** (ledger entry): for the arc `[0, 1]` the printed
-right-hand side holds (with `D = ∅`) but the arc is decomposable. -/
-theorem not_theorem10_printed_unitInterval :
-    ¬ (¬ IsDecomposableSpace unitInterval ↔
-      ∃ D : Set unitInterval, IsOpen D ∧ ∀ x ∈ D, ∀ y, y ≠ x → ¬ AposAt x y) := by
-  rw [theorem10_printed_iff]
-  exact not_not.mpr isDecomposableSpace_unitInterval
 
 end HPC.Jones

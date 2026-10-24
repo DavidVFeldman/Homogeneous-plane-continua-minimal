@@ -48,27 +48,6 @@ namespace HPC.Jones
 
 open Set Topology Metric Filter HPC.Plane
 
-/-- **\"A theorem of R. L. Moore\"** (p. 748, footnote 14; in substance F.A. Theorem 43, corrected),
-in `ℝ²`, in the form the proof uses. *The shape is left to you* (REPORT-batch151 §8: build it
-directly, as the component of `I·V_ε(p)` containing `0`).
-
-*Shape chosen (batch 152).* What Whyburn takes from `C` is a connection, inside `V_{2ε}(p)` and inside
-`R`, between two points of `R` near `p`. The form proved supplies exactly that, with no curve: `N` a
-closed connected subset of `M` containing `M − V_ε(p)`, and `W` the component of `V_ε(p) − N`
-containing `p` (the analogue of Whyburn's `E`: a domain inside `V_ε(p)` whose frontier lies in
-`N ∪ C_ε`). Any two points of a complementary domain `R` of `M` lying in `W` lie in one component of
-`W − M` (which is contained in `R`). Proof: Janiszewski's theorem (`HPC.Moore.janiszewski_compact`)
-for `K = (M ∩ W̄) ∪ N` and `L = Wᶜ ∩ B̄(p, ρ)`, with `K ∩ L = N`. Neither the Jordan curve theorem
-nor arcs are used. Whether the frontier of Whyburn's component `E` is a simple closed curve is not
-decided here; it is not needed. -/
-theorem whyburn39_moore_curve {M N : Set Pt} (hM : IsCompact M) (hN : IsClosed N)
-    (hNc : IsConnected N) (hNM : N ⊆ M) {p : Pt} {ε : ℝ} (hout : M \ ball p ε ⊆ N) {x a b : Pt}
-    (ha : a ∈ connectedComponentIn Mᶜ x) (hb : b ∈ connectedComponentIn Mᶜ x)
-    (haW : a ∈ connectedComponentIn (N ∪ (ball p ε)ᶜ)ᶜ p)
-    (hbW : b ∈ connectedComponentIn (N ∪ (ball p ε)ᶜ)ᶜ p) :
-    b ∈ connectedComponentIn (connectedComponentIn (N ∪ (ball p ε)ᶜ)ᶜ p ∩ Mᶜ) a :=
-  Sec14.join_in_domain hM hN hNc hNM hout ha hb haW hbW
-
 /-- **The curve `K` from order 2** (p. 748, unargued). *The shape is left to you.* Whyburn's
 pigeonhole needs only: an open `D ∋ p′` inside `V_ε(p)` whose frontier meets `M` in finitely many
 points and minus `M` has finitely many components. State and prove whatever form the proof needs,

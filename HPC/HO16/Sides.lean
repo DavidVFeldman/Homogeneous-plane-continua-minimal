@@ -33,11 +33,6 @@ theorem ho16_obs9_emptyB {G A : Set E} (hG : IsPLGraph G) :
     rw [diff_empty]
     exact subset_closure hz
 
-omit [NormedSpace ℝ E] in
-/-- **p. 190**: "In particular, if A = ∅ then σ_B(A) = ∅." -/
-theorem ho16_obs9_emptyA (G B : Set E) : sideOf G B ∅ = ∅ := by
-  simp [sideOf]
-
 /-- **p. 190, first observation**: for `G` connected, `A`, `B` nonempty, `A` with consistent
 complement relative to `B`, and any neighbourhood `V` of `B`, `σ_B(A)` is the closure of the union
 of the components of `G \ B` meeting `A ∩ V`.
@@ -312,26 +307,6 @@ theorem ho16_prop11_frontier {G A B₁ B₂ : Set E} (hG : IsPLGraph G)
   have hB₂fr : B₂ ⊆ relFrontier G A := fun b hb => by rw [← hB]; exact Or.inr hb
   exact ⟨(hG.sideOf_char_aux hA hAG hB₁fr hc₁).2.2.2.1,
     (hG.sideOf_char_aux hA hAG hB₂fr hc₂).2.2.2.1⟩
-
-/-- **p. 191, remark after Proposition 11**: consistent complement relative to `B₁` gives it
-relative to `B₂` when `∂A = B₁ ⊔ B₂`.
-
-Shape change (batch 195): the skeleton's hypothesis `A ⊆ G` is not needed and has been
-dropped. -/
-theorem ho16_prop11_remark {G A B₁ B₂ : Set E} (hG : IsPLGraph G) (hA : IsPLGraph A)
-    (hB : B₁ ∪ B₂ = relFrontier G A) (hdis : Disjoint B₁ B₂)
-    (hc₁ : HasConsCompl G A B₁) : HasConsCompl G A B₂ := by
-  intro x hx
-  have h := hG.relFrontier_comp_subset_relFrontier hA.isCompact.isClosed (A := A) x
-  rcases hc₁ x hx with h1 | h1
-  · exact Or.inr (Set.disjoint_of_subset_left h1 hdis)
-  · left
-    intro z hz
-    have hz' := h hz
-    rw [← hB] at hz'
-    rcases hz' with h' | h'
-    · exact absurd h' (Set.disjoint_left.1 h1 hz)
-    · exact h'
 
 end Sides
 

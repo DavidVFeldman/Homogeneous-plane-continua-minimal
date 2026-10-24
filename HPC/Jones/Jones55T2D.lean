@@ -109,18 +109,6 @@ theorem jones55_compl_connected (hX : IsHomogeneous M) (hd : IsDecomposableSpace
   have haL : a ∉ Lset x := by rw [← mem_compl_iff, jones55_prop_e]; exact ha
   exact hxK (jones55_c hX hK ⟨z, hz, hzU⟩ ⟨a, haK, haL⟩ (mem_Lset_self x))
 
-/-- Jones's parenthesis: "`M − g` is strongly or continuum-wise connected". Any two points of
-`M − L_x` lie in a continuum in `M − L_x` (by (5) and (c)). -/
-theorem jones55_compl_continuumwise (hX : IsHomogeneous M) (hd : IsDecomposableSpace M) (x : M)
-    {a b : M} (ha : a ∉ Lset x) (hb : b ∉ Lset x) :
-    ∃ K : Set M, Fold.Q78.IsContinuum K ∧ a ∈ K ∧ b ∈ K ∧ K ⊆ (Lset x)ᶜ := by
-  haveI := nontrivial_of_isDecomposableSpace hd
-  have ha' : a ∈ aposSet x := by rw [← jones55_prop_e]; exact ha
-  have hb' : b ∈ aposSet x := by rw [← jones55_prop_e]; exact hb
-  obtain ⟨K, hK, haK, hbK, hxK⟩ := exists_continuum_of_mem_aposSet hX ha' hb'
-  refine ⟨K, hK, haK, hbK, fun z hz hzL => ?_⟩
-  exact hxK (jones55_c hX hK ⟨z, hz, hzL⟩ ⟨a, haK, ha⟩ (mem_Lset_self x))
-
 /-- If `M` is aposyndetic, each `L_x` is `{x}`. -/
 theorem Lset_eq_singleton_of_isAposyndetic {X : Type*} [MetricSpace X] (ha : IsAposyndetic X)
     (x : X) : Lset x = {x} := by
@@ -269,8 +257,6 @@ theorem gPrimeRel_equivalence (M : Set Pt) [CompactSpace M] [ConnectedSpace M] :
 /-- `G′` as a setoid on the plane. -/
 def gPrime (M : Set Pt) [CompactSpace M] [ConnectedSpace M] : Setoid Pt :=
   ⟨gPrimeRel M, gPrimeRel_equivalence M⟩
-
-theorem gPrime_iff {x y : Pt} : gPrime M x y ↔ gPrimeRel M x y := Iff.rfl
 
 /-- The elements of `G′` in `M` are the point sets of the `L_x`. -/
 theorem elt_gPrime_of_mem (hX : IsHomogeneous M) {x : Pt} (hx : x ∈ M) :

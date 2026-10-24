@@ -52,7 +52,6 @@ theorem endSet_T {i : ℕ} (hi : i ∈ Icc 1 k) (hi₀ : i ≠ i₀) :
   H.h.2.2.2.2.2.2.2.2.1 i hi hi₀
 theorem endSet_Ti₀ : endSet G (T i₀) = α i₀ ∪ α (i₀ + 1) ∪ γ := H.h.2.2.2.2.2.2.2.2.2.1
 theorem disj_αα : Disjoint (α i₀) (α (i₀ + 1)) := H.h.2.2.2.2.2.2.2.2.2.2.1
-theorem disj_αγ : Disjoint (α i₀) γ := H.h.2.2.2.2.2.2.2.2.2.2.2.1
 theorem disj_α'γ : Disjoint (α (i₀ + 1)) γ := H.h.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem α_finite {i : ℕ} (hi : i ∈ Icc 1 (k + 1)) : (α i).Finite :=
   H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.1 i hi
@@ -60,7 +59,6 @@ theorem γ_finite : γ.Finite := H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem α_one : α 1 = ∅ := H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem α_last : α (k + 1) = ∅ := H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem endSet_P₂ : endSet G P₂ = endSet G P₁ ∪ γ := H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-theorem disj_Eγ : Disjoint (endSet G P₁) γ := H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem S3 : ∀ i ∈ Ico 1 k, ∃ V ∈ 𝓝ˢ (Prod.fst '' α (i + 1)),
     Prod.fst '' T i ∩ V = Prod.fst '' T (i + 1) ∩ V :=
   H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
@@ -76,13 +74,6 @@ theorem gen : IsGeneric G (((List.range' 2 (k - 1)).map fun i => Prod.fst '' α 
   H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 theorem S6 : Disjoint (Prod.fst '' α i₀) (Prod.fst '' (P₁ ∪ P₂)) :=
   H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
-
-theorem S3V : ∃ V ∈ 𝓝ˢ (Prod.fst '' endSet G P₁), Prod.fst '' P₁ ∩ V = Prod.fst '' P₂ ∩ V :=
-  H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-theorem S4P₂E : HasConsCompl G (Prod.fst '' P₂) (Prod.fst '' endSet G P₁) :=
-  H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-theorem S4P₂γ : HasConsCompl G (Prod.fst '' P₂) (Prod.fst '' γ) :=
-  H.h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 
 theorem fold :
     IsFoldTriple G (Prod.fst '' P₁) (Prod.fst '' P₂) (sideOf G (Prod.fst '' γ) (Prod.fst '' T i₀)) ∧
@@ -196,10 +187,6 @@ theorem pre_E : (F₁ ∪ F₂) ∩ Prod.fst ⁻¹' (Prod.fst '' endSet G P₁) 
 /-- `φ⁻¹(π(γ)) ∩ F₃ = ∂F₃`. -/
 theorem pre_γ₃ : F₃ ∩ Prod.fst ⁻¹' (Prod.fst '' γ) = F₂ ∩ F₃ := by
   rw [← H.fr23, inter_preimage_image_of_injOn H.inj₃ inter_subset_right]
-
-/-- `φ⁻¹(π(γ)) ∩ F₂ = ∂F₃`. -/
-theorem pre_γ₂ : F₂ ∩ Prod.fst ⁻¹' (Prod.fst '' γ) = F₂ ∩ F₃ := by
-  rw [← H.fr23, inter_preimage_image_of_injOn H.inj₂ inter_subset_left]
 
 /-- `φ⁻¹(π(γ)) ⊆ F₁ ∪ F₂` (p. 205, second observation). -/
 theorem pre_γ_sub : (F₁ ∪ F₂ ∪ F₃) ∩ Prod.fst ⁻¹' (Prod.fst '' γ) ⊆ F₁ ∪ F₂ := by

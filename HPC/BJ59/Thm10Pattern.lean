@@ -362,25 +362,6 @@ theorem exists_pattern {Q : Set Y} (hQ : IsCompact Q) (hQc : IsPreconnected Q)
       simp only
       rw [hcl_id _ hkc, hR₀_dec (k + c) a hdec (by omega), hva]
 
-/-- `exists_pattern` in the skeleton's form (a consequence of the strengthened statement). -/
-theorem exists_pattern_skeleton {Q : Set Y} (hQ : IsCompact Q) (hQc : IsPreconnected Q)
-    (hQn : Q.Nontrivial) (φ : Q → X) (hφ : Continuous φ) {n : ℕ} (D : Chain X n)
-    {w₁ w₂ : ℕ} (hw : w₁ ≤ w₂) (hw₂ : w₂ < n)
-    (hcov : ∀ z, φ z ∈ ⋃ (j : Fin n) (_ : w₁ ≤ j.val ∧ j.val ≤ w₂), D.link j)
-    (hpriv : ∀ j : Fin n, w₁ ≤ j.val → j.val ≤ w₂ → ∃ z, φ z ∈ D.link j ∧
-      ∀ j' : Fin n, w₁ ≤ j'.val → j'.val ≤ w₂ → j' ≠ j → φ z ∉ D.link j') :
-    ∃ ε > 0, ∀ (N : ℕ) (F : Chain Y N), IsEpsChain F ε → Q ⊆ F.union →
-      ∃ R : Fin N → Fin n, IsChainMap R ∧
-        (∀ a : Fin N, (F.link a ∩ Q).Nonempty → w₁ ≤ (R a).val ∧ (R a).val ≤ w₂ ∧
-          ∀ z : Q, (z : Y) ∈ closure (F.link a) → φ z ∈ D.link (R a)) ∧
-        ∀ j : Fin n, w₁ ≤ j.val → j.val ≤ w₂ → ∃ a : ℕ, ∃ ha : a + 2 < N,
-          ∀ (c : ℕ) (hc : c ≤ 2), (F.link ⟨a + c, by omega⟩ ∩ Q).Nonempty ∧
-            R ⟨a + c, by omega⟩ = j := by
-  obtain ⟨ε, hε, h⟩ := exists_pattern hQ hQc hQn φ hφ D hw hw₂ hcov hpriv
-  refine ⟨ε, hε, fun N F hF hQF => ?_⟩
-  obtain ⟨R, hR, h1, h2, h3⟩ := h N F hF hQF
-  exact ⟨R, hR, fun a _ => ⟨(h1 a).1, (h1 a).2, h2 a⟩, h3⟩
-
 end Pattern
 
 end HPC.BJ59

@@ -45,10 +45,6 @@ theorem Space.IsChord.rot {J I : Set S} {A B C D : S} {t : Set S}
     ext z; simp only [mem_insert_iff, mem_singleton_iff]; tauto
   exact ⟨a, b, e ▸ ha, e ▸ hb, ht, htI⟩
 
-theorem Space.IsChord.unrot {J I : Set S} {A B C D : S} {t : Set S}
-    (h : σ.IsChord J I B C D A t) : σ.IsChord J I A B C D t :=
-  h.rot.rot.rot
-
 section Ax
 
 variable (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4) (h5 : σ.Axiom5)

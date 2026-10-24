@@ -40,12 +40,6 @@ theorem isSaturated_polyInterior (Γ : Set Pt) : IsSaturated Γ (polyInterior Γ
   rw [← connectedComponentIn_eq (hS.subset_connectedComponentIn hxS hSΓ hy)]
   exact hxP.2
 
-/-- `Γ₁ ∩ closure (polyInterior Γ₁ ∩ polyInterior Γ₂)` is polygonal for any polygonal `Γ₁`, `Γ₂`. -/
-theorem isPolygonal_inter_closure_polyInterior {Γ₁ Γ₂ : Set Pt} (h₁ : IsPolygonal Γ₁)
-    (h₂ : IsPolygonal Γ₂) :
-    IsPolygonal (Γ₁ ∩ closure (polyInterior Γ₁ ∩ polyInterior Γ₂)) :=
-  isPolygonal_inter_closure_inter h₁ h₂ (isSaturated_polyInterior Γ₁) (isSaturated_polyInterior Γ₂)
-
 /-- The intersection of saturated sets is saturated for the union. -/
 theorem IsSaturated.inter {Γ Γ' W W' : Set Pt} (h : IsSaturated Γ W) (h' : IsSaturated Γ' W') :
     IsSaturated (Γ ∪ Γ') (W ∩ W') := by
@@ -69,17 +63,5 @@ theorem isPolygonal_inter_closure_polyInterior₃ {Γ Γ₁ Γ₂ : Set Pt} (h :
   rwa [show polyInterior Γ₁ ∩ (polyInterior Γ ∩ polyInterior Γ₂) =
     polyInterior Γ ∩ polyInterior Γ₁ ∩ polyInterior Γ₂ by
       rw [← inter_assoc, inter_comm (polyInterior Γ₁)]] at this
-
-/-- **The key polygonality lemma** (commission statement). For simple closed polygons `Γ₁`, `Γ₂`
-the set `Γ₁ ∩ closure (polyInterior Γ₁ ∩ polyInterior Γ₂)` is polygonal. Proof: the general
-`isPolygonal_inter_closure_inter` — per segment `e` of `Γ₁`, between consecutive "special"
-parameters (ends of `e` and the ends of `e ∩ σ` for every segment `σ` of `Γ₁` or `Γ₂`) a small ball
-about a point of `e` meets `Γ₁ ∪ Γ₂` only on the line of `e`, its two open half-disks are each
-inside or outside each interior, and so membership in `closure (h₁ ∩ h₂)` is locally constant along
-the open piece of `e`. -/
-theorem isPolygonal_frontier_inter_closure {Γ₁ Γ₂ : Set Pt} (h₁ : IsSimpleClosedPolygon Γ₁)
-    (h₂ : IsSimpleClosedPolygon Γ₂) :
-    IsPolygonal (Γ₁ ∩ closure (polyInterior Γ₁ ∩ polyInterior Γ₂)) :=
-  isPolygonal_inter_closure_polyInterior h₁.isPolygonal h₂.isPolygonal
 
 end HPC.Plane

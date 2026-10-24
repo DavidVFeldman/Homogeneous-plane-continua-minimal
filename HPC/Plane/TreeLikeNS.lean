@@ -103,46 +103,6 @@ continuum, a circle included, is "tree-like". The old definition is kept here un
 and its triviality is proved. `Tree67.lean`'s `IsTreeLike` gets `Bornology.IsBounded A`, as
 `IsEpsChain` (snake-like) has. -/
 
-/-- The definition of `IsTreeLike` up to batch 132 (links not required to be bounded). -/
-def IsTreeLikeOld (M : Set Pt) : Prop :=
-  Fold.Q78.IsContinuum M ∧ ∀ ε : ℝ, 0 < ε → ∃ G : Finset (Set Pt), IsTreeChain G ∧
-    (∀ A ∈ G, diam A < ε) ∧ M ⊆ ⋃ A ∈ G, A
-
-/-- `{univ}` is a tree chain. -/
-theorem isTreeChain_univ : IsTreeChain {(univ : Set Pt)} := by
-  refine ⟨fun A hA => by rw [Finset.mem_singleton.1 hA]; exact isOpen_univ, ?_, ?_, ?_⟩
-  · intro G' hG' hne
-    obtain ⟨A, hA⟩ := hne
-    have : G' = {univ} := Finset.eq_singleton_iff_unique_mem.2
-      ⟨by rw [← Finset.mem_singleton.1 (hG'.1 hA)]; exact hA,
-        fun B hB => Finset.mem_singleton.1 (hG'.1 hB)⟩
-    exact absurd this hG'.ne
-  · intro A hA B hB C hC hAB
-    rw [Finset.mem_singleton.1 hA, Finset.mem_singleton.1 hB] at hAB
-    exact absurd rfl hAB
-  · rintro G' hG' ⟨m, hm, d, hd, rfl, -⟩
-    have h1 := Finset.card_le_card hG'
-    rw [Finset.card_image_of_injective _ hd, Finset.card_univ, Fintype.card_fin,
-      Finset.card_singleton] at h1
-    omega
-
-/-- **The old definition is trivial**: every continuum satisfies it (`G = {univ}`; `univ` is
-unbounded, so `diam univ = 0`). Hence `treeLike_nonseparating` was false for it (a circle). -/
-theorem isTreeLikeOld_of_isContinuum {M : Set Pt} (hM : Fold.Q78.IsContinuum M) :
-    IsTreeLikeOld M := by
-  refine ⟨hM, fun ε hε => ⟨{univ}, isTreeChain_univ, fun A hA => ?_, fun x _ => ?_⟩⟩
-  · rw [Finset.mem_singleton.1 hA, diam_eq_zero_of_unbounded]
-    · exact hε
-    · intro hb
-      obtain ⟨R, hR⟩ := hb.subset_closedBall (0 : Pt)
-      have := hR (mem_univ ((|R| + 1, 0) : Pt))
-      rw [mem_closedBall, dist_zero_right, Prod.norm_def] at this
-      simp only [Real.norm_eq_abs, norm_zero] at this
-      have h2 : |R| + 1 ≤ max |(|R| + 1)| 0 := by
-        rw [abs_of_pos (by positivity : (0:ℝ) < |R| + 1)]; exact le_max_left _ _
-      linarith [le_abs_self R]
-  · exact mem_iUnion₂.2 ⟨univ, Finset.mem_singleton_self _, mem_univ x⟩
-
 /-! ### 1. A logarithm on a fine tree cover
 
 (`toCpx` and `continuous_toCpx` are in `TreeLikeNSLog.lean`.) -/
@@ -164,37 +124,6 @@ theorem dist_le_norm_toCpx_sub (z c : Pt) : dist z c ≤ ‖toCpx z - toCpx c‖
     simpa [toCpx] using this
   · have := Complex.abs_im_le_norm (toCpx z - toCpx c)
     simpa [toCpx] using this
-
-/-- On a convex set missing `p` there is a continuous branch of `log (z − p)`. Here:
-`Complex.log ((z − p) / (c − p)) + Complex.log (c − p)` on `ball c r`, where `(z − p) / (c − p)`
-stays in the right half-plane. -/
-theorem exists_log_on_ball {p c : Pt} {r : ℝ} (hr : 0 < r) (hp : 4 * r < dist c p) :
-    ∃ L : Pt → ℂ, ContinuousOn L (ball c r) ∧
-      ∀ z ∈ ball c r, Complex.exp (L z) = toCpx z - toCpx p := by
-  set D := toCpx c - toCpx p with hD
-  have hDn : 4 * r < ‖D‖ := lt_of_lt_of_le hp (dist_le_norm_toCpx_sub c p)
-  have hD0 : D ≠ 0 := by
-    intro h; rw [h, norm_zero] at hDn; linarith
-  have hre : ∀ z ∈ ball c r, 0 < ((toCpx z - toCpx p) / D).re := by
-    intro z hz
-    have hzc : ‖toCpx z - toCpx c‖ < 2 * r := by
-      have := norm_toCpx_sub_le z c
-      rw [mem_ball] at hz; linarith
-    have heq : (toCpx z - toCpx p) / D = 1 + (toCpx z - toCpx c) / D := by
-      rw [one_add_div hD0, hD]; congr 1; ring
-    rw [heq, Complex.add_re, Complex.one_re]
-    have h1 : ‖(toCpx z - toCpx c) / D‖ < 1 := by
-      rw [norm_div, div_lt_one (norm_pos_iff.2 hD0)]; linarith
-    have h2 := Complex.abs_re_le_norm ((toCpx z - toCpx c) / D)
-    linarith [neg_abs_le ((toCpx z - toCpx c) / D).re]
-  refine ⟨fun z => Complex.log ((toCpx z - toCpx p) / D) + Complex.log D, ?_, fun z hz => ?_⟩
-  · refine ContinuousOn.add (ContinuousOn.clog ?_ fun z hz => Or.inl (hre z hz)) continuousOn_const
-    exact ((continuous_toCpx.sub continuous_const).div_const _).continuousOn
-  · have hne : (toCpx z - toCpx p) / D ≠ 0 := fun h => by
-      have := hre z hz; rw [h, Complex.zero_re] at this; exact lt_irrefl _ this
-    simp only
-    rw [Complex.exp_add, Complex.exp_log hne, Complex.exp_log hD0]
-    field_simp
 
 /-- The nerve of a tree chain is a tree. The form needed: a tree chain with at least two links has
 a link `A` meeting exactly one other link `B`, such that `G.erase A` is again a tree chain.
@@ -232,111 +161,6 @@ theorem exists_leaf {G : Finset (Set Pt)} (hG : IsTreeChain G) (h2 : 2 ≤ G.car
     exact ⟨fun A hA => hopen A (hHG hA), isCoherent_of_chainConn hconn,
       fun A hA B hB D hD => htri A (hHG hA) B (hHG hB) D (hHG hD),
       fun G' hG' => hcirc G' (hG'.trans hHG)⟩
-
-/-- The ball branch of a single link: a link `A` of diameter `< ε`, nonempty and `8ε`-far from
-`p`, lies in a ball `ball c ε` carrying a branch of `log (z − p)`. -/
-theorem exists_ball_branch {A : Set Pt} {ε : ℝ} (hε : 0 < ε)
-    (hA : Bornology.IsBounded A ∧ diam A < ε) (hne : A.Nonempty) {p : Pt}
-    (hfar : ∀ z ∈ A, 8 * ε < dist z p) :
-    ∃ (c : Pt) (ℓ : Pt → ℂ), A ⊆ ball c ε ∧ ContinuousOn ℓ (ball c ε) ∧
-      ∀ z ∈ ball c ε, Complex.exp (ℓ z) = toCpx z - toCpx p := by
-  obtain ⟨a, ha⟩ := hne
-  obtain ⟨ℓ, hℓ, hℓe⟩ := exists_log_on_ball hε (c := a) (p := p) (by linarith [hfar a ha])
-  exact ⟨a, ℓ, fun z hz => mem_ball.2 (lt_of_le_of_lt (dist_le_diam_of_mem hA.1 hz ha) hA.2),
-    hℓ, hℓe⟩
-
-/-- **The induction with the ball invariant**: on each link `A`, the logarithm is the restriction
-of a branch defined on a whole ball around `A`. -/
-theorem exists_log_inv {ε : ℝ} (hε : 0 < ε) {p : Pt} :
-    ∀ N, ∀ G : Finset (Set Pt), G.card = N → IsTreeChain G →
-      (∀ A ∈ G, Bornology.IsBounded A ∧ diam A < ε) → (∀ A ∈ G, ∀ z ∈ A, 8 * ε < dist z p) →
-      ∃ L : Pt → ℂ, ∀ A ∈ G, A.Nonempty → ∃ (c : Pt) (ℓ : Pt → ℂ), A ⊆ ball c ε ∧
-        ContinuousOn ℓ (ball c ε) ∧ (∀ z ∈ ball c ε, Complex.exp (ℓ z) = toCpx z - toCpx p) ∧
-        ∀ z ∈ A, L z = ℓ z := by
-  intro N
-  induction N with
-  | zero =>
-    intro G hG _ _ _
-    refine ⟨0, fun A hA => ?_⟩
-    rw [Finset.card_eq_zero.1 hG] at hA
-    exact absurd hA (Finset.notMem_empty _)
-  | succ N ih =>
-    intro G hcard hG hdiam hfar
-    rcases Nat.eq_zero_or_pos N with hN | hN
-    · subst hN
-      obtain ⟨A, rfl⟩ := Finset.card_eq_one.1 hcard
-      by_cases hne : A.Nonempty
-      · obtain ⟨c, ℓ, hAc, hℓ, hℓe⟩ := exists_ball_branch hε (hdiam A (Finset.mem_singleton_self _))
-          hne (hfar A (Finset.mem_singleton_self _))
-        refine ⟨ℓ, fun A' hA' _ => ?_⟩
-        rw [Finset.mem_singleton.1 hA']
-        exact ⟨c, ℓ, hAc, hℓ, hℓe, fun z _ => rfl⟩
-      · refine ⟨0, fun A' hA' hne' => ?_⟩
-        rw [Finset.mem_singleton.1 hA'] at hne'
-        exact absurd hne' hne
-    · obtain ⟨A, hA, B, hB, hAB, hABne, hdisj, hGe⟩ := exists_leaf hG (by omega)
-      obtain ⟨L₀, hL₀⟩ := ih (G.erase A) (by rw [Finset.card_erase_of_mem hA, hcard]; rfl) hGe
-        (fun D hD => hdiam D (Finset.mem_of_mem_erase hD))
-        (fun D hD => hfar D (Finset.mem_of_mem_erase hD))
-      have hBe : B ∈ G.erase A := Finset.mem_erase.2 ⟨Ne.symm hAB, hB⟩
-      obtain ⟨z₀, hz₀A, hz₀B⟩ := hABne
-      obtain ⟨cB, ℓB, hBc, hℓB, hℓBe, hL₀B⟩ := hL₀ B hBe ⟨z₀, hz₀B⟩
-      obtain ⟨cA, ℓA, hAc, hℓA, hℓAe⟩ := exists_ball_branch hε (hdiam A hA) ⟨z₀, hz₀A⟩ (hfar A hA)
-      set S := ball cA ε ∩ ball cB ε
-      have hS : IsPreconnected S := ((convex_ball cA ε).inter (convex_ball cB ε)).isPreconnected
-      have hz₀S : z₀ ∈ S := ⟨hAc hz₀A, hBc hz₀B⟩
-      set κ := ℓB z₀ - ℓA z₀
-      have hconst : ∀ z ∈ S, ℓB z - ℓA z = κ := fun z hz =>
-        sub_const_of_exp_eq hS (hℓB.mono inter_subset_right) (hℓA.mono inter_subset_left)
-          (fun w hw => by rw [hℓBe w hw.2, hℓAe w hw.1]) hz hz₀S
-      have hz₀p : toCpx z₀ - toCpx p ≠ 0 := by
-        refine toCpx_sub_ne_zero fun e => ?_
-        have := hfar A hA z₀ hz₀A
-        rw [e, dist_self] at this; linarith
-      have hexpκ : Complex.exp κ = 1 := by
-        simp only [κ]
-        rw [Complex.exp_sub, hℓBe z₀ hz₀S.2, hℓAe z₀ hz₀S.1, div_self hz₀p]
-      refine ⟨fun z => if z ∈ A then ℓA z + κ else L₀ z, fun D hD hDne => ?_⟩
-      by_cases hDA : D = A
-      · subst hDA
-        refine ⟨cA, fun z => ℓA z + κ, hAc, hℓA.add continuousOn_const, fun z hz => ?_,
-          fun z hz => by simp only [hz, if_true]⟩
-        simp only
-        rw [Complex.exp_add, hexpκ, mul_one, hℓAe z hz]
-      · have hDe : D ∈ G.erase A := Finset.mem_erase.2 ⟨hDA, hD⟩
-        by_cases hDB : D = B
-        · subst hDB
-          refine ⟨cB, ℓB, hBc, hℓB, hℓBe, fun z hz => ?_⟩
-          by_cases hzA : z ∈ A
-          · simp only [hzA, if_true]
-            have := hconst z ⟨hAc hzA, hBc hz⟩
-            linear_combination -this
-          · simp only [hzA, if_false]; exact hL₀B z hz
-        · obtain ⟨c, ℓ, hDc, hℓ, hℓe, hL₀D⟩ := hL₀ D hDe hDne
-          refine ⟨c, ℓ, hDc, hℓ, hℓe, fun z hz => ?_⟩
-          have hzA : z ∉ A := fun hzA => Set.disjoint_left.1 (hdisj D hD hDA hDB) hzA hz
-          simp only [hzA, if_false]; exact hL₀D z hz
-
-/-- **A logarithm on a fine tree cover.** Suppose `G` is a tree chain, each link of `G` has
-diameter `< ε`, and every point of every link is at distance `> 8 ε` from `p`. Then `z − p` has a
-continuous logarithm on `⋃ G`. (Induction on `G.card` with the ball invariant of the header:
-`exists_log_inv`.) -/
-theorem exists_log_on_treeChain {G : Finset (Set Pt)} (hG : IsTreeChain G) {ε : ℝ} (hε : 0 < ε)
-    (hdiam : ∀ A ∈ G, Bornology.IsBounded A ∧ diam A < ε) {p : Pt}
-    (hfar : ∀ A ∈ G, ∀ z ∈ A, 8 * ε < dist z p) :
-    ∃ L : Pt → ℂ, ContinuousOn L (⋃ A ∈ G, A) ∧
-      ∀ z ∈ ⋃ A ∈ G, A, Complex.exp (L z) = toCpx z - toCpx p := by
-  obtain ⟨L, hL⟩ := exists_log_inv hε G.card G rfl hG hdiam hfar
-  refine ⟨L, fun z hz => ?_, fun z hz => ?_⟩
-  · obtain ⟨A, hA, hzA⟩ := mem_iUnion₂.1 hz
-    obtain ⟨c, ℓ, hAc, hℓ, -, hLℓ⟩ := hL A hA ⟨z, hzA⟩
-    have hca : ContinuousAt ℓ z := hℓ.continuousAt (isOpen_ball.mem_nhds (hAc hzA))
-    have heq : ℓ =ᶠ[nhds z] L := Filter.mem_of_superset ((hG.1 A hA).mem_nhds hzA)
-      fun w hw => (hLℓ w hw).symm
-    exact (hca.congr heq).continuousWithinAt
-  · obtain ⟨A, hA, hzA⟩ := mem_iUnion₂.1 hz
-    obtain ⟨c, ℓ, hAc, -, hℓe, hLℓ⟩ := hL A hA ⟨z, hzA⟩
-    rw [hLℓ z hzA, hℓe z (hAc hzA)]
 
 /-! ### 2. No logarithm on a polygon around `p` -/
 
@@ -594,62 +418,5 @@ theorem isTreeChain_filter_meet {G : Finset (Set Pt)} (hG : IsTreeChain G) {K : 
   obtain ⟨A, hA, hzA⟩ := mem_iUnion₂.1 hzU
   obtain ⟨B, hB, hzB⟩ := mem_iUnion₂.1 hzV
   exact Set.not_nonempty_iff_eq_empty.2 (hno A hA B hB) ⟨z, hzA, hzB⟩
-
-/-- **A tree-like plane continuum contains no continuum that separates the plane.** The unstated
-step of Bing 1951 (Duke), Theorem 7 (header). -/
-theorem treeLike_nonseparating {M : Set Pt} (hM : IsTreeLike M) :
-    ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K := by
-  intro K hKM hK hs
-  obtain ⟨p, hpK, hpb⟩ := exists_bounded_component_of_separates hK.1 hs
-  have hKne := hK.2.nonempty
-  set d := infDist p K
-  have hd : 0 < d := (hK.1.isClosed.notMem_iff_infDist_pos hKne).1 hpK
-  set ε := d / 10
-  have hε : 0 < ε := by positivity
-  obtain ⟨G, hG, hGd, hGM⟩ := hM.2 ε hε
-  set G' := G.filter fun A => (A ∩ K).Nonempty
-  have hG' : IsTreeChain G' := isTreeChain_filter_meet hG hK.2 (hKM.trans hGM)
-  have hfar : ∀ A ∈ G', ∀ z ∈ A, 8 * ε < dist z p := by
-    intro A hA z hz
-    obtain ⟨hAG, k, hkA, hkK⟩ := Finset.mem_filter.1 hA
-    have h1 : dist z k < ε := lt_of_le_of_lt (dist_le_diam_of_mem (hGd A hAG).1 hz hkA) (hGd A hAG).2
-    have h2 : d ≤ dist p k := infDist_le_dist_of_mem hkK
-    have h3 := dist_triangle p z k
-    rw [dist_comm p z] at h3
-    have : ε = d / 10 := rfl
-    linarith
-  obtain ⟨L, hLc, hLe⟩ := exists_log_on_treeChain hG' hε
-    (fun A hA => hGd A (Finset.mem_filter.1 hA).1) hfar
-  set W := ⋃ A ∈ G', A
-  have hWo : IsOpen W := isOpen_biUnion fun A hA => hG'.1 A hA
-  have hpW : p ∉ W := by
-    intro h
-    obtain ⟨A, hA, hpA⟩ := mem_iUnion₂.1 h
-    have := hfar A hA p hpA
-    rw [dist_self] at this; linarith
-  have hKW : K ⊆ W := by
-    intro k hk
-    obtain ⟨A, hA, hkA⟩ := mem_iUnion₂.1 (hGM (hKM hk))
-    exact mem_iUnion₂.2 ⟨A, Finset.mem_filter.2 ⟨hA, k, hkA, hk⟩, hkA⟩
-  have hb : Bornology.IsBounded (connectedComponentIn Wᶜ p) :=
-    hpb.subset (connectedComponentIn_mono _ (compl_subset_compl.2 hKW))
-  obtain ⟨J, hJ, hJW, hpJ⟩ := exists_polygon_around hWo hpW hb
-  obtain ⟨n, v, hv, rfl⟩ := isSimpleClosedPolygon_iff.1 hJ
-  exact no_log_on_polygon hv hpJ ⟨L, hLc.mono hJW, fun z hz => hLe z (hJW hz)⟩
-
-/-- **Bing 1951 (Duke), Theorem 7, as printed.** If `M` is a tree-like plane continuum and
-`ε > 0`, there is a tree chain covering `M` whose links are the interiors of simple closed curves
-(here: polygons) of diameters less than `ε`. -/
-theorem theorem7_1951_treeLike {M : Set Pt} (hM : IsTreeLike M) {ε : ℝ} (hε : 0 < ε) :
-    ∃ G : Finset (Set Pt), IsTreeChain G ∧
-      (∀ h ∈ G, ∃ Γ : Set Pt, IsSimpleClosedPolygon Γ ∧ h = polyInterior Γ) ∧
-      (∀ h ∈ G, diam h < ε) ∧ M ⊆ ⋃ h ∈ G, h :=
-  theorem7_1951 hM.1 (treeLike_nonseparating hM) hε
-
-/-- **Theorem 6 and its converse.** A bounded plane continuum is tree-like iff it contains no
-continuum that separates the plane. -/
-theorem isTreeLike_iff_nonseparating {M : Set Pt} (hM : Fold.Q78.IsContinuum M) :
-    IsTreeLike M ↔ ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K :=
-  ⟨fun h => treeLike_nonseparating h, fun h => theorem6_1951 hM h⟩
 
 end HPC.Plane

@@ -231,20 +231,6 @@ theorem countable_sepPoint_not_hasOrder_two [LocallyCompactSpace X]
 
 /-! ### Whyburn's definitions, recorded (Ch. I and Ch. III §2) -/
 
-/-- Whyburn's **generalized continuum** (*Analytic Topology*, Ch. I): a locally compact, separable,
-connected metric space. (Recorded; (3.2) is used here for compact metric continua.) -/
-def IsGeneralizedContinuum (Y : Type*) [MetricSpace Y] : Prop :=
-  LocallyCompactSpace Y ∧ TopologicalSpace.SeparableSpace Y ∧ ConnectedSpace Y
-
-/-- Whyburn's **potential order `≤ n` relative to a collection `𝒬`** (Ch. III §2, p. 45): a closed
-set `X₀` has potential order `≤ n` in `X` relative to `𝒬` if there are open sets
-`U₁ ⊃ Ū₂ ⊃ U₂ ⊃ Ū₃ ⊃ ⋯` with `X₀ = ⋂ Uᵢ` and each `F(Uᵢ)` contained in the sum of at most `n`
-elements of `𝒬`. (Recorded; not used in the proofs of batch 150.) -/
-def PotentialOrderLE (𝒬 : Set (Set X)) (X₀ : Set X) (n : ℕ) : Prop :=
-  IsClosed X₀ ∧ ∃ U : ℕ → Set X, (∀ i, IsOpen (U i)) ∧ (∀ i, closure (U (i + 1)) ⊆ U i) ∧
-    X₀ = ⋂ i, U i ∧ ∀ i, ∃ s : Finset (Set X), (↑s : Set (Set X)) ⊆ 𝒬 ∧ s.card ≤ n ∧
-      frontier (U i) ⊆ ⋃₀ (↑s : Set (Set X))
-
 end Sep
 
 end HPC.Jones

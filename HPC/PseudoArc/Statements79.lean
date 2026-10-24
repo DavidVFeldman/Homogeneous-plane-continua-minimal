@@ -63,28 +63,11 @@ def shift (Δ : Description X P Q) (i : ℕ) : Description X P Q where
 
 /-! ## Theorem 6 -/
 
-/-- **Bing 1948, Theorem 6** (statement). For every pattern `(1, x_1), …, (N, x_N)` in the first
-chain `D_1` that starts at its first link and ends at its last (`IsPattern`, steps of at most
-one), some `D_j` has a consolidation `E` which is a chain from `P` to `Q` and follows the pattern
-in `D_1`. -/
-def Theorem6Statement (Δ : Description X P Q) : Prop :=
-  ∀ (N : ℕ) (x : Fin N → Fin (Δ.n 0)), IsPattern x →
-    ∃ j, ∃ E : Chain X N, E.IsFrom P Q ∧ E.IsConsolidationOf (Δ.D j) ∧
-      E.FollowsPattern x (Δ.D 0)
-
 /-- Theorem 6 with a level `j > 0`, which is what Bing's proof produces. -/
 def Theorem6PosStatement (Δ : Description X P Q) : Prop :=
   ∀ (N : ℕ) (x : Fin N → Fin (Δ.n 0)), IsPattern x →
     ∃ j, 0 < j ∧ ∃ E : Chain X N, E.IsFrom P Q ∧ E.IsConsolidationOf (Δ.D j) ∧
       E.FollowsPattern x (Δ.D 0)
-
-/-- `PatternFollowing` gives Theorem 6 (with `j > 0`) for every tail of the description. -/
-theorem theorem6_shift_of_patternFollowing (Δ : Description X P Q)
-    (h : Δ.PatternFollowing) (i : ℕ) : Theorem6PosStatement (Δ.shift i) := by
-  intro N x hx
-  obtain ⟨j, hij, E, hE1, hE2, hE3⟩ := h i N x hx
-  obtain ⟨d, rfl⟩ : ∃ d, j = i + d := ⟨j - i, by omega⟩
-  exact ⟨d, by omega, E, hE1, hE2, hE3⟩
 
 /-- Theorem 6 with `j > 0` for every tail of the description gives `PatternFollowing`. -/
 theorem patternFollowing_of_theorem6Pos (Δ : Description X P Q)
@@ -94,42 +77,6 @@ theorem patternFollowing_of_theorem6Pos (Δ : Description X P Q)
   exact ⟨i + d, by omega, E, hE1, hE2, hE3⟩
 
 /-! ## Theorem 5 -/
-
-/-- A pattern `(1, x_1), …, (N, x_N)` from index `h` to index `k` (Bing p. 733): `x_1 = h`,
-`x_N = k`, `h ≤ x_i ≤ k`, and consecutive values differ by at most one. -/
-def IsPatternFromTo {N m : ℕ} (x : Fin N → Fin m) (h k : Fin m) : Prop :=
-  ∃ hN : 0 < N, x ⟨0, hN⟩ = h ∧ x ⟨N - 1, by omega⟩ = k ∧ (∀ t, h ≤ x t ∧ x t ≤ k) ∧
-    ∀ t t' : Fin N, t'.val = t.val + 1 → ((x t' : ℤ) - (x t : ℤ)).natAbs ≤ 1
-
-/-- `E` is a consolidation of the links `D.link t`, `t ∈ S` (Bing: "a consolidation of the links
-of `D_j` contained in …"): each of those links lies in a link of `E`, and each link of `E` is a
-union of some of them. -/
-def _root_.HPC.Chain.IsConsolidationOn {n m : ℕ} (E : Chain X m) (D : Chain X n)
-    (S : Set (Fin n)) : Prop :=
-  (∀ t ∈ S, ∃ e, D.link t ⊆ E.link e) ∧ ∀ e, ∃ T ⊆ S, E.link e = ⋃ t ∈ T, D.link t
-
-/-- **Bing 1948, Theorem 5** (statement). Let `x` be a pattern from `h` to `k` in `D_1`.
-Suppose the subchain `D_2(u, v)` is contained in the subchain `D_1(h, k)` (every link of
-`D_2(u, v)` lies in a link of `D_1(h, k)`), and the closures of `d(2)_u` and `d(2)_v` are
-disjoint subsets of `d(1)_h` and `d(1)_k`. Then for every `w` there are `j > w` and a chain `E`
-following `x` in `D_1`, which is a consolidation of the links of `D_j` contained in
-`D_2(u, v)`, no interior link of which meets `d(2)_u ∪ d(2)_v`.
-
-Here "contained in `D_2(u, v)`" is read as "contained in a link of `D_2(u, v)`". -/
-def Theorem5Statement (Δ : Description X P Q) : Prop :=
-  ∀ (N : ℕ) (x : Fin N → Fin (Δ.n 0)) (h k : Fin (Δ.n 0)) (u v : Fin (Δ.n 1)),
-    IsPatternFromTo x h k → u ≤ v →
-    (∀ t : Fin (Δ.n 1), u ≤ t → t ≤ v → ∃ s : Fin (Δ.n 0), h ≤ s ∧ s ≤ k ∧
-      (Δ.D 1).link t ⊆ (Δ.D 0).link s) →
-    closure ((Δ.D 1).link u) ⊆ (Δ.D 0).link h →
-    closure ((Δ.D 1).link v) ⊆ (Δ.D 0).link k →
-    Disjoint (closure ((Δ.D 1).link u)) (closure ((Δ.D 1).link v)) →
-    ∀ w : ℕ, ∃ j, w < j ∧ ∃ E : Chain X N,
-      E.FollowsPattern x (Δ.D 0) ∧
-      E.IsConsolidationOn (Δ.D j)
-        {t | ∃ s : Fin (Δ.n 1), u ≤ s ∧ s ≤ v ∧ (Δ.D j).link t ⊆ (Δ.D 1).link s} ∧
-      ∀ e : Fin N, 0 < e.val → e.val < N - 1 →
-        Disjoint (E.link e) ((Δ.D 1).link u ∪ (Δ.D 1).link v)
 
 end Description
 
@@ -152,13 +99,6 @@ end Chain
 namespace Description
 
 variable {P Q : X}
-
-/-- **Bing 1948, Theorem 13** (statement): the described continuum `M` is homogeneous — for any
-two of its points there is a self-homeomorphism of `M` carrying the first to the second. The
-theorem to be proved is `∀ Δ, Theorem13Statement Δ` under `[CompactSpace X]` (as for Theorem 12,
-`Description.exists_homeomorph`). -/
-def Theorem13Statement (Δ : Description X P Q) : Prop :=
-  ∀ (P₁ P₂ : X) (h₁ : P₁ ∈ Δ.M) (h₂ : P₂ ∈ Δ.M), ∃ T : Δ.M ≃ₜ Δ.M, T ⟨P₁, h₁⟩ = ⟨P₂, h₂⟩
 
 end Description
 

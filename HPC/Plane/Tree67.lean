@@ -1,8 +1,12 @@
-import HPC.PseudoArc.Recon86
+import HPC.PseudoArc.Theorem14
+import HPC.Fold.BingCrook
+import HPC.Fold.Pair79Chain
 import HPC.Plane.PseudoArc51
 import HPC.PseudoArc.Uniqueness
-import HPC.PseudoArc.T5Main
+import HPC.Chains.Basic
+import HPC.PseudoArc.PatMain
 import HPC.PseudoArc.Statements79
+import HPC.PseudoArc.PatGeom
 import HPC.PseudoArc.T13Chains
 import HPC.Plane.Polygonal
 
@@ -141,78 +145,6 @@ structure PlaneFacts : Prop where
   janiszewski : ∀ A B : Set Pt, IsClosed A → IsClosed B → (IsConnected (A ∩ B) ∨ A ∩ B = ∅) →
     ∀ x y : Pt, ¬ SeparatesPts A x y → ¬ SeparatesPts B x y → ¬ SeparatesPts (A ∪ B) x y
 -/
-
-/-- **The commissioned `janiszewski` field is false** (so the commissioned `PlaneFacts` had no
-inhabitant): `A = [0, ∞) × {0}` and `B = (-∞, 0] × {0}` are closed, `A ∩ B = {(0, 0)}` is
-connected, neither separates `(0, 1)` from `(0, -1)` (the three convex half-planes `y > 0`,
-`x < 0` resp. `x > 0`, and `y < 0` give a connected set avoiding it), and `A ∪ B` is the `x`-axis,
-which does. -/
-theorem janiszewski_closed_false : ¬ ∀ A B : Set Pt, IsClosed A → IsClosed B →
-    (IsConnected (A ∩ B) ∨ A ∩ B = ∅) →
-    ∀ x y : Pt, ¬ SeparatesPts A x y → ¬ SeparatesPts B x y → ¬ SeparatesPts (A ∪ B) x y := by
-  intro h
-  set A : Set Pt := Ici 0 ×ˢ {0}
-  set B : Set Pt := Iic 0 ×ˢ {0}
-  have hup : IsPreconnected {p : Pt | 0 < p.2} :=
-    (convex_halfSpace_gt (LinearMap.snd ℝ ℝ ℝ).isLinear 0).isPreconnected
-  have hdn : IsPreconnected {p : Pt | p.2 < 0} :=
-    (convex_halfSpace_lt (LinearMap.snd ℝ ℝ ℝ).isLinear 0).isPreconnected
-  have hl : IsPreconnected {p : Pt | p.1 < 0} :=
-    (convex_halfSpace_lt (LinearMap.fst ℝ ℝ ℝ).isLinear 0).isPreconnected
-  have hr : IsPreconnected {p : Pt | 0 < p.1} :=
-    (convex_halfSpace_gt (LinearMap.fst ℝ ℝ ℝ).isLinear 0).isPreconnected
-  have hnotsep : ∀ (C : Set Pt) (S : Set Pt), IsPreconnected S → S ⊆ Cᶜ →
-      ((0 : ℝ), (1 : ℝ)) ∈ S → ((0 : ℝ), (-1 : ℝ)) ∈ S → ¬ SeparatesPts C (0, 1) (0, -1) := by
-    intro C S hS hSC hx hy ⟨_, _, hc⟩
-    exact hc (hS.subset_connectedComponentIn hx hSC hy)
-  refine h A B (isClosed_Ici.prod isClosed_singleton) (isClosed_Iic.prod isClosed_singleton) ?_
-    (0, 1) (0, -1) ?_ ?_ ?_
-  · left
-    have : A ∩ B = {(0, 0)} := by
-      ext ⟨p, q⟩
-      simp only [A, B, mem_inter_iff, mem_prod, mem_Ici, mem_Iic, mem_singleton_iff,
-        Prod.mk.injEq]
-      constructor
-      · rintro ⟨⟨h1, h2⟩, h3, -⟩; exact ⟨le_antisymm h3 h1, h2⟩
-      · rintro ⟨rfl, rfl⟩; simp
-    rw [this]; exact isConnected_singleton
-  · refine hnotsep A ({p : Pt | 0 < p.2} ∪ {p : Pt | p.1 < 0} ∪ {p : Pt | p.2 < 0})
-      ((hup.union ((-1 : ℝ), (1 : ℝ)) (by simp) (by simp) hl).union ((-1 : ℝ), (-1 : ℝ))
-        (by simp) (by simp) hdn) ?_ (by simp) (by simp)
-    rintro ⟨p, q⟩ hpq ⟨h1, h2⟩
-    simp only [mem_singleton_iff] at h2
-    simp only [mem_union, mem_setOf_eq, h2] at hpq
-    simp only [mem_Ici] at h1
-    rcases hpq with (h | h) | h <;> linarith
-  · refine hnotsep B ({p : Pt | 0 < p.2} ∪ {p : Pt | 0 < p.1} ∪ {p : Pt | p.2 < 0})
-      ((hup.union ((1 : ℝ), (1 : ℝ)) (by simp) (by simp) hr).union ((1 : ℝ), (-1 : ℝ))
-        (by simp) (by simp) hdn) ?_ (by simp) (by simp)
-    rintro ⟨p, q⟩ hpq ⟨h1, h2⟩
-    simp only [mem_singleton_iff] at h2
-    simp only [mem_union, mem_setOf_eq, h2] at hpq
-    simp only [mem_Iic] at h1
-    rcases hpq with (h | h) | h <;> linarith
-  · refine ⟨by simp [A, B], by simp [A, B], fun hy => ?_⟩
-    have hsub : connectedComponentIn (A ∪ B)ᶜ (0, 1) ⊆
-        {p : Pt | 0 < p.2} ∪ {p : Pt | p.2 < 0} := by
-      intro p hp
-      have hp' := connectedComponentIn_subset _ _ hp
-      simp only [A, B, mem_compl_iff, mem_union, mem_prod, mem_Ici, mem_Iic,
-        mem_singleton_iff, not_or, not_and] at hp'
-      simp only [mem_union, mem_setOf_eq]
-      rcases lt_trichotomy p.2 0 with h' | h' | h'
-      · exact Or.inr h'
-      · rcases le_total 0 p.1 with h'' | h''
-        · exact absurd h' (hp'.1 h'')
-        · exact absurd h' (hp'.2 h'')
-      · exact Or.inl h'
-    rcases isPreconnected_iff_subset_of_disjoint.1 isPreconnected_connectedComponentIn _ _
-      (isOpen_lt continuous_const continuous_snd) (isOpen_lt continuous_snd continuous_const) hsub
-      (by
-        ext p; simp only [mem_inter_iff, mem_setOf_eq, mem_empty_iff_false, iff_false]
-        rintro ⟨-, h1, h2⟩; linarith) with h' | h'
-    · have := h' hy; simp at this; linarith
-    · have := h' (mem_connectedComponentIn (by simp [A, B])); simp at this; linarith
 
 /-- **The plane-topology facts used by Bing's proof of Theorem 6, as hypotheses** (weakened to
 polygonal sets in batch 129; corrected in
@@ -421,31 +353,6 @@ theorem inter_gridSq_subset_notched {M : Set Pt} (o : Pt) {ε η r : ℝ} (hε :
   sorry
 -/
 
-/-- **The commissioned `inter_gridSq_subset_notched` is false**: `o = 0`, `ε = 1`, `η = 1/8`,
-`r = 1/4`, `M = {(0, 1/4)}`; the point is at distance `≥ 1/4` from every vertex of the unit grid,
-lies in the closed unit square, and is in none of the three parts of its notched enlargement. -/
-theorem inter_gridSq_subset_notched_false : ¬ ∀ (M : Set Pt) (o : Pt) (ε η r : ℝ),
-    0 < ε → 0 < η → 0 < r → 2 * r < ε →
-    (∀ p ∈ M, ∀ v ∈ gridVertices o ε, r ≤ dist p v) →
-    ∀ a b : ℤ, M ∩ gridSq o ε a b ⊆ notched o ε η r a b := by
-  intro h
-  have hfar : ∀ p ∈ ({((0 : ℝ), (1 / 4 : ℝ))} : Set Pt), ∀ v ∈ gridVertices 0 1,
-      (1 / 4 : ℝ) ≤ dist p v := by
-    rintro p rfl v ⟨a, b, rfl⟩
-    rw [Prod.dist_eq, Real.dist_eq, Real.dist_eq]
-    refine le_max_of_le_right ?_
-    simp only [Prod.snd_zero, one_mul, zero_add]
-    rcases lt_trichotomy b 0 with hb | rfl | hb
-    · have : (b : ℝ) ≤ -1 := by exact_mod_cast (show b ≤ -1 by omega)
-      rw [abs_of_pos (by linarith)]; linarith
-    · simp
-    · have : (1 : ℝ) ≤ b := by exact_mod_cast (show 1 ≤ b by omega)
-      rw [abs_of_neg (by linarith)]; linarith
-  have := h _ 0 1 (1 / 8) (1 / 4) one_pos (by norm_num) (by norm_num) (by norm_num) hfar 0 0
-    ⟨rfl, by simp [gridSq]; norm_num⟩
-  simp [notched] at this
-  norm_num at this
-
 /-- **`M ∩ q̄ ⊆ d`** (corrected: `r < dist p v`): if `M` keeps distance `> r` from every grid
 vertex, every point of `M` in the closed square lies in its notched enlargement. (The skeleton's
 `hε`, `hr`, `hrε` are not needed and were dropped.) -/
@@ -617,65 +524,7 @@ theorem exists_far {M V : Set Pt} (hM : IsCompact M) (hne : M.Nonempty) (hV : Is
   exact ⟨infDist p0 V, (hV.notMem_iff_infDist_pos hVne).1 (hd.notMem_of_mem_right hp0),
     fun p hp v hv => (hmin hp).trans (infDist_le_dist_of_mem hv)⟩
 
-/-- **The cover** (Bing: "There is an `ε` collection `d_1, …, d_n` of interiors of simple closed
-curves such that `d_i` contains `M · q̄_i` and no point belongs to three of the `d_i`'s"): a finite
-family of notched squares, open, of diameter `< ε`, covering `M`, with no triple intersections. The
-polygon property of the `d_i` is not stated here (batch 119). Constants: grid side `δ = ε/2`,
-`r = min (r₀/2) (δ/4)` with `r₀ > 0` the distance from `M` to the grid vertices, `η = r/2`.
-(The skeleton's hypothesis `hb` follows from compactness and was dropped.) -/
-theorem exists_notched_cover {M : Set Pt} (hM : Fold.Q78.IsContinuum M)
-    (hns : ∀ K ⊆ M, Fold.Q78.IsContinuum K → ¬ SeparatesPlane K) {ε : ℝ} (hε : 0 < ε) :
-    ∃ D : Finset (Set Pt), (∀ d ∈ D, IsOpen d) ∧ (∀ d ∈ D, diam d < ε) ∧ M ⊆ ⋃ d ∈ D, d ∧
-      (∀ d ∈ D, (d ∩ M).Nonempty) ∧
-      ∀ d₁ ∈ D, ∀ d₂ ∈ D, ∀ d₃ ∈ D, d₁ ≠ d₂ → d₂ ≠ d₃ → d₁ ≠ d₃ → d₁ ∩ d₂ ∩ d₃ = ∅ := by
-  set δ := ε / 2 with hδ
-  have hδ0 : 0 < δ := by positivity
-  obtain ⟨o, ho⟩ := exists_grid_offset hM.1.isClosed (interior_eq_empty_of_noSeparating hns) δ
-  obtain ⟨r0, hr0, hfar0⟩ := exists_far hM.1 hM.2.nonempty (isClosed_gridVertices o hδ0.ne')
-    ⟨_, 0, 0, rfl⟩ ho
-  set r := min (r0 / 2) (δ / 4) with hr
-  have hr0' : 0 < r := lt_min (by positivity) (by positivity)
-  have hrr0 : r < r0 := (min_le_left _ _).trans_lt (by linarith)
-  have hrδ : 2 * r < δ := by have := min_le_right (r0 / 2) (δ / 4); linarith
-  set η := r / 2 with hη
-  have hη0 : 0 < η := by positivity
-  have hηr : η < r := by linarith
-  have hfar : ∀ p ∈ M, ∀ v ∈ gridVertices o δ, r < dist p v := fun p hp v hv =>
-    hrr0.trans_le (hfar0 p hp v hv)
-  have hS := finite_gridSq_meeting hM.1.isBounded o hδ0
-  refine ⟨hS.toFinset.image (fun ab => notched o δ η r ab.1 ab.2), ?_, ?_, ?_, ?_, ?_⟩
-  · intro d hd
-    obtain ⟨ab, -, rfl⟩ := Finset.mem_image.1 hd
-    exact isOpen_notched _ _ _ _ _ _
-  · intro d hd
-    obtain ⟨ab, -, rfl⟩ := Finset.mem_image.1 hd
-    refine (diam_notched_le o hδ0 hη0 hr0' _ _).trans_lt ?_
-    have := min_le_right (r0 / 2) (δ / 4)
-    linarith
-  · intro p hp
-    have hsq := mem_gridSq_floor o p hδ0
-    refine mem_iUnion₂.2 ⟨_, Finset.mem_image.2 ⟨(⌊(p.1 - o.1) / δ⌋, ⌊(p.2 - o.2) / δ⌋),
-      hS.mem_toFinset.2 ⟨p, hsq, hp⟩, rfl⟩, ?_⟩
-    exact inter_gridSq_subset_notched o hη0 hfar _ _ ⟨hp, hsq⟩
-  · intro d hd
-    obtain ⟨ab, hab, rfl⟩ := Finset.mem_image.1 hd
-    obtain ⟨q, hq, hqM⟩ := hS.mem_toFinset.1 hab
-    exact ⟨q, inter_gridSq_subset_notched o hη0 hfar _ _ ⟨hqM, hq⟩, hqM⟩
-  · intro d₁ h₁ d₂ h₂ d₃ h₃ n12 n23 n13
-    obtain ⟨⟨a₁, b₁⟩, -, rfl⟩ := Finset.mem_image.1 h₁
-    obtain ⟨⟨a₂, b₂⟩, -, rfl⟩ := Finset.mem_image.1 h₂
-    obtain ⟨⟨a₃, b₃⟩, -, rfl⟩ := Finset.mem_image.1 h₃
-    exact notched_no_triple o hδ0 hη0 hηr hrδ
-      (fun h => n12 (by obtain ⟨rfl, rfl⟩ := Prod.mk.inj h; rfl))
-      (fun h => n23 (by obtain ⟨rfl, rfl⟩ := Prod.mk.inj h; rfl))
-      (fun h => n13 (by obtain ⟨rfl, rfl⟩ := Prod.mk.inj h; rfl))
-
 /-! ### Two lemmas for batch 118 -/
-
-/-- Components of open subsets of the plane are open (the plane is locally connected). -/
-theorem isOpen_connectedComponentIn_of_isOpen {U : Set Pt} (hU : IsOpen U) (x : Pt) :
-    IsOpen (connectedComponentIn U x) :=
-  hU.connectedComponentIn
 
 /-- A finite open cover of a connected set by sets each meeting it is coherent (a split of the
 cover into two subfamilies with no intersections across would split the set). Bing does not argue

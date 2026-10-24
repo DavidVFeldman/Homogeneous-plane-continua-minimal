@@ -1,9 +1,6 @@
 import HPC.Jones.Defs
 import HPC.Jones.Basic
-import HPC.Jones.Theorem6
-import HPC.Jones.Theorem13Aux
-import HPC.Jones.Theorem13
-import HPC.Jones.CutPoints
+import HPC.PseudoArc.T13Topo
 import HPC.Jones.Jones51
 
 /-!
@@ -56,10 +53,6 @@ def IsAposyndeticT (Y : Type*) [TopologicalSpace Y] : Prop := ∀ x y : Y, x ≠
 
 end Top
 
-/-- For a metric space `AposAtT` is `AposAt` (same body). -/
-theorem aposAtT_iff {X : Type*} [MetricSpace X] (x y : X) : AposAtT x y ↔ AposAt x y :=
-  Iff.rfl
-
 /-! ## §2. Upper semicontinuous decompositions -/
 
 section Decomp
@@ -87,9 +80,6 @@ def LSCAt (r : Setoid X) (x : X) : Prop :=
 def IsContinuousDecomp (r : Setoid X) : Prop := IsUSCDecomp r ∧ ∀ x, LSCAt r x
 
 variable {r : Setoid X}
-
-omit [MetricSpace X] [CompactSpace X] in
-theorem mem_cls_iff {x y : X} : y ∈ cls r x ↔ r y x := Iff.rfl
 
 omit [MetricSpace X] [CompactSpace X] in
 theorem mem_cls_self (x : X) : x ∈ cls r x := r.iseqv.refl x
@@ -216,77 +206,6 @@ theorem metrizableSpace_quotient (h : IsUSCDecomp r) :
   haveI := t2Space_quotient h
   haveI := secondCountable_quotient h
   exact TopologicalSpace.metrizableSpace_of_t3_secondCountable _
-
-/-- Monotone decompositions: preimages of subcontinua are subcontinua.
-
-*Shape change:* the hypothesis `Fold.Q78.IsContinuum K` of the skeleton does not elaborate on the
-topological space `Quotient r` (it is declared under `[MetricSpace X]`); its body
-`IsCompact K ∧ IsConnected K` is used. -/
-theorem isContinuum_preimage (h : IsUSCDecomp r) (hconn : ∀ x, IsConnected (cls r x))
-    {K : Set (Quotient r)} (hK : IsCompact K ∧ IsConnected K) :
-    Fold.Q78.IsContinuum (Quotient.mk r ⁻¹' K) := by
-  haveI := t2Space_quotient h
-  have hcl : IsClosed (Quotient.mk r ⁻¹' K) := hK.1.isClosed.preimage continuous_quotient_mk'
-  refine ⟨hcl.isCompact, ?_, ?_⟩
-  · obtain ⟨q, hq⟩ := hK.2.nonempty
-    induction q using Quotient.inductionOn with | h x => ?_
-    exact ⟨x, hq⟩
-  · rw [isPreconnected_iff_subset_of_disjoint_closed]
-    intro u v hu hv hcov hdisj
-    -- the classes in `K` inside `u`, resp. `v`
-    set Ku := Quotient.mk r '' (Quotient.mk r ⁻¹' K ∩ u)
-    set Kv := Quotient.mk r '' (Quotient.mk r ⁻¹' K ∩ v)
-    have hKu : IsClosed Ku := isClosedMap_mk h _ (hcl.inter hu)
-    have hKv : IsClosed Kv := isClosedMap_mk h _ (hcl.inter hv)
-    -- each class over `K` lies in `u` or in `v`
-    have hcls : ∀ x, Quotient.mk r x ∈ K → cls r x ⊆ u ∨ cls r x ⊆ v := by
-      intro x hx
-      have hsub : cls r x ⊆ Quotient.mk r ⁻¹' K := fun z hz => by
-        show Quotient.mk r z ∈ K
-        rw [mk_eq_mk_iff_mem_cls.mpr hz]
-        exact hx
-      have hd : cls r x ∩ (u ∩ v) = ∅ := by
-        rw [eq_empty_iff_forall_notMem]
-        intro z ⟨hz, hzu, hzv⟩
-        exact (eq_empty_iff_forall_notMem.mp hdisj) z ⟨hsub hz, hzu, hzv⟩
-      exact (isPreconnected_iff_subset_of_disjoint_closed.mp (hconn x).isPreconnected) u v hu hv
-        (hsub.trans hcov) hd
-    have hcovK : K ⊆ Ku ∪ Kv := by
-      intro q hq
-      induction q using Quotient.inductionOn with | h x => ?_
-      rcases hcls x hq with hxu | hxv
-      · exact Or.inl ⟨x, ⟨hq, hxu (mem_cls_self x)⟩, rfl⟩
-      · exact Or.inr ⟨x, ⟨hq, hxv (mem_cls_self x)⟩, rfl⟩
-    have hdK : K ∩ (Ku ∩ Kv) = ∅ := by
-      rw [eq_empty_iff_forall_notMem]
-      rintro q ⟨hq, ⟨a, ⟨-, hau⟩, rfl⟩, ⟨b, ⟨-, hbv⟩, hb⟩⟩
-      have hb' : b ∈ cls r a := mk_eq_mk_iff_mem_cls.mp hb
-      have hab : a ∈ cls r b := r.iseqv.symm hb'
-      rcases hcls a hq with hxu | hxv
-      · exact (eq_empty_iff_forall_notMem.mp hdisj) b
-          ⟨(show Quotient.mk r b ∈ K from hb ▸ hq), hxu hb', hbv⟩
-      · exact (eq_empty_iff_forall_notMem.mp hdisj) a
-          ⟨hq, hau, hxv (mem_cls_self a)⟩
-    rcases (isPreconnected_iff_subset_of_disjoint_closed.mp hK.2.isPreconnected) Ku Kv hKu hKv
-      hcovK hdK with hsu | hsv
-    · left
-      intro x hx
-      obtain ⟨y, ⟨-, hyu⟩, hy⟩ := hsu hx
-      rcases hcls x hx with hxu | hxv
-      · exact hxu (mem_cls_self x)
-      · exfalso
-        have hyx : y ∈ cls r x := mk_eq_mk_iff_mem_cls.mp hy
-        exact (eq_empty_iff_forall_notMem.mp hdisj) y
-          ⟨(show Quotient.mk r y ∈ K from hy ▸ hx), hyu, hxv hyx⟩
-    · right
-      intro x hx
-      obtain ⟨y, ⟨-, hyv⟩, hy⟩ := hsv hx
-      rcases hcls x hx with hxu | hxv
-      · exfalso
-        have hyx : y ∈ cls r x := mk_eq_mk_iff_mem_cls.mp hy
-        exact (eq_empty_iff_forall_notMem.mp hdisj) y
-          ⟨(show Quotient.mk r y ∈ K from hy ▸ hx), hxu hyx, hyv⟩
-      · exact hxv (mem_cls_self x)
 
 omit [CompactSpace X] in
 /-- **Homeomorphisms that permute the elements descend to the decomposition space.** -/

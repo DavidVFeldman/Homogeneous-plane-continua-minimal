@@ -6,7 +6,6 @@ import HPC.Moore.Sec4
 import HPC.Moore.ArcChar
 import HPC.Moore.Thm15
 import HPC.Moore.Arcs
-import HPC.Moore.Refute
 
 /-!
 # Moore, F.A. (1916), §6: a toolkit of arcs in a Hausdorff space (batch 138)

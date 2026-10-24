@@ -59,13 +59,6 @@ theorem ho16_theorem15 : HOThm15 := by
 /-- **H–O Theorem 20, forward direction.** -/
 theorem ho16_theorem20 : HOThm20 := ho16_theorem20_of_thm15 ho16_theorem15
 
-/-- **H–O p. 180**: every indecomposable non-degenerate homogeneous plane continuum is a
-pseudo-arc; no hypothesis. -/
-theorem ho16_indec_homogeneous_pseudoArc (M : Set Pt) [CompactSpace M] [ConnectedSpace M]
-    (hhom : IsHomogeneous M) (hind : ¬ IsDecomposableSpace M) (hnt : (univ : Set M).Nontrivial) :
-    ∃ M₀ : Set Pt, IsPseudoArc M₀ ∧ Nonempty (M ≃ₜ M₀) :=
-  homeomorph_pseudoArc_of_indec_homogeneous_of_thm15 ho16_theorem15 M hhom hind hnt
-
 /-! ## §5. The converse, and both directions -/
 
 /-- An indecomposable continuum `M` is, as a space, indecomposable as a subcontinuum of itself. -/
@@ -119,83 +112,5 @@ theorem ho16_indec_homogeneous_iff (M : Set Pt) [CompactSpace M] [ConnectedSpace
     ho16_pseudoArc_indec_homogeneous M⟩
 
 /-! ## §6. Non-vacuity -/
-
-/-- The hypotheses of `ho16_indec_homogeneous_pseudoArc` are met: by the plane pseudo-arc
-`M₀` (`isPseudoArc_plane`), homogeneous by `homogeneous_of_isPseudoArc` (pointwise for
-`M₀ ⊆ Pt`), indecomposable as a hereditarily indecomposable continuum. -/
-theorem exists_indec_homogeneous_plane : ∃ M : Set Pt, CompactSpace M ∧ ConnectedSpace M ∧
-    IsHomogeneous M ∧ ¬ IsDecomposableSpace M ∧ (univ : Set M).Nontrivial := by
-  obtain ⟨M₀, hM₀⟩ := isPseudoArc_plane
-  obtain ⟨⟨⟨hc, hconn⟩, -⟩, hHI, hnt⟩ := id hM₀
-  refine ⟨M₀, isCompact_iff_compactSpace.1 hc, isConnected_iff_connectedSpace.1 hconn,
-    fun x z => ?_, not_isDecomposableSpace_of_isIndecomposable_univ
-      (isIndecomposable_univ_of_isIndecomposable (hHI M₀ subset_rfl ⟨hc, hconn⟩)), ?_⟩
-  · obtain ⟨T, hT⟩ := homogeneous_of_isPseudoArc hM₀ x z x.2 z.2
-    exact ⟨T, hT⟩
-  · obtain ⟨a, ha, b, hb, hab⟩ := hnt
-    exact ⟨⟨a, ha⟩, mem_univ _, ⟨b, hb⟩, mem_univ _, fun h => hab (congrArg Subtype.val h)⟩
-
-/-- A ladder of height 3 on `[0, 2] ⊆ ℝ`: lists `[½]`, `[½]`, `[¼, ½, ¾]` at `0`, `1`, `2`; no
-event on `(0, 1)`; a wedge at `2` at place `1` on `(1, 2)` (tip at parameter `½`, height `⅜`). -/
-theorem ladder_example :
-    IsLadder (Icc (0 : ℝ) 2) {((0 : ℝ), (1 : ℝ)), ((1 : ℝ), (2 : ℝ))}
-      (fun v => if v = 2 then [1 / 4, 1 / 2, 3 / 4] else [1 / 2])
-      (fun s => if s = ((1 : ℝ), (2 : ℝ)) then some (1, 1 / 2, 3 / 8) else none) := by
-  have h02 : (0 : ℝ) ≠ 2 := by norm_num
-  have h12 : (1 : ℝ) ≠ 2 := by norm_num
-  have hne : ((0 : ℝ), (1 : ℝ)) ≠ ((1 : ℝ), (2 : ℝ)) := by
-    intro h; simp at h
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · intro s hs
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hs
-    rcases hs with rfl | rfl <;> norm_num
-  · simp only [Finset.mem_insert, Finset.mem_singleton, iUnion_iUnion_eq_or_left,
-      iUnion_iUnion_eq_left, segment_eq_Icc (zero_le_one' ℝ), segment_eq_Icc (one_le_two : (1:ℝ) ≤ 2)]
-    rw [Icc_union_Icc_eq_Icc zero_le_one one_le_two]
-  · intro s hs s' hs' hss
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hs hs'
-    rcases hs with rfl | rfl <;> rcases hs' with rfl | rfl
-    · exact absurd rfl hss
-    · rintro z ⟨h1, h2⟩
-      simp only [segment_eq_Icc (zero_le_one' ℝ), segment_eq_Icc (one_le_two : (1:ℝ) ≤ 2), mem_Icc] at h1 h2
-      have : z = 1 := le_antisymm h1.2 h2.1
-      subst this; simp
-    · rintro z ⟨h1, h2⟩
-      simp only [segment_eq_Icc (zero_le_one' ℝ), segment_eq_Icc (one_le_two : (1:ℝ) ≤ 2), mem_Icc] at h1 h2
-      have : z = 1 := le_antisymm h2.2 h1.1
-      subst this; simp
-    · exact absurd rfl hss
-  · intro s hs
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hs
-    rcases hs with rfl | rfl <;> simp [h02, h12, Nat.odd_iff] <;> norm_num
-  · intro s hs he
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hs
-    rcases hs with rfl | rfl <;> simp [h02, h12, hne] at he ⊢
-  · intro s hs m lam h he
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hs
-    rcases hs with rfl | rfl
-    · simp [hne] at he
-    · simp only [if_true, Option.some.injEq, Prod.mk.injEq] at he
-      obtain ⟨rfl, rfl, rfl⟩ := he
-      simp [h12]; norm_num
-
-/-- The ladder of `ladder_example` has height 3. -/
-theorem ladder_example_height :
-    ladderHeight {((0 : ℝ), (1 : ℝ)), ((1 : ℝ), (2 : ℝ))}
-      (fun v => if v = 2 then [1 / 4, 1 / 2, 3 / 4] else [1 / 2]) = 3 := by
-  have h02 : (0 : ℝ) ≠ 2 := by norm_num
-  have h12 : (1 : ℝ) ≠ 2 := by norm_num
-  simp [ladderHeight, h02, h12]
-
-/-- `ho16_stairwell_of_ladder` applied to `ladder_example`: the union of its three sheets has a
-stairwell structure of height 3. -/
-theorem ladder_example_stairwell :
-    HasStairwell (Icc (0 : ℝ) 2)
-      (⋃ i ∈ Icc 1 3, ladderSheet {((0 : ℝ), (1 : ℝ)), ((1 : ℝ), (2 : ℝ))}
-        (fun v => if v = 2 then [1 / 4, 1 / 2, 3 / 4] else [1 / 2])
-        (fun s => if s = ((1 : ℝ), (2 : ℝ)) then some (1, 1 / 2, 3 / 8) else none) i) 3 := by
-  obtain ⟨-, α, hα⟩ := ho16_stairwell_of_ladder ladder_example (Finset.insert_nonempty _ _)
-  rw [ladder_example_height] at hα
-  exact ⟨_, α, hα⟩
 
 end HPC.HO16

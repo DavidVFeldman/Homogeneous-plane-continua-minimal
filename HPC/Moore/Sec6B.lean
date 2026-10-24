@@ -89,28 +89,6 @@ theorem fa_theorem25 (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ
 
 /-! ### Theorem 26 -/
 
-/-- **Theorem 26.** If `ACB`, `ADB`, `AFB` are three arcs, no two with a common point other than
-`A` and `B`, then the interiors of `ACBFA`, `ACBDA`, `ADBFA` are not mutually exclusive (some two
-of them meet). *Axioms used: 1, 2, 3, 4, 5, 7, 8.* Moore's proof, simplified (see `Gen.th26`):
-his Case I is reduced to Case II, and the auxiliary curves `J̄₁`, `J̄₂` and Theorem 25 are not
-needed. **Shape change:** the axioms are made explicit. -/
-theorem fa_theorem26 (h1 : σ.Axiom1) (h2 : σ.Axiom2) (h3 : σ.Axiom3) (h4 : σ.Axiom4)
-    (h5 : σ.Axiom5) (h7 : σ.Axiom7) (h8 : σ.Axiom8) {A B : S} {K₁ K₂ K₃ : Set S}
-    (hK₁ : σ.IsArc A B K₁) (hK₂ : σ.IsArc A B K₂) (hK₃ : σ.IsArc A B K₃)
-    (h12 : K₁ ∩ K₂ = {A, B}) (h13 : K₁ ∩ K₃ = {A, B}) (h23 : K₂ ∩ K₃ = {A, B})
-    {R R₁ R₂ : Set S} (hR : σ.IsInteriorOf (K₁ ∪ K₃) R) (hR₁ : σ.IsInteriorOf (K₁ ∪ K₂) R₁)
-    (hR₂ : σ.IsInteriorOf (K₂ ∪ K₃) R₂) :
-    (R ∩ R₁).Nonempty ∨ (R ∩ R₂).Nonempty ∨ (R₁ ∩ R₂).Nonempty := by
-  letI := σ.topology
-  haveI := t2Space h1
-  haveI := locallyConnectedSpace h1 h2
-  have h51 := axiom5₁_of_axiom5 h5
-  rw [isInteriorOf_iff h1 h3 h4 h51] at hR hR₁ hR₂
-  rw [isArc_iff_tarc h1 h3 h4 h51] at hK₁ hK₂ hK₃
-  exact th26 hopen_region (hpc_region h1 h2) (th21Prop h1 h3 h4 h5 h7) (arcConn h1 h3 h4 h51 h2)
-    (ax8Prop h1 h3 h4 h51 h8) (hext_region h1 h3) (fun R hR => isCompact_closure_region h1 h4 hR)
-    (not_isCompact_univ h1 h5) hK₁ hK₂ hK₃ h12 h13 h23 hR hR₁ hR₂
-
 /-! ### Theorem 27 -/
 
 /-- **Theorem 27.** If `A`, `B` separate `C`, `D` on `J` and the open arc `AXB` is without `J`,

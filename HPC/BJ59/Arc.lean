@@ -61,67 +61,6 @@ theorem isCompact_preimage_Icc {f : X → unitInterval} (hfc : Continuous f) (a 
     IsCompact (f ⁻¹' Icc a b) :=
   (isClosed_Icc.preimage hfc).isCompact
 
-/-- **Bing–Jones, Theorem 2** (p. 174), with explicit hypotheses. -/
-theorem theorem2_arc {f : X → unitInterval} (hfc : Continuous f) (hfs : Function.Surjective f)
-    (hfib : ∀ t, IsPreconnected (f ⁻¹' {t})) {a b c d : unitInterval} (hab : a < b)
-    (hbc : b < c) (hcd : c < d) :
-    ∃ ε > 0, ∀ (n : ℕ) (D : Chain X n), IsEpsChain D ε → univ ⊆ D.union →
-      ∀ i j k : Fin n, (D.link i ∩ f ⁻¹' Icc 0 a).Nonempty →
-        (D.link j ∩ f ⁻¹' Icc b c).Nonempty → (D.link k ∩ f ⁻¹' Icc d 1).Nonempty →
-          (i < j ∧ j < k) ∨ (k < j ∧ j < i) := by
-  set P0a := f ⁻¹' Icc 0 a
-  set Pbc := f ⁻¹' Icc b c
-  set Pd1 := f ⁻¹' Icc d 1
-  set P0b := f ⁻¹' Icc 0 b
-  set Pc1 := f ⁻¹' Icc c 1
-  have hdisj : ∀ {p q r s : unitInterval}, q < r → Disjoint (f ⁻¹' Icc p q) (f ⁻¹' Icc r s) :=
-    fun hqr => Set.disjoint_left.2 fun x hx hx' => absurd (hx.2.trans_lt hqr) (not_lt.2 hx'.1)
-  obtain ⟨ε₁, hε₁, h₁⟩ := exists_sep_of_disjoint (isCompact_preimage_Icc hfc _ _)
-    (isCompact_preimage_Icc hfc _ _) (hdisj hab : Disjoint P0a Pbc)
-  obtain ⟨ε₂, hε₂, h₂⟩ := exists_sep_of_disjoint (isCompact_preimage_Icc hfc _ _)
-    (isCompact_preimage_Icc hfc _ _) (hdisj hcd : Disjoint Pbc Pd1)
-  obtain ⟨ε₃, hε₃, h₃⟩ := exists_sep_of_disjoint (isCompact_preimage_Icc hfc _ _)
-    (isCompact_preimage_Icc hfc _ _) (hdisj hbc : Disjoint P0b Pc1)
-  refine ⟨min ε₁ (min ε₂ (ε₃ / 2)), by positivity, ?_⟩
-  intro n D hD hcov i j k hi hj hk
-  set ε := min ε₁ (min ε₂ (ε₃ / 2))
-  have e1 : ε ≤ ε₁ := min_le_left _ _
-  have e2 : ε ≤ ε₂ := (min_le_right _ _).trans (min_le_left _ _)
-  have e3 : 2 * ε ≤ ε₃ := by
-    have : ε ≤ ε₃ / 2 := (min_le_right _ _).trans (min_le_right _ _); linarith
-  have s1 : ∀ x ∈ P0a, ∀ y ∈ Pbc, ε ≤ dist x y := fun x hx y hy => e1.trans (h₁ x hx y hy)
-  have s2 : ∀ x ∈ Pbc, ∀ y ∈ Pd1, ε ≤ dist x y := fun x hx y hy => e2.trans (h₂ x hx y hy)
-  have s3 : ∀ x ∈ P0b, ∀ y ∈ Pc1, 2 * ε ≤ dist x y := fun x hx y hy => e3.trans (h₃ x hx y hy)
-  have s3' : ∀ x ∈ Pc1, ∀ y ∈ P0b, 2 * ε ≤ dist x y := fun x hx y hy => by
-    rw [dist_comm]; exact s3 y hy x hx
-  have hA1 : P0a ⊆ P0b := preimage_mono (Icc_subset_Icc le_rfl hab.le)
-  have hA3 : Pd1 ⊆ Pc1 := preimage_mono (Icc_subset_Icc hcd.le le_rfl)
-  have hC : ∀ x, x ∈ P0b ∨ x ∈ Pc1 ∨ x ∈ Pbc := fun x => by
-    rcases le_or_gt (f x) b with h | h
-    · exact Or.inl ⟨unitInterval.nonneg', h⟩
-    rcases le_or_gt c (f x) with h' | h'
-    · exact Or.inr (Or.inl ⟨h', unitInterval.le_one'⟩)
-    · exact Or.inr (Or.inr ⟨h.le, h'.le⟩)
-  have hC' : ∀ x, x ∈ Pc1 ∨ x ∈ P0b ∨ x ∈ Pbc := fun x => by
-    rcases hC x with h | h | h
-    · exact Or.inr (Or.inl h)
-    · exact Or.inl h
-    · exact Or.inr (Or.inr h)
-  have hPc := isPreconnected_preimage_Icc hfc hfs hfib
-  have hik : i ≠ k := by
-    rintro rfl
-    obtain ⟨x, hx, hxA⟩ := hi
-    obtain ⟨y, hy, hyA⟩ := hk
-    exact not_meets_adjacent hD s3 i i (by simp) ⟨⟨x, hx, hA1 hxA⟩, ⟨y, hy, hA3 hyA⟩⟩
-  rcases lt_or_gt_of_ne hik with h | h
-  · exact Or.inl (order_core D hcov (hPc _ _) (hPc _ _) (hPc _ _) hA1 hA3 hC
-      (fun l l' hl => not_meets_adjacent hD s3 l l' hl)
-      (fun l => not_meets_both hD s1 l) (fun l => not_meets_both hD s2 l) h hi hj hk)
-  · exact Or.inr (order_core D hcov (hPc _ _) (hPc _ _) (hPc _ _) hA3 hA1 hC'
-      (fun l l' hl => not_meets_adjacent hD s3' l l' hl)
-      (fun l hl => not_meets_both hD s2 l ⟨hl.2, hl.1⟩)
-      (fun l hl => not_meets_both hD s1 l ⟨hl.2, hl.1⟩) h hk hj hi)
-
 omit [CompactSpace X] in
 /-- **Bing–Jones, Theorem 4** (p. 175), from a chain as in Theorem 3: with an `ε`-chain from `g₀`
 to `g₁`, where `ε` is less than the distance from a point `p ∈ U` to `X − U`, the link through `p`

@@ -1,4 +1,5 @@
-import HPC.Jones.CutPoints
+import HPC.Jones.Basic
+import HPC.PseudoArc.T13Topo
 import HPC.Effros.Effros
 
 /-!
@@ -45,13 +46,6 @@ theorem isOpen_aposSet (x : X) : IsOpen (aposSet x) := by
 
 /-- `X` is **homogeneous**. -/
 def IsHomogeneous (X : Type*) [TopologicalSpace X] : Prop := ∀ x y : X, ∃ h : X ≃ₜ X, h x = y
-
-omit [MetricSpace X] in
-/-- `IsHomogeneous X` is the hypothesis `hom` of `HPC.Effros.effros_homogeneous`, and is Mathlib's
-transitivity of the evaluation action `HPC.Effros.homeoMulAction` of the homeomorphism group. -/
-theorem isHomogeneous_iff_isPretransitive [TopologicalSpace X] :
-    IsHomogeneous X ↔ MulAction.IsPretransitive (X ≃ₜ X) X :=
-  ⟨fun h => ⟨fun x y => h x y⟩, fun h x y => h.exists_smul_eq x y⟩
 
 /-- A homeomorphism carries `U_x` onto `U_{T x}`. -/
 theorem aposSet_homeomorph (T : X ≃ₜ X) (x : X) : aposSet (T x) = T '' aposSet x := by
