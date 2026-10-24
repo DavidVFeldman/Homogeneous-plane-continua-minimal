@@ -1,0 +1,7 @@
+.lake/
+/ARISTOTLE_SUMMARY.md
+/axioms-ci.txt
+/build.log
+__pycache__/
+*.pyc
+.DS_Store
